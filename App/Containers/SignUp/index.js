@@ -6,6 +6,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
+  View,
 } from 'react-native';
 import {
   Button,
@@ -15,10 +16,10 @@ import {
   Row,
   SpaceBeetwen,
 } from '../../Components';
-import {ToastAlert, useForm} from '../../Helpers';
-import {IcDate, ILHeader} from '../../Images';
+import {useForm} from '../../Helpers';
+import {IcDate, IcIndonesia, ILHeader} from '../../Images';
 import {moments} from '../../Libs';
-import {Colors, Fonts} from '../../Themes';
+import {colors, fonts} from '../../Themes';
 
 const SignUp = ({navigation}) => {
   const [form, setForm] = useForm({
@@ -35,94 +36,93 @@ const SignUp = ({navigation}) => {
 
   return (
     <Container>
-      <Image style={styles.image} source={ILHeader} />
-      <ScrollView
-        showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.wrapper}>
-        <Text style={styles.title}>{'Registrasi'}</Text>
-        <SpaceBeetwen>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <Image style={styles.image} source={ILHeader} resizeMode={'stretch'} />
+        <View showsVerticalScrollIndicator={false} style={styles.wrapper}>
+          <Text style={styles.title}>{'Registrasi'}</Text>
+          <SpaceBeetwen>
+            <Input
+              style={styles.input}
+              label={'Nama Depan'}
+              value={form.firstName}
+              onChangeText={value => setForm('firstName', value)}
+            />
+            <Gap width={25} />
+            <Input
+              style={styles.input}
+              label={'Nama Belakang'}
+              value={form.lastName}
+              onChangeText={value => setForm('lastName', value)}
+            />
+          </SpaceBeetwen>
+          <Gap height={16} />
           <Input
-            style={styles.input}
-            label={'Nama Depan'}
-            value={form.firstName}
-            onChangeText={value => setForm('firstName', value)}
+            label={'Tanggal Lahir'}
+            iconRight={IcDate}
+            value={moments(setForm.dateOfBirth).format('DD MMMM YYYY')}
+            editable={false}
+            onPress={() => setShowDatePicker(true)}
           />
-          <Gap width={25} />
+          <Gap height={16} />
           <Input
-            style={styles.input}
-            label={'Nama Belakang'}
-            value={form.lastName}
-            onChangeText={value => setForm('lastName', value)}
+            label={'Nama Suami'}
+            value={form.husbandName}
+            onChangeText={value => setForm('husbandName', value)}
           />
-        </SpaceBeetwen>
-        <Gap height={12} />
-        <Input
-          label={'Tanggal Lahir'}
-          iconRight={IcDate}
-          value={moments(setForm.dateOfBirth).format('DD MMMM YYYY')}
-          editable={false}
-          onPress={() => setShowDatePicker(true)}
-        />
-        <Gap height={12} />
-        <Input
-          label={'Nama Suami'}
-          value={form.husbandName}
-          onChangeText={value => setForm('husbandName', value)}
-        />
-        <Gap height={12} />
-        <Input
-          label={'Alama E-Mail'}
-          value={form.email}
-          onChangeText={value => setForm('email', value)}
-          keyboardType={'email-address'}
-        />
-        <Gap height={12} />
-        <Input
-          label={'No Handphone'}
-          iconLeft={IcDate}
-          value={form.noHandphone}
-          onChangeText={value => setForm('noHandphone', value)}
-          keyboardType={'phone-pad'}
-        />
-        <Gap height={12} />
-        <Input
-          label={'Kata Sandi'}
-          value={form.password}
-          onChangeText={value => setForm('password', value)}
-          secureTextEntry
-        />
-        <Gap height={12} />
-        <Input
-          label={'Ulangi Kata Sandi'}
-          value={form.repeatPassword}
-          onChangeText={value => setForm('repeatPassword', value)}
-          secureTextEntry
-        />
-        <Gap height={18} />
-        <Button
-          type={'blue'}
-          label={'REGISTRASI'}
-          onPress={() => navigation.navigate('Confirmation')}
-        />
-        <Row style={styles.wrapperHaveAccount}>
-          <Text style={styles.label}>{'Atau sudah mempunyai akun?'}</Text>
-          <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
-            <Text style={styles.haveAccount}>{` Masuk disini`}</Text>
-          </TouchableOpacity>
-        </Row>
-      </ScrollView>
+          <Gap height={16} />
+          <Input
+            label={'Alamat E-Mail'}
+            value={form.email}
+            onChangeText={value => setForm('email', value)}
+            keyboardType={'email-address'}
+          />
+          <Gap height={16} />
+          <Input
+            label={'No Handphone'}
+            iconLeft={IcIndonesia}
+            value={form.noHandphone}
+            onChangeText={value => setForm('noHandphone', value)}
+            keyboardType={'phone-pad'}
+          />
+          <Gap height={16} />
+          <Input
+            label={'Kata Sandi'}
+            value={form.password}
+            onChangeText={value => setForm('password', value)}
+            secureTextEntry
+          />
+          <Gap height={16} />
+          <Input
+            label={'Ulangi Kata Sandi'}
+            value={form.repeatPassword}
+            onChangeText={value => setForm('repeatPassword', value)}
+            secureTextEntry
+          />
+          <Gap height={30} />
+          <Button
+            label={'Registrasi'}
+            onPress={() => navigation.navigate('Confirmation')}
+          />
+          <Row style={styles.wrapperHaveAccount}>
+            <Text style={styles.label}>{'Atau sudah mempunyai akun?'}</Text>
+            <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+              <Text style={styles.haveAccount}>{` Masuk disini`}</Text>
+            </TouchableOpacity>
+          </Row>
+        </View>
 
-      {showDatePicker && (
-        <DateTimePicker
-          testID="dateTimePicker"
-          value={form.dateOfBirth}
-          mode={'date'}
-          onChange={(event, selectedDate) => {
-            setShowDatePicker(false);
-            if (selectedDate) setForm('dateOfBirth', selectedDate);
-          }}
-        />
-      )}
+        {showDatePicker && (
+          <DateTimePicker
+            testID="dateTimePicker"
+            value={form.dateOfBirth}
+            mode={'date'}
+            onChange={(event, selectedDate) => {
+              setShowDatePicker(false);
+              if (selectedDate) setForm('dateOfBirth', selectedDate);
+            }}
+          />
+        )}
+      </ScrollView>
     </Container>
   );
 };
@@ -132,7 +132,7 @@ export default SignUp;
 const styles = StyleSheet.create({
   image: {
     width: '100%',
-    height: 100,
+    height: 180,
   },
 
   wrapper: {
@@ -143,9 +143,9 @@ const styles = StyleSheet.create({
 
   title: {
     fontSize: 36,
-    color: Colors.primary,
-    fontFamily: Fonts.primary.regular,
-    marginBottom: 20,
+    color: colors.black,
+    fontFamily: fonts.primary.regular,
+    marginBottom: 22,
   },
 
   input: {
@@ -153,19 +153,19 @@ const styles = StyleSheet.create({
   },
 
   wrapperHaveAccount: {
-    marginTop: 8,
+    marginTop: 12,
     alignSelf: 'center',
   },
 
   label: {
-    fontSize: 9,
-    color: Colors.black,
-    fontFamily: Fonts.primary.regular,
+    fontSize: 15,
+    color: colors.black,
+    fontFamily: fonts.primary.regular,
   },
 
   haveAccount: {
-    fontSize: 9,
-    color: Colors.primary,
-    fontFamily: Fonts.primary.regular,
+    fontSize: 15,
+    color: colors.primary,
+    fontFamily: fonts.primary.regular,
   },
 });

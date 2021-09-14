@@ -1,12 +1,12 @@
 import React from 'react';
 import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
-import {Colors, Fonts} from '../../../Themes';
+import {colors, fonts} from '../../../Themes';
 
 const Loading = () => {
   return (
     <View style={styles.container}>
       <View style={styles.wrapper}>
-        <ActivityIndicator size={'large'} color={Colors.primary} />
+        <ActivityIndicator size={'large'} color={colors.primary} />
         <Text style={styles.label}>{'Loading...'}</Text>
       </View>
     </View>
@@ -22,19 +22,19 @@ const styles = StyleSheet.create({
     position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: Colors.backgroundColorModal,
+    backgroundColor: colors.backgroundColorModal,
   },
 
   wrapper: {
-    backgroundColor: Colors.white,
+    backgroundColor: colors.white,
     borderRadius: 4,
     padding: 16,
   },
 
   label: {
     fontSize: 14,
-    color: Colors.primary,
-    fontFamily: Fonts.primary.regular,
+    color: colors.primary,
+    fontFamily: fonts.primary.regular,
     marginTop: 12,
   },
 });

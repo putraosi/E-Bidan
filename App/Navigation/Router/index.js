@@ -1,6 +1,13 @@
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
-import { Confirmation, GetStarted, SignUp, SingIn } from '../../Containers';
+import {
+  Confirmation,
+  DetailsProfile,
+  GetStarted,
+  Home,
+  SignUp,
+  SingIn,
+} from '../../Containers';
 
 const Stack = createNativeStackNavigator();
 
@@ -27,6 +34,16 @@ const Router = () => {
         component={Confirmation}
         options={{headerShown: false}}
       />
+      {/* <Stack.Screen
+        name="Home"
+        component={Home}
+        options={{headerShown: false}}
+      /> */}
+      {/* <Stack.Screen
+        name="DetailsProfile"
+        component={DetailsProfile}
+        options={{headerShown: false}}
+      /> */}
     </Stack.Navigator>
   );
 };
