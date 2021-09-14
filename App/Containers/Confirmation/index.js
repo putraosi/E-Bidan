@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {Button, Container, Gap, Input} from '../../Components';
+import { ToastAlert } from '../../Helpers';
 import {ILHeader} from '../../Images';
 import {colors, fonts} from '../../Themes';
 
@@ -27,7 +28,7 @@ const Confirmation = ({navigation}) => {
           <Gap height={16} />
           <Button
             label={'Submit'}
-            onPress={() => navigation.navigate('Home')}
+            onPress={() => ToastAlert()}
           />
         </View>
       </ScrollView>

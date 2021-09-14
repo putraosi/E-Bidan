@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {StyleSheet, TextInput} from 'react-native';
+import {ScrollView, StyleSheet, TextInput} from 'react-native';
 import {Gap, Row} from '../..';
 import {useForm} from '../../../../Helpers';
 import {colors, fonts} from '../../../../Themes';
@@ -39,52 +39,56 @@ const DigitCodeInput = ({onChangeText}) => {
   };
 
   return (
-    <Row>
-      <TextInput
-        style={styles.input}
-        value={form.input1}
-        onChangeText={onChangeText1}
-        numberOfLines={1}
-        maxLength={1}
-        keyboardType={'numeric'}
-        autoFocus
-        returnKeyType={'next'}
-        onSubmitEditing={() => {
-          refInput2.current.focus();
-        }}
-        blurOnSubmit={false}
-      />
-      <Gap width={22} />
-      <TextInput
-        ref={refInput2}
-        style={styles.input}
-        value={form.input2}
-        onChangeText={onChangeText2}
-        numberOfLines={1}
-        keyboardType={'numeric'}
-        maxLength={1}
-      />
-      <Gap width={22} />
-      <TextInput
-        ref={refInput3}
-        style={styles.input}
-        value={form.input3}
-        onChangeText={onChangeText3}
-        numberOfLines={1}
-        keyboardType={'numeric'}
-        maxLength={1}
-      />
-      <Gap width={22} />
-      <TextInput
-        ref={refInput4}
-        style={styles.input}
-        value={form.input4}
-        onChangeText={onChangeText4}
-        numberOfLines={1}
-        keyboardType={'numeric'}
-        maxLength={1}
-      />
-    </Row>
+    <ScrollView
+      showsHorizontalScrollIndicator={false}
+      horizontal>
+      <Row>
+        <TextInput
+          style={styles.input}
+          value={form.input1}
+          onChangeText={onChangeText1}
+          numberOfLines={1}
+          maxLength={1}
+          keyboardType={'numeric'}
+          autoFocus
+          returnKeyType={'next'}
+          onSubmitEditing={() => {
+            refInput2.current.focus();
+          }}
+          blurOnSubmit={false}
+        />
+        <Gap width={22} />
+        <TextInput
+          ref={refInput2}
+          style={styles.input}
+          value={form.input2}
+          onChangeText={onChangeText2}
+          numberOfLines={1}
+          keyboardType={'numeric'}
+          maxLength={1}
+        />
+        <Gap width={22} />
+        <TextInput
+          ref={refInput3}
+          style={styles.input}
+          value={form.input3}
+          onChangeText={onChangeText3}
+          numberOfLines={1}
+          keyboardType={'numeric'}
+          maxLength={1}
+        />
+        <Gap width={22} />
+        <TextInput
+          ref={refInput4}
+          style={styles.input}
+          value={form.input4}
+          onChangeText={onChangeText4}
+          numberOfLines={1}
+          keyboardType={'numeric'}
+          maxLength={1}
+        />
+      </Row>
+    </ScrollView>
   );
 };
 
