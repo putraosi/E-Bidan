@@ -1,6 +1,5 @@
 import React, {useRef} from 'react';
-import {ScrollView, StyleSheet, TextInput} from 'react-native';
-import {Gap, Row} from '../..';
+import {StyleSheet, TextInput, View} from 'react-native';
 import {useForm} from '../../../../Helpers';
 import {colors, fonts} from '../../../../Themes';
 
@@ -39,70 +38,72 @@ const DigitCodeInput = ({onChangeText}) => {
   };
 
   return (
-    <ScrollView
-      showsHorizontalScrollIndicator={false}
-      horizontal>
-      <Row>
-        <TextInput
-          style={styles.input}
-          value={form.input1}
-          onChangeText={onChangeText1}
-          numberOfLines={1}
-          maxLength={1}
-          keyboardType={'numeric'}
-          autoFocus
-          returnKeyType={'next'}
-          onSubmitEditing={() => {
-            refInput2.current.focus();
-          }}
-          blurOnSubmit={false}
-        />
-        <Gap width={22} />
-        <TextInput
-          ref={refInput2}
-          style={styles.input}
-          value={form.input2}
-          onChangeText={onChangeText2}
-          numberOfLines={1}
-          keyboardType={'numeric'}
-          maxLength={1}
-        />
-        <Gap width={22} />
-        <TextInput
-          ref={refInput3}
-          style={styles.input}
-          value={form.input3}
-          onChangeText={onChangeText3}
-          numberOfLines={1}
-          keyboardType={'numeric'}
-          maxLength={1}
-        />
-        <Gap width={22} />
-        <TextInput
-          ref={refInput4}
-          style={styles.input}
-          value={form.input4}
-          onChangeText={onChangeText4}
-          numberOfLines={1}
-          keyboardType={'numeric'}
-          maxLength={1}
-        />
-      </Row>
-    </ScrollView>
+    <View style={styles.container}>
+      <TextInput
+        style={styles.input}
+        value={form.input1}
+        onChangeText={onChangeText1}
+        numberOfLines={1}
+        maxLength={1}
+        keyboardType={'numeric'}
+        autoFocus
+        returnKeyType={'next'}
+        onSubmitEditing={() => {
+          refInput2.current.focus();
+        }}
+        blurOnSubmit={false}
+      />
+      <TextInput
+        ref={refInput2}
+        style={styles.input}
+        value={form.input2}
+        onChangeText={onChangeText2}
+        numberOfLines={1}
+        keyboardType={'numeric'}
+        maxLength={1}
+      />
+      <TextInput
+        ref={refInput3}
+        style={styles.input}
+        value={form.input3}
+        onChangeText={onChangeText3}
+        numberOfLines={1}
+        keyboardType={'numeric'}
+        maxLength={1}
+      />
+      <TextInput
+        ref={refInput4}
+        style={styles.input}
+        value={form.input4}
+        onChangeText={onChangeText4}
+        numberOfLines={1}
+        keyboardType={'numeric'}
+        maxLength={1}
+      />
+    </View>
   );
 };
 
 export default DigitCodeInput;
 
 const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   input: {
-    width: 74,
-    height: 88,
+    width: 45,
+    height: 50,
     textAlign: 'center',
     color: colors.text.primary,
-    fontSize: 50,
+    fontSize: 30,
     fontFamily: fonts.primary.regular,
     backgroundColor: colors.white,
-    borderRadius: 15,
+    borderRadius: 4,
+    padding: 0,
+    margin: 0,
+    marginHorizontal: 8,
   },
 });

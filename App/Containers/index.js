@@ -1,8 +1,19 @@
 import Confirmation from './Confirmation';
+import DetailsProfilePatient from './DetailsProfilePatient';
 import GetStarted from './GetStarted';
+import HomePatient from './HomePatient';
+import PreviewPhoto from './PreviewPhoto';
 import SingIn from './SignIn';
 import SignUp from './SignUp';
-import Home from './Home'
-import DetailsProfile from './DetailsProfile'
+import Splash from './Splash';
 
-export {GetStarted, SingIn, SignUp, Confirmation, Home, DetailsProfile};
+export {
+  GetStarted,
+  SingIn,
+  SignUp,
+  Confirmation,
+  HomePatient,
+  DetailsProfilePatient,
+  Splash,
+  PreviewPhoto,
+};

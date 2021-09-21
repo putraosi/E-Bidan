@@ -26,11 +26,11 @@ const Input = ({
   onPress,
   onTogglePassword,
 }) => {
-  let paddingRight = 16;
-  let paddingLeft = 16;
+  let paddingRight = 10;
+  let paddingLeft = 10;
 
-  if (iconRight) paddingRight = 40;
-  if (iconLeft) paddingLeft = 48;
+  if (iconRight) paddingRight = 34;
+  if (iconLeft) paddingLeft = 34;
 
   let colorLabel = colors.black;
   let backgroundColor = colors.input.backgroundColor;
@@ -44,15 +44,22 @@ const Input = ({
     }
   }
 
-  const showPassword = type == 'password';
+  const showPassword = type && type.includes('password');
   const Div = onPress ? TouchableOpacity : View;
 
   return (
     <View style={[styles.container, style]}>
       <Text style={styles.label(colorLabel)}>{label}</Text>
-      <Div onPress={onPress}>
+      <Div style={styles.wrapper(backgroundColor)} onPress={onPress}>
+        {iconLeft && (
+          <Image
+            style={styles.iconLeft}
+            source={iconLeft}
+            resizeMode={'stretch'}
+          />
+        )}
         <TextInput
-          style={styles.input(paddingRight, paddingLeft, backgroundColor)}
+          style={styles.input(paddingRight, paddingLeft)}
           value={value}
           onChangeText={onChangeText}
           secureTextEntry={secureTextEntry}
@@ -62,8 +69,13 @@ const Input = ({
           keyboardType={keyboardType}
           editable={editable}
         />
-        {iconRight && <Image style={styles.iconRight} source={iconRight} />}
-        {iconLeft && <Image style={styles.iconLeft} source={iconLeft} />}
+        {iconRight && (
+          <Image
+            style={styles.iconRight}
+            source={iconRight}
+            resizeMode={'stretch'}
+          />
+        )}
         {showPassword && (
           <TouchableOpacity
             style={styles.containerPassword}
@@ -87,47 +99,45 @@ const styles = StyleSheet.create({
   },
 
   label: color => ({
-    fontSize: 15,
+    fontSize: 14,
     color,
     fontFamily: fonts.primary.regular,
     marginBottom: 6,
   }),
 
-  input: (paddingRight, paddingLeft, backgroundColor) => ({
+  wrapper: backgroundColor => ({
     backgroundColor,
+    borderRadius: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+  }),
+
+  input: (paddingRight, paddingLeft) => ({
+    flex: 1,
     paddingVertical: 6,
-    borderRadius: 15,
-    paddingRight,
-    paddingLeft,
-    fontSize: 18,
+    paddingHorizontal: 8,
+    fontSize: 14,
     color: colors.text.primary,
     fontFamily: fonts.primary.regular,
   }),
 
   iconRight: {
-    width: 22,
-    height: 26,
-    position: 'absolute',
-    right: 10,
-    top: 7,
+    width: 24,
+    height: 24,
+    marginRight: 8,
   },
 
   iconLeft: {
-    width: 28,
-    height: 26,
-    position: 'absolute',
-    left: 10,
-    top: 7,
+    width: 24,
+    height: 24,
+    marginLeft: 8,
   },
 
-  containerPassword: {
-    position: 'absolute',
-    right: 16,
-    top: 10,
-  },
+  containerPassword: {},
 
   password: {
     width: 16,
     height: 16,
+    marginRight: 8,
   },
 });

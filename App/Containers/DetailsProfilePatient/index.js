@@ -1,11 +1,21 @@
 import React, {useState} from 'react';
 import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {Button, Container, Gap, Input, SpaceBeetwen} from '../../Components';
+import {
+  Button,
+  Container,
+  Gap,
+  Header,
+  Input,
+  Modals,
+  Row,
+  SpaceBeetwen,
+} from '../../Components';
 import {ToastAlert} from '../../Helpers';
-import {ILPorife} from '../../Images';
+import {IcLogout, ILPorife} from '../../Images';
 import {colors, fonts} from '../../Themes';
 
-const DetailsProfile = ({navigation}) => {
+const DetailsProfilePatient = ({navigation}) => {
+  const [visibleLogout, setVisibleLogout] = useState(false);
   const [secureTextEntry1, setSecureTextEntry1] = useState(true);
   const [secureTextEntry2, setSecureTextEntry2] = useState(true);
   const [newPassword, setNewPassword] = useState('');
@@ -13,22 +23,42 @@ const DetailsProfile = ({navigation}) => {
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>
+        <Header
+          onDismiss={() => navigation.goBack()}
+          iconRight={IcLogout}
+          onPress={() => setVisibleLogout(true)}
+        />
         <View style={styles.containerHeader}>
           <Image style={styles.image} source={ILPorife} />
           <Text style={styles.name}>{'Anya Geraldin'}</Text>
+          <Text style={styles.email}>{'anyagrl@gmail.com'}</Text>
         </View>
 
         <View style={styles.content}>
-          <Input label={'Nama'} value={'Anya Geraldin'} editable={false} />
-          <Gap height={18} />
+          <Row>
+            <Input
+              style={styles.input}
+              label={'Nama Depan'}
+              value={'Anya'}
+              editable={false}
+            />
+            <Gap width={16} />
+            <Input
+              style={styles.input}
+              label={'Nama Belakang'}
+              value={'Geraldin'}
+              editable={false}
+            />
+          </Row>
+          <Gap height={12} />
           <Input label={'Email'} value={'anyagrl@gmail.com'} editable={false} />
-          <Gap height={18} />
+          <Gap height={12} />
           <Input
             label={'No. Hanphone'}
-            value={'+62899 8899 5623'}
+            value={'+62 899 8899 5623'}
             editable={false}
           />
-          <Gap height={18} />
+          <Gap height={12} />
           <Input
             label={'Kata Sandi'}
             type={'password'}
@@ -37,7 +67,7 @@ const DetailsProfile = ({navigation}) => {
             editable={false}
             onTogglePassword={() => setSecureTextEntry1(!secureTextEntry1)}
           />
-          <Gap height={18} />
+          <Gap height={12} />
           <Input
             label={'Ubah Kata Sandi'}
             type={'password'}
@@ -51,47 +81,65 @@ const DetailsProfile = ({navigation}) => {
             <Button
               styleButton={styles.button}
               type={'blue'}
-              label={'UPDATE'}
+              label={'Ubah'}
               onPress={() => ToastAlert()}
             />
             <Gap width={16} />
             <Button
               styleButton={styles.button}
-              label={'CANCEL'}
+              label={'Batal'}
               onPress={() => navigation.goBack()}
             />
           </SpaceBeetwen>
         </View>
       </ScrollView>
+
+      <Modals
+        visible={visibleLogout}
+        desc={'Anda yakin ingin\nkeluar aplikasi ?'}
+        onDismiss={() => setVisibleLogout(false)}
+        labelPress={'Keluar'}
+        labelCancel={'Batal'}
+        onPress={() => ToastAlert()}
+        onCancel={() => setVisibleLogout(false)}
+      />
     </Container>
   );
 };
 
-export default DetailsProfile;
+export default DetailsProfilePatient;
 
 const styles = StyleSheet.create({
   containerHeader: {
     backgroundColor: colors.primary,
     alignItems: 'center',
-    flexDirection: 'row',
-    padding: 20,
+    paddingBottom: 16,
   },
 
   image: {
-    width: 80,
-    height: 80,
-    borderRadius: 80 / 2,
+    width: 120,
+    height: 120,
+    borderRadius: 120 / 2,
   },
 
   name: {
     fontSize: 18,
     color: colors.white,
     fontFamily: fonts.primary.regular,
-    marginLeft: 8,
+  },
+
+  email: {
+    fontSize: 14,
+    color: colors.text.primary,
+    fontFamily: fonts.primary.regular,
   },
 
   content: {
     padding: 16,
+  },
+
+  input: {
+    flex: 1,
   },
 
   button: {

@@ -24,7 +24,6 @@ const DigitCodeModal = ({visible, onDismiss, onPress}) => {
           <Text style={styles.desc}>
             {'Masukan 4 digit kode yang sudah kami kirimkan di email atau sms'}
           </Text>
-          <Gap height={30} />
           <Input
             type={'digit-code-white'}
             label={'Alamat E-Mail'}
@@ -32,7 +31,7 @@ const DigitCodeModal = ({visible, onDismiss, onPress}) => {
             onChangeText={value => setCode(value)}
             keyboardType={'email-address'}
           />
-          <Gap height={30} />
+          <Gap height={16} />
           <Button label={'Lanjutkan'} onPress={() => onPress(code)} />
         </TouchableOpacity>
       </TouchableOpacity>
@@ -54,24 +53,22 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: colors.primary,
-    paddingTop: 66,
-    paddingBottom: 150,
-    paddingHorizontal: 22,
+    padding: 16,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
 
   title: {
-    fontSize: 30,
+    fontSize: 22,
     color: colors.white,
     fontFamily: fonts.primary.regular,
-    marginBottom: 16,
+    marginBottom: 10,
   },
 
   desc: {
-    fontSize: 20,
+    fontSize: 12,
     color: colors.white,
     fontFamily: fonts.primary.regular,
-    marginBottom: 16,
+    marginBottom: 12,
   },
 });

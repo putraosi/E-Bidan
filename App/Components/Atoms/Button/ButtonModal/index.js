@@ -1,49 +1,45 @@
 import React from 'react';
 import {StyleSheet, Text, TouchableOpacity} from 'react-native';
-import {colors, fonts} from '../../../Themes';
-import ButtonCircle from './ButtonCircle';
-import ButtonModal from './ButtonModal';
+import {colors, fonts} from '../../../../Themes';
 
-const Button = ({type, label, onPress, styleButton}) => {
-  if (type == 'circle') return <ButtonCircle onPress={onPress} />;
-  if (type && type.includes('modal'))
-    return <ButtonModal type={type} label={label} onPress={onPress} />;
-
+const ButtonModal = ({type, label, onPress}) => {
+  let color = colors.button.default.color;
   let backgroundColor = colors.button.default.backgroundColor;
   let borderColor = colors.button.default.borderColor;
-  let color = colors.button.default.color;
 
-  if (type == 'blue') {
-    backgroundColor = colors.primary;
-    color = colors.white;
+  if (type == 'modal-white') {
+    color = colors.button.white.color;
+    backgroundColor = colors.button.white.backgroundColor;
+    borderColor = colors.button.white.borderColor;
   }
 
   return (
     <TouchableOpacity
-      style={[styles.container(backgroundColor, borderColor), styleButton]}
+      style={styles.container(backgroundColor, borderColor)}
       onPress={onPress}>
       <Text style={styles.label(color)}>{label}</Text>
     </TouchableOpacity>
   );
 };
 
-export default Button;
+export default ButtonModal;
 
 const styles = StyleSheet.create({
   container: (backgroundColor, borderColor) => ({
-    maxWidth: '100%',
+    width: 110,
     height: 40,
-    backgroundColor,
-    borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor,
     borderColor,
     borderWidth: 1,
+    borderRadius: 4,
   }),
 
   label: color => ({
     fontSize: 14,
     fontFamily: fonts.primary.regular,
     color,
+    textAlign: 'center',
   }),
 });

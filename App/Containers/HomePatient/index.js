@@ -32,19 +32,22 @@ const dataOrderHistory = [
   {id: 5, category: 'rejected'},
 ];
 
-const Home = ({navigation}) => {
+const HomePatient = ({navigation}) => {
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>
         <TouchableOpacity
           style={styles.containerHeader}
-          onPress={() => navigation.navigate('DetailsProfile')}>
+          onPress={() => ToastAlert()}>
           <Image style={styles.image} source={ILPorife} />
           <View style={styles.wrapperAccount}>
             <Text style={styles.name}>{'Anya Geraldin'}</Text>
             <Text style={styles.email}>{'anyagrl@gmail.com'}</Text>
           </View>
         </TouchableOpacity>
+        <View style={styles.slider}>
+          <Text>{'Coming Soon'}</Text>
+        </View>
 
         <View style={styles.containerOrder}>
           <SpaceBeetwen>
@@ -83,7 +86,7 @@ const Home = ({navigation}) => {
   );
 };
 
-export default Home;
+export default HomePatient;
 
 const styles = StyleSheet.create({
   containerHeader: {
@@ -94,9 +97,11 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: 80,
-    height: 80,
-    borderRadius: 80 / 2,
+    width: 60,
+    height: 60,
+    borderRadius: 60 / 2,
+    borderWidth: 1,
+    borderColor: colors.white,
   },
 
   wrapperAccount: {
@@ -104,15 +109,23 @@ const styles = StyleSheet.create({
   },
 
   name: {
-    fontSize: 18,
+    fontSize: 14,
     color: colors.white,
-    fontFamily: fonts.primary.regular,
+    fontFamily: fonts.primary.bold,
   },
 
   email: {
-    fontSize: 10,
-    color: colors.yellow,
+    fontSize: 12,
+    color: colors.text.primary,
     fontFamily: fonts.primary.regular,
+  },
+
+  slider: {
+    width: '100%',
+    height: 176,
+    backgroundColor: 'cyan',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 
   containerOrder: {
@@ -121,15 +134,15 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 15,
-    color: colors.text.primary,
-    fontFamily: fonts.primary.regular,
+    fontSize: 16,
+    color: colors.black,
+    fontFamily: fonts.primary.bold,
   },
 
   showAll: {
-    fontSize: 7,
-    color: colors.text.primary,
-    fontFamily: fonts.primary.regular,
+    fontSize: 12,
+    color: colors.black,
+    fontFamily: fonts.primary.bold,
   },
 
   containerButton: {

@@ -1,8 +1,15 @@
 import React, {useState} from 'react';
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {Button, Container, Gap, Input, Modals} from '../../Components';
+import {
+  Image,
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import {Button, Container, Gap, Input, Modals, Row} from '../../Components';
 import {ToastAlert, useForm} from '../../Helpers';
-import {ILHeader} from '../../Images';
+import {ILHeader, ILLogo} from '../../Images';
 import {colors, fonts} from '../../Themes';
 
 const SignIn = ({navigation}) => {
@@ -12,11 +19,17 @@ const SignIn = ({navigation}) => {
   });
   const [visibleForgotPassword, setVisibleForgotPassword] = useState(false);
   const [visibleDigitCode, setVisibleDigitCode] = useState(false);
+  const [visibleResetPassword, setVisibleResetPassword] = useState(false);
 
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Image style={styles.image} source={ILHeader} resizeMode={'stretch'} />
+        <ImageBackground
+          style={styles.wrapperImage}
+          source={ILHeader}
+          resizeMode={'stretch'}>
+          <Image style={styles.image} source={ILLogo} />
+        </ImageBackground>
         <View style={styles.wrapper}>
           <View showsVerticalScrollIndicator={false}>
             <Text style={styles.title}>{'Log In'}</Text>
@@ -26,7 +39,7 @@ const SignIn = ({navigation}) => {
               onChangeText={value => setForm('email', value)}
               keyboardType={'email-address'}
             />
-            <Gap height={20} />
+            <Gap height={12} />
             <Input
               label={'Kata Sandi'}
               value={form.password}
@@ -34,23 +47,29 @@ const SignIn = ({navigation}) => {
               secureTextEntry
             />
 
-            <Gap height={34} />
-            <Button
-              label={'Masuk'}
-              onPress={() => navigation.navigate('Home')}
-            />
+            <Gap height={12} />
 
             <Text
-              style={styles.forgotPassword}
-              onPress={() => setVisibleForgotPassword(true)}>
-              {'Tidak bisa masuk? Lupa Kata Sandi'}
-            </Text>
+              style={styles.labelHighlight}
+              onPress={() =>
+                setVisibleForgotPassword(true)
+              }>{`Lupa Kata Sandi`}</Text>
+
+            <Gap height={16} />
+            <Button
+              label={'Masuk'}
+              onPress={() => navigation.replace('Home')}
+            />
+
+            <Row style={styles.containerFooter}>
+              <Text style={styles.labelFooter}>{'Belum punya akun?'}</Text>
+              <Text
+                style={styles.labelHighlight}
+                onPress={() =>
+                  navigation.replace('SignUp')
+                }>{` Daftar disini`}</Text>
+            </Row>
           </View>
-          <Text
-            style={styles.haveNotAccount}
-            onPress={() =>
-              navigation.navigate('SignUp')
-            }>{`Belum punya akun? Daftar disini`}</Text>
         </View>
       </ScrollView>
 
@@ -69,7 +88,21 @@ const SignIn = ({navigation}) => {
         type={'digit-code'}
         visible={visibleDigitCode}
         onDismiss={() => setVisibleDigitCode(false)}
-        onPress={value => ToastAlert(value)}
+        onPress={value => {
+          ToastAlert(value);
+          setVisibleDigitCode(false);
+          setVisibleResetPassword(true);
+        }}
+      />
+
+      <Modals
+        type={'reset-password'}
+        visible={visibleResetPassword}
+        onDismiss={() => setVisibleResetPassword(false)}
+        onPress={value => {
+          setVisibleResetPassword(false);
+          ToastAlert(value);
+        }}
       />
     </Container>
   );
@@ -78,9 +111,17 @@ const SignIn = ({navigation}) => {
 export default SignIn;
 
 const styles = StyleSheet.create({
-  image: {
+  wrapperImage: {
     width: '100%',
-    height: 180,
+    height: 120,
+  },
+
+  image: {
+    width: 70,
+    height: 70,
+    position: 'absolute',
+    top: 16,
+    right: 16,
   },
 
   wrapper: {
@@ -92,25 +133,35 @@ const styles = StyleSheet.create({
   },
 
   title: {
-    fontSize: 36,
+    fontSize: 24,
     color: colors.black,
     fontFamily: fonts.primary.regular,
-    marginBottom: 22,
+    marginBottom: 20,
   },
 
   forgotPassword: {
-    fontSize: 15,
-    color: colors.black,
+    fontSize: 12,
+    color: colors.text.primary,
     fontFamily: fonts.primary.regular,
-    marginTop: 22,
-    textAlign: 'center',
+    textAlign: 'right',
     marginBottom: 16,
   },
 
-  haveNotAccount: {
-    fontSize: 15,
+  containerFooter: {
+    marginTop: 20,
+    alignSelf: 'center',
+  },
+
+  labelFooter: {
+    fontSize: 12,
     color: colors.black,
     fontFamily: fonts.primary.regular,
-    textAlign: 'center',
+  },
+
+  labelHighlight: {
+    fontSize: 12,
+    color: colors.primary,
+    fontFamily: fonts.primary.regular,
+    textAlign: 'right',
   },
 });

@@ -26,7 +26,6 @@ const ForgotPasswordModal = ({visible, onDismiss, onPress}) => {
               'Masukan alamat email atau No handphone anda untuk proses verifikasi, kami akan mengirimkan 4 digit code ke alamat email / no handphone anda'
             }
           </Text>
-          <Gap height={30} />
           <Input
             type={'white'}
             label={'Alamat E-Mail'}
@@ -56,24 +55,22 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: colors.primary,
-    paddingTop: 66,
-    paddingBottom: 150,
-    paddingHorizontal: 22,
+    padding: 16,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
   },
 
   title: {
-    fontSize: 30,
+    fontSize: 22,
     color: colors.white,
     fontFamily: fonts.primary.regular,
-    marginBottom: 16,
+    marginBottom: 10,
   },
 
   desc: {
-    fontSize: 20,
+    fontSize: 12,
     color: colors.white,
     fontFamily: fonts.primary.regular,
-    marginBottom: 16,
+    marginBottom: 12,
   },
 });

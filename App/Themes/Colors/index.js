@@ -1,7 +1,7 @@
 const mainColors = {
   blue1: '#43BBFF',
-  yellow1: '#FAFF00',
-  red1: '##FF0000',
+  yellow1: '#FFC909',
+  red1: '#FF0000',
   green1: '#93DEE2',
   green2: '#20CFCA',
   gray1: '#e9e9e9',
@@ -24,11 +24,12 @@ export const colors = {
   black: mainColors.black1,
   yellow: mainColors.yellow1,
   backgroundColor: mainColors.gray1,
-  backgroundColorModal: mainColors.whiteTranparent1,
+  backgroundColorModal: mainColors.blackTransparent1,
   backgroundColorBlue: mainColors.blueTranparent1,
   placeholder: mainColors.gray2,
   text: {
     primary: mainColors.black2,
+    danger: mainColors.red1
   },
   button: {
     primary: mainColors.green2,
@@ -36,6 +37,11 @@ export const colors = {
       backgroundColor: mainColors.green2,
       borderColor: mainColors.green2,
       color: mainColors.white1,
+    },
+    white: {
+      backgroundColor: mainColors.white1,
+      borderColor: mainColors.green2,
+      color: mainColors.green2,
     },
   },
   notice: {

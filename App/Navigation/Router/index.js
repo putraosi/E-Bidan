@@ -2,18 +2,25 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {
   Confirmation,
-  DetailsProfile,
+  DetailsProfilePatient,
   GetStarted,
-  Home,
+  HomePatient,
   SignUp,
   SingIn,
+  Splash,
+  PreviewPhoto
 } from '../../Containers';
 
 const Stack = createNativeStackNavigator();
 
 const Router = () => {
   return (
-    <Stack.Navigator initialRouteName="GetStarted">
+    <Stack.Navigator initialRouteName="DetailsProfilePatient">
+      <Stack.Screen
+        name="Splash"
+        component={Splash}
+        options={{headerShown: false}}
+      />
       <Stack.Screen
         name="GetStarted"
         component={GetStarted}
@@ -34,16 +41,21 @@ const Router = () => {
         component={Confirmation}
         options={{headerShown: false}}
       />
-      {/* <Stack.Screen
-        name="Home"
-        component={Home}
+      <Stack.Screen
+        name="HomePatient"
+        component={HomePatient}
         options={{headerShown: false}}
-      /> */}
-      {/* <Stack.Screen
-        name="DetailsProfile"
-        component={DetailsProfile}
+      />
+      <Stack.Screen
+        name="DetailsProfilePatient"
+        component={DetailsProfilePatient}
         options={{headerShown: false}}
-      /> */}
+      />
+      <Stack.Screen
+        name="PreviewPhoto"
+        component={PreviewPhoto}
+        options={{headerShown: false}}
+      />
     </Stack.Navigator>
   );
 };

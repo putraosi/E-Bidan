@@ -15,7 +15,7 @@ export default ButtonCircle;
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.primary,
+    backgroundColor: colors.button.primary,
     padding: 8,
     borderRadius: 24,
   },

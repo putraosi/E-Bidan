@@ -79,13 +79,13 @@ const styles = StyleSheet.create({
   },
 
   date: {
-    fontSize: 7,
+    fontSize: 12,
     color: colors.black,
     fontFamily: fonts.primary.regular,
   },
 
   time: {
-    fontSize: 13,
+    fontSize: 16,
     color: colors.black,
     fontFamily: fonts.primary.regular,
   },

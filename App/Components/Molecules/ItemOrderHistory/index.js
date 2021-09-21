@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
 
   date: {
     fontSize: 7,
-    color: colors.black,
+    color: colors.text.danger,
     fontFamily: fonts.primary.regular,
   },
 

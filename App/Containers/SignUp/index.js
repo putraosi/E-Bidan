@@ -2,6 +2,7 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import React, {useState} from 'react';
 import {
   Image,
+  ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
@@ -17,7 +18,7 @@ import {
   SpaceBeetwen,
 } from '../../Components';
 import {useForm} from '../../Helpers';
-import {IcDate, IcIndonesia, ILHeader} from '../../Images';
+import {IcDate, IcIndonesia, ILHeader, ILLogo} from '../../Images';
 import {moments} from '../../Libs';
 import {colors, fonts} from '../../Themes';
 
@@ -32,12 +33,21 @@ const SignUp = ({navigation}) => {
     password: '',
     repeatPassword: '',
   });
+  const [secureTextEntry, setSecureTextEntry] = useForm({
+    _password: true,
+    _repeatPassword: true,
+  });
   const [showDatePicker, setShowDatePicker] = useState(false);
 
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Image style={styles.image} source={ILHeader} resizeMode={'stretch'} />
+        <ImageBackground
+          style={styles.wrapperImage}
+          source={ILHeader}
+          resizeMode={'stretch'}>
+          <Image style={styles.image} source={ILLogo} />
+        </ImageBackground>
         <View showsVerticalScrollIndicator={false} style={styles.wrapper}>
           <Text style={styles.title}>{'Registrasi'}</Text>
           <SpaceBeetwen>
@@ -47,7 +57,7 @@ const SignUp = ({navigation}) => {
               value={form.firstName}
               onChangeText={value => setForm('firstName', value)}
             />
-            <Gap width={25} />
+            <Gap width={16} />
             <Input
               style={styles.input}
               label={'Nama Belakang'}
@@ -55,7 +65,7 @@ const SignUp = ({navigation}) => {
               onChangeText={value => setForm('lastName', value)}
             />
           </SpaceBeetwen>
-          <Gap height={16} />
+          <Gap height={12} />
           <Input
             label={'Tanggal Lahir'}
             iconRight={IcDate}
@@ -63,20 +73,20 @@ const SignUp = ({navigation}) => {
             editable={false}
             onPress={() => setShowDatePicker(true)}
           />
-          <Gap height={16} />
+          <Gap height={12} />
           <Input
             label={'Nama Suami'}
             value={form.husbandName}
             onChangeText={value => setForm('husbandName', value)}
           />
-          <Gap height={16} />
+          <Gap height={12} />
           <Input
             label={'Alamat E-Mail'}
             value={form.email}
             onChangeText={value => setForm('email', value)}
             keyboardType={'email-address'}
           />
-          <Gap height={16} />
+          <Gap height={12} />
           <Input
             label={'No Handphone'}
             iconLeft={IcIndonesia}
@@ -84,28 +94,32 @@ const SignUp = ({navigation}) => {
             onChangeText={value => setForm('noHandphone', value)}
             keyboardType={'phone-pad'}
           />
-          <Gap height={16} />
+          <Gap height={12} />
           <Input
+            type={'password'}
             label={'Kata Sandi'}
             value={form.password}
             onChangeText={value => setForm('password', value)}
-            secureTextEntry
+            secureTextEntry={secureTextEntry._password}
+            onTogglePassword={()=> setSecureTextEntry("_password", !secureTextEntry._password)}
           />
-          <Gap height={16} />
+          <Gap height={12} />
           <Input
+            type={'password'}
             label={'Ulangi Kata Sandi'}
             value={form.repeatPassword}
             onChangeText={value => setForm('repeatPassword', value)}
-            secureTextEntry
+            secureTextEntry={secureTextEntry._repeatPassword}
+            onTogglePassword={()=> setSecureTextEntry("_repeatPassword", !secureTextEntry._repeatPassword)}
           />
-          <Gap height={30} />
+          <Gap height={16} />
           <Button
             label={'Registrasi'}
-            onPress={() => navigation.navigate('Confirmation')}
+            onPress={() => navigation.replace('Confirmation')}
           />
           <Row style={styles.wrapperHaveAccount}>
             <Text style={styles.label}>{'Atau sudah mempunyai akun?'}</Text>
-            <TouchableOpacity onPress={() => navigation.navigate('SignIn')}>
+            <TouchableOpacity onPress={() => navigation.replace('SignIn')}>
               <Text style={styles.haveAccount}>{` Masuk disini`}</Text>
             </TouchableOpacity>
           </Row>
@@ -130,22 +144,32 @@ const SignUp = ({navigation}) => {
 export default SignUp;
 
 const styles = StyleSheet.create({
-  image: {
+  wrapperImage: {
     width: '100%',
-    height: 180,
+    height: 120,
+  },
+
+  image: {
+    width: 70,
+    height: 70,
+    position: 'absolute',
+    top: 16,
+    right: 16,
   },
 
   wrapper: {
+    flex: 1,
     paddingLeft: 40,
     paddingRight: 40,
     paddingBottom: 40,
+    justifyContent: 'space-between',
   },
 
   title: {
-    fontSize: 36,
+    fontSize: 24,
     color: colors.black,
     fontFamily: fonts.primary.regular,
-    marginBottom: 22,
+    marginBottom: 20,
   },
 
   input: {
@@ -158,13 +182,13 @@ const styles = StyleSheet.create({
   },
 
   label: {
-    fontSize: 15,
+    fontSize: 12,
     color: colors.black,
     fontFamily: fonts.primary.regular,
   },
 
   haveAccount: {
-    fontSize: 15,
+    fontSize: 12,
     color: colors.primary,
     fontFamily: fonts.primary.regular,
   },
