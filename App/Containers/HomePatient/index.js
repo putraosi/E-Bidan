@@ -15,7 +15,6 @@ import {
   ItemOrderSchedule,
   SpaceBeetwen,
 } from '../../Components';
-import {ToastAlert} from '../../Helpers';
 import {ILPorife} from '../../Images/illustration';
 import {colors, fonts} from '../../Themes';
 
@@ -38,7 +37,7 @@ const HomePatient = ({navigation}) => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <TouchableOpacity
           style={styles.containerHeader}
-          onPress={() => ToastAlert()}>
+          onPress={() => navigation.navigate('DetailsProfilePatient')}>
           <Image style={styles.image} source={ILPorife} />
           <View style={styles.wrapperAccount}>
             <Text style={styles.name}>{'Anya Geraldin'}</Text>
@@ -52,35 +51,44 @@ const HomePatient = ({navigation}) => {
         <View style={styles.containerOrder}>
           <SpaceBeetwen>
             <Text style={styles.title}>{'Jadwal Booking'}</Text>
-            <TouchableOpacity onPress={() => ToastAlert()}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('OrderSchedule')}>
               <Text style={styles.showAll}>{'Lihat Semua'}</Text>
             </TouchableOpacity>
           </SpaceBeetwen>
           <Gap height={10} />
 
           {dataOrderSchedule.map(item => (
-            <ItemOrderSchedule key={item.id} data={item} />
+            <ItemOrderSchedule
+              key={item.id}
+              data={item}
+              onPress={() => navigation.navigate('OrderDetailPatient')}
+            />
           ))}
         </View>
 
         <View style={styles.containerOrder}>
           <SpaceBeetwen>
             <Text style={styles.title}>{'History Booking'}</Text>
-            <TouchableOpacity onPress={() => ToastAlert()}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('OrderHistoryPatient')}>
               <Text style={styles.showAll}>{'Lihat Semua'}</Text>
             </TouchableOpacity>
           </SpaceBeetwen>
           <Gap height={10} />
 
           {dataOrderHistory.map(item => (
-            <ItemOrderHistory key={item.id} data={item} />
+            <ItemOrderHistory key={item.id} data={item} onPress={() => navigation.navigate('OrderDetailPatient')}/>
           ))}
         </View>
         <Gap height={50} />
       </ScrollView>
 
       <View style={styles.containerButton}>
-        <Button type={'circle'} onPress={() => ToastAlert()} />
+        <Button
+          type={'circle'}
+          onPress={() => navigation.navigate('AddOrderPatient')}
+        />
       </View>
     </Container>
   );
@@ -93,7 +101,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     alignItems: 'center',
     flexDirection: 'row',
-    padding: 20,
+    padding: 16,
   },
 
   image: {

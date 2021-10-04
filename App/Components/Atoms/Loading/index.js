@@ -1,14 +1,15 @@
 import React from 'react';
 import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import {colors, fonts} from '../../../Themes';
+import LoadingModal from './LoadingModal';
 
-const Loading = () => {
+const Loading = ({type}) => {
+  if (type == 'modal') return <LoadingModal />;
+
   return (
     <View style={styles.container}>
-      <View style={styles.wrapper}>
-        <ActivityIndicator size={'large'} color={colors.primary} />
-        <Text style={styles.label}>{'Loading...'}</Text>
-      </View>
+      <ActivityIndicator size={'large'} color={colors.primary} />
+      <Text style={styles.label}>{'Loading...'}</Text>
     </View>
   );
 };
@@ -17,18 +18,10 @@ export default Loading;
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-    height: '100%',
-    position: 'absolute',
-    justifyContent: 'center',
+    flex: 1,
     alignItems: 'center',
-    backgroundColor: colors.backgroundColorModal,
-  },
-
-  wrapper: {
+    justifyContent: 'center',
     backgroundColor: colors.white,
-    borderRadius: 4,
-    padding: 16,
   },
 
   label: {

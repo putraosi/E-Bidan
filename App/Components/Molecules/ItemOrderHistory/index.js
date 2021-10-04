@@ -1,14 +1,13 @@
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {ToastAlert} from '../../../Helpers';
 import {IcRightArrow} from '../../../Images/icon';
 import {ILPorife} from '../../../Images/illustration';
 import {colors, fonts} from '../../../Themes';
 import {Gap, Notice, Row, SpaceBeetwen} from '../../Atoms';
 
-const ItemOrderHistory = ({data}) => {
+const ItemOrderHistory = ({data, onPress}) => {
   return (
-    <TouchableOpacity style={styles.container} onPress={() => ToastAlert()}>
+    <TouchableOpacity style={styles.container} onPress={onPress}>
       <SpaceBeetwen>
         <Image style={styles.image} source={ILPorife} />
         <View style={styles.containerAccount}>
@@ -43,7 +42,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    marginBottom: 14,
+    marginBottom: 12,
+    marginTop: 2,
+    marginHorizontal: 2,
   },
 
   image: {

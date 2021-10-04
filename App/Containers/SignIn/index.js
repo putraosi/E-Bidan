@@ -7,19 +7,75 @@ import {
   Text,
   View,
 } from 'react-native';
+import {useDispatch} from 'react-redux';
 import {Button, Container, Gap, Input, Modals, Row} from '../../Components';
-import {ToastAlert, useForm} from '../../Helpers';
+import {
+  constants,
+  sampleAlert,
+  storeData,
+  ToastAlert,
+  useForm,
+} from '../../Helpers';
 import {ILHeader, ILLogo} from '../../Images';
+import {Api} from '../../Services/Api';
 import {colors, fonts} from '../../Themes';
 
 const SignIn = ({navigation}) => {
   const [form, setForm] = useForm({
-    email: '',
-    password: '',
+    email: 'bidantest@bidanamel.com',
+    password: '12345678',
   });
   const [visibleForgotPassword, setVisibleForgotPassword] = useState(false);
   const [visibleDigitCode, setVisibleDigitCode] = useState(false);
   const [visibleResetPassword, setVisibleResetPassword] = useState(false);
+  const dispatch = useDispatch();
+
+  const validation = () => {
+    if (
+      form.email.trim() === '' ||
+      !constants.REGEX_EMAIL.test(form.email.trim().toLowerCase())
+    ) {
+      sampleAlert('Silahkan masukan alamat email valid Anda');
+    } else if (form.password.trim() === '') {
+      sampleAlert('Silahkan masukan kata sandi Anda');
+    }
+
+    onLogin();
+  };
+
+  const onLogin = async () => {
+    dispatch({type: 'SET_LOADING', value: true});
+    try {
+      const res = await Api.post({
+        url: 'auth/login',
+        body: {
+          username: form.email,
+          password: form.password,
+        },
+      });
+
+      if (res) {
+        const {roles, token} = res;
+
+        storeData('user', res);
+        storeData('token', token);
+
+        if (roles.name === 'bidan') {
+          navigation.replace('HomeMidwife');
+        } else {
+          navigation.replace('HomePatient');
+        }
+
+        dispatch({type: 'SET_LOADING', value: false});
+      } else {
+        dispatch({type: 'SET_LOADING', value: false});
+        sampleAlert('Silahkan masukan data login Anda dengan benar');
+      }
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      sampleAlert('Silahkan masukan data login Anda dengan benar');
+    }
+  };
 
   return (
     <Container>
@@ -56,10 +112,7 @@ const SignIn = ({navigation}) => {
               }>{`Lupa Kata Sandi`}</Text>
 
             <Gap height={16} />
-            <Button
-              label={'Masuk'}
-              onPress={() => navigation.replace('Home')}
-            />
+            <Button label={'Masuk'} onPress={validation} />
 
             <Row style={styles.containerFooter}>
               <Text style={styles.labelFooter}>{'Belum punya akun?'}</Text>

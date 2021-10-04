@@ -1,15 +1,25 @@
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
+import {getData} from '../../Helpers';
 import {ILLogo} from '../../Images';
 import {colors} from '../../Themes';
 
 const Splash = ({navigation}) => {
+  useEffect(() => {
+    getData('user').then(res => {
+      if (res) {
+        const {roles} = res;
 
-    useEffect(() => {
-        setTimeout(() => {
-            navigation.replace('SignIn')
-        }, 2000);
-    }, [])
+        if (roles.name === 'bidan') {
+          navigation.replace('HomeMidwife');
+        } else {
+          navigation.replace('HomePatient');
+        }
+      } else {
+        navigation.replace('SignIn');
+      }
+    });
+  }, []);
 
   return (
     <View style={styles.contianer}>

@@ -8,14 +8,23 @@ import {
   SignUp,
   SingIn,
   Splash,
-  PreviewPhoto
+  PreviewPhoto,
+  AddOrderPatient,
+  AddOrderPatientDetails,
+  OrderSchedule,
+  OrderHistoryPatient,
+  OrderDetailPatient,
+  HomeMidwife,
+  IncomingOrder,
+  IncomingOrderDetails,
+  DetailsProfileMidwife
 } from '../../Containers';
 
 const Stack = createNativeStackNavigator();
 
 const Router = () => {
   return (
-    <Stack.Navigator initialRouteName="DetailsProfilePatient">
+    <Stack.Navigator initialRouteName="Splash">
       <Stack.Screen
         name="Splash"
         component={Splash}
@@ -54,6 +63,53 @@ const Router = () => {
       <Stack.Screen
         name="PreviewPhoto"
         component={PreviewPhoto}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddOrderPatient"
+        component={AddOrderPatient}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddOrderPatientDetails"
+        component={AddOrderPatientDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="OrderSchedule"
+        component={OrderSchedule}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="OrderHistoryPatient"
+        component={OrderHistoryPatient}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="OrderDetailPatient"
+        component={OrderDetailPatient}
+        options={{headerShown: false}}
+      />
+
+      {/* SCREEN MIDWIFE */}
+      <Stack.Screen
+        name="HomeMidwife"
+        component={HomeMidwife}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="IncomingOrder"
+        component={IncomingOrder}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="IncomingOrderDetails"
+        component={IncomingOrderDetails}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="DetailsProfileMidwife"
+        component={DetailsProfileMidwife}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

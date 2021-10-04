@@ -4,8 +4,8 @@ import {colors, fonts} from '../../../../Themes';
 
 const NoticeRounded = ({category}) => {
   let label = 'Selesai';
-  let backgroundColor = colors.notice.completed.backgroundColor;
-  let color = colors.notice.completed.color;
+  let backgroundColor = colors.notice.progress.backgroundColor;
+  let color = colors.notice.progress.color;
 
   if (category == 'rejected') {
     label = 'Ditolak';

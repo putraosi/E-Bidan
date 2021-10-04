@@ -14,6 +14,10 @@ const Notice = ({type, category}) => {
     label = 'Tertunda';
     backgroundColor = colors.notice.pending.backgroundColor;
     color = colors.notice.pending.color;
+  }else if(category == 'reject') {
+    label = 'Tolak';
+    backgroundColor = colors.notice.rejected.backgroundColor;
+    color = colors.notice.rejected.color;
   }
 
   return (

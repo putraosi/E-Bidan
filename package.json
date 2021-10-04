@@ -13,12 +13,16 @@
     "update-nm": "rm -rf node_modules yarn.lock; rm -rf /tmp/metro-bundler-cache-*; rm -rf /tmp/haste-map-react-native-packager-*; yarn"
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^1.15.8",
     "@react-native-community/datetimepicker": "^3.5.2",
     "@react-navigation/native": "^6.0.2",
     "@react-navigation/native-stack": "^6.1.0",
+    "axios": "^0.22.0",
     "moment": "^2.29.1",
+    "qs": "^6.10.1",
     "react": "17.0.2",
     "react-native": "0.65.1",
+    "react-native-dash": "^0.0.11",
     "react-native-safe-area-context": "^3.3.0",
     "react-native-screens": "^3.6.0",
     "react-native-simple-toast": "^1.1.3",

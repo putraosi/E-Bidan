@@ -5,6 +5,7 @@ import {colors, fonts} from '../../../Themes';
 import DigitCodeModal from './DigitCodeModal';
 import ForgotPasswordModal from './ForgotPasswordModal';
 import ResetPasswordModal from './ResetPasswordModal';
+import SpinnerModal from './SpinnerModal';
 
 const Modals = ({
   type,
@@ -16,6 +17,7 @@ const Modals = ({
   onDismiss,
   onPress,
   onCancel,
+  data,
 }) => {
   if (type == 'forgot-password')
     return (
@@ -43,6 +45,16 @@ const Modals = ({
         onPress={onPress}
       />
     );
+  if (type == 'spinner')
+    return (
+      <SpinnerModal
+        visible={visible}
+        data={data}
+        title={title}
+        onDismiss={onDismiss}
+        onPress={onPress}
+      />
+    );
 
   const showTitle = title ? true : false;
   const showDesc = desc ? true : false;
@@ -60,7 +72,7 @@ const Modals = ({
           {showTitle && <Text style={styles.title}>{title}</Text>}
           {showDesc && <Text style={styles.desc}>{desc}</Text>}
           <Gap height={20} />
-          <SpaceBeetwen>
+          <SpaceBeetwen style={styles.wrapperButton}>
             {showButtonPress && (
               <Button type={'modal'} label={labelPress} onPress={onPress} />
             )}
@@ -92,7 +104,7 @@ const styles = StyleSheet.create({
   wrapper: {
     backgroundColor: colors.white,
     borderRadius: 4,
-    padding: 16,
+    padding: 20,
   },
 
   title: {
@@ -106,5 +118,9 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
     fontFamily: fonts.primary.regular,
     textAlign: 'center',
+  },
+
+  wrapperButton: {
+    alignSelf: 'center',
   },
 });

@@ -8,16 +8,17 @@ import {
 } from 'react-native';
 import {Header} from '../../Components';
 import {ToastAlert} from '../../Helpers';
-import {IcEditCircle, ILPorife} from '../../Images';
+import {IcEditCircle} from '../../Images';
 import {colors} from '../../Themes';
 
-const PreviewPhoto = ({navigation}) => {
+const PreviewPhoto = ({navigation, route}) => {
+  const photo = route.params.image;
   return (
     <View style={styles.container}>
       <Header onDismiss={() => navigation.goBack()} />
       <View style={styles.content}>
         <View>
-          <Image style={styles.image} source={ILPorife} />
+          <Image style={styles.image} source={photo} />
           <TouchableOpacity
             style={styles.containerEdit}
             onPress={() => ToastAlert()}>

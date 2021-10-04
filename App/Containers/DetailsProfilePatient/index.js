@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import {
   Button,
   Container,
@@ -11,7 +18,7 @@ import {
   SpaceBeetwen,
 } from '../../Components';
 import {ToastAlert} from '../../Helpers';
-import {IcLogout, ILPorife} from '../../Images';
+import {IcEditCircle, IcLogout, ILPorife} from '../../Images';
 import {colors, fonts} from '../../Themes';
 
 const DetailsProfilePatient = ({navigation}) => {
@@ -29,7 +36,14 @@ const DetailsProfilePatient = ({navigation}) => {
           onPress={() => setVisibleLogout(true)}
         />
         <View style={styles.containerHeader}>
-          <Image style={styles.image} source={ILPorife} />
+          <TouchableOpacity onPress={() => ToastAlert()}>
+            <Image style={styles.image} source={ILPorife} />
+            <TouchableOpacity
+              style={styles.containerEdit}
+              onPress={() => ToastAlert()}>
+              <Image style={styles.edit} source={IcEditCircle} />
+            </TouchableOpacity>
+          </TouchableOpacity>
           <Text style={styles.name}>{'Anya Geraldin'}</Text>
           <Text style={styles.email}>{'anyagrl@gmail.com'}</Text>
         </View>
@@ -80,13 +94,13 @@ const DetailsProfilePatient = ({navigation}) => {
           <SpaceBeetwen>
             <Button
               styleButton={styles.button}
-              type={'blue'}
               label={'Ubah'}
               onPress={() => ToastAlert()}
             />
             <Gap width={16} />
             <Button
               styleButton={styles.button}
+              type={'white'}
               label={'Batal'}
               onPress={() => navigation.goBack()}
             />
@@ -120,6 +134,20 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 120 / 2,
+  },
+
+  containerEdit: {
+    position: 'absolute',
+    bottom: 0,
+    right: 0,
+    borderWidth: 2,
+    borderColor: colors.primary,
+    borderRadius: 24 / 2,
+  },
+
+  edit: {
+    width: 24,
+    height: 24,
   },
 
   name: {

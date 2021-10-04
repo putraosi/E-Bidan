@@ -86,6 +86,7 @@ const Input = ({
             />
           </TouchableOpacity>
         )}
+        {!editable && <View style={styles.editable} />}
       </Div>
     </View>
   );
@@ -99,7 +100,7 @@ const styles = StyleSheet.create({
   },
 
   label: color => ({
-    fontSize: 14,
+    fontSize: 12,
     color,
     fontFamily: fonts.primary.regular,
     marginBottom: 6,
@@ -139,5 +140,14 @@ const styles = StyleSheet.create({
     width: 16,
     height: 16,
     marginRight: 8,
+  },
+
+  editable: {
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: colors.disable,
   },
 });

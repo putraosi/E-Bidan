@@ -14,7 +14,7 @@ const AppNavigation = () => {
       <NavigationContainer>
         <Router />
       </NavigationContainer>
-      {stateGlobal.loading && <Loading />}
+      {stateGlobal.loading && <Loading type={'modal'} />}
     </>
   );
 };
