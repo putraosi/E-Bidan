@@ -5,10 +5,10 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
-import {IcHidePassword, IcShowPassword} from '../../../Images';
-import {colors, fonts} from '../../../Themes';
+import { IcHidePassword, IcShowPassword } from '../../../Images';
+import { colors, fonts } from '../../../Themes';
 import DigitCodeInput from './DigitCodeInput';
 
 const Input = ({
@@ -23,6 +23,8 @@ const Input = ({
   iconRight,
   iconLeft,
   editable = true,
+  multiline,
+  disable,
   onPress,
   onTogglePassword,
 }) => {
@@ -33,14 +35,14 @@ const Input = ({
   if (iconLeft) paddingLeft = 34;
 
   let colorLabel = colors.black;
-  let backgroundColor = colors.input.backgroundColor;
+  let backgroundColor = colors.input.backgroundColor.primary;
 
   if (type) {
     if (type.includes('digit-code'))
       return <DigitCodeInput onChangeText={onChangeText} />;
     if (type.includes('white')) {
       colorLabel = colors.white;
-      backgroundColor = colors.white;
+      backgroundColor = colors.input.backgroundColor.secondary
     }
   }
 
@@ -68,6 +70,7 @@ const Input = ({
           numberOfLines={1}
           keyboardType={keyboardType}
           editable={editable}
+          multiline={multiline}
         />
         {iconRight && (
           <Image
@@ -86,7 +89,7 @@ const Input = ({
             />
           </TouchableOpacity>
         )}
-        {!editable && <View style={styles.editable} />}
+        {disable && <View style={styles.disable} />}
       </Div>
     </View>
   );
@@ -142,7 +145,7 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
 
-  editable: {
+  disable: {
     position: 'absolute',
     top: 0,
     bottom: 0,

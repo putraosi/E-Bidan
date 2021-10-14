@@ -22,12 +22,12 @@ import {colors, fonts} from '../../Themes';
 
 const SignIn = ({navigation}) => {
   const [form, setForm] = useForm({
+    // email: '',
+    // password: '',
     email: 'bidantest@bidanamel.com',
     password: '12345678',
   });
   const [visibleForgotPassword, setVisibleForgotPassword] = useState(false);
-  const [visibleDigitCode, setVisibleDigitCode] = useState(false);
-  const [visibleResetPassword, setVisibleResetPassword] = useState(false);
   const dispatch = useDispatch();
 
   const validation = () => {
@@ -56,9 +56,11 @@ const SignIn = ({navigation}) => {
 
       if (res) {
         const {roles, token} = res;
+        console.log('cek token', token);
 
         storeData('user', res);
         storeData('token', token);
+        storeData('mode', roles.name)
 
         if (roles.name === 'bidan') {
           navigation.replace('HomeMidwife');
@@ -74,6 +76,29 @@ const SignIn = ({navigation}) => {
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
       sampleAlert('Silahkan masukan data login Anda dengan benar');
+    }
+  };
+
+  const onForgot = async email => {
+    setVisibleForgotPassword(false);
+    dispatch({type: 'SET_LOADING', value: true});
+    try {
+      const res = await Api.post({
+        url: 'auth/forgot-password',
+        body: {
+          username: email,
+        },
+      });
+
+      dispatch({type: 'SET_LOADING', value: false});
+      if (res) {
+        ToastAlert('Password baru sudah dikirim kan ke e-mail Anda.');
+      } else {
+        ToastAlert('Silahkan coba beberapa saat lagi');
+      }
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      ToastAlert('Silahkan masukan email dengan benar');
     }
   };
 
@@ -119,7 +144,7 @@ const SignIn = ({navigation}) => {
               <Text
                 style={styles.labelHighlight}
                 onPress={() =>
-                  navigation.replace('SignUp')
+                  navigation.navigate('SignUp')
                 }>{` Daftar disini`}</Text>
             </Row>
           </View>
@@ -130,32 +155,7 @@ const SignIn = ({navigation}) => {
         type={'forgot-password'}
         visible={visibleForgotPassword}
         onDismiss={() => setVisibleForgotPassword(false)}
-        onPress={value => {
-          ToastAlert(value);
-          setVisibleForgotPassword(false);
-          setVisibleDigitCode(true);
-        }}
-      />
-
-      <Modals
-        type={'digit-code'}
-        visible={visibleDigitCode}
-        onDismiss={() => setVisibleDigitCode(false)}
-        onPress={value => {
-          ToastAlert(value);
-          setVisibleDigitCode(false);
-          setVisibleResetPassword(true);
-        }}
-      />
-
-      <Modals
-        type={'reset-password'}
-        visible={visibleResetPassword}
-        onDismiss={() => setVisibleResetPassword(false)}
-        onPress={value => {
-          setVisibleResetPassword(false);
-          ToastAlert(value);
-        }}
+        onPress={value => onForgot(value)}
       />
     </Container>
   );

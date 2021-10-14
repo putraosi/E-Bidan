@@ -12,6 +12,7 @@ const mainColors = {
   black1: '#000000',
   black2: '#4A4A4A',
   whiteTranparent1: 'rgba(255, 255, 255, 0.5)',
+  whiteTranparent2: 'rgba(255, 255, 255, 0.3)',
   blueTranparent1: 'rgba(67, 187, 255, 0.85)',
   blackTransparent1: 'rgba(0, 0, 0, 0.5)',
   grayTransparent1: 'rgba(196, 196, 196, 0.2)',
@@ -75,7 +76,10 @@ export const colors = {
     },
   },
   input: {
-    backgroundColor: mainColors.grayTransparent2,
+    backgroundColor: {
+      primary: mainColors.grayTransparent2,
+      secondary: mainColors.whiteTranparent2
+    },
   },
   separator: {
     primary: mainColors.white1,

@@ -17,7 +17,8 @@ import {
   HomeMidwife,
   IncomingOrder,
   IncomingOrderDetails,
-  DetailsProfileMidwife
+  DetailsProfileMidwife,
+  AddPatient
 } from '../../Containers';
 
 const Stack = createNativeStackNavigator();
@@ -110,6 +111,11 @@ const Router = () => {
       <Stack.Screen
         name="DetailsProfileMidwife"
         component={DetailsProfileMidwife}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddPatient"
+        component={AddPatient}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

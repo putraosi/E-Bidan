@@ -26,8 +26,13 @@ const SpinnerModal = ({visible, title, data, onDismiss, onPress}) => {
           onPress={() => null}>
           <Text style={styles.title}>{title}</Text>
           <ScrollView showsVerticalScrollIndicator={false}>
-            {data.map(item => (
-              <ItemSample key={item.id} value={item.type} onPress={onPress}/>
+            {data.map((item, index) => (
+              <ItemSample
+                key={item.name}
+                value={item.value}
+                isLast={index == data.length - 1}
+                onPress={onPress}
+              />
             ))}
           </ScrollView>
         </TouchableOpacity>
@@ -50,7 +55,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: colors.primary,
-    height: 200,
+    maxHeight: 200,
     padding: 16,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,

@@ -65,7 +65,7 @@ const HomeMidwife = ({navigation}) => {
           <Text style={styles.type}>{dataUser.roles.name}</Text>
         </TouchableOpacity>
         <Gap height={16} />
-        <TouchableOpacity style={styles.wrapper} onPress={() => ToastAlert()}>
+        <TouchableOpacity style={styles.wrapper} onPress={() => navigation.navigate('AddPatient')}>
           <Row>
             <View style={styles.wrapperAdd}>
               <Image style={styles.iconAdd} source={IcAdd} />

@@ -1,16 +1,54 @@
 import React, {useState} from 'react';
-import {Image, ImageBackground, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Image,
+  ImageBackground,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {Button, Container, Gap, Input} from '../../Components';
+import {resetPage, ToastAlert} from '../../Helpers';
 import {ILHeader, ILLogo} from '../../Images';
+import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const Confirmation = ({navigation}) => {
   const [codeConfirmation, setCodeConfirmation] = useState('');
+  const dispatch = useDispatch();
+
+  const validation = () => {
+    if (codeConfirmation.length > 6 || codeConfirmation.length < 6) {
+      return ToastAlert('Mohon maaf maksimal kode verifikasi tidak sesuai');
+    }
+    onVerify();
+  };
+
+  const onVerify = async () => {
+    dispatch({type: 'SET_LOADING', value: true});
+
+    try {
+      const res = Api.post({
+        url: 'auth/verify',
+        body: {
+          verification_code: codeConfirmation,
+        },
+      });
+
+      dispatch({type: 'SET_LOADING', value: false});
+      if (res) resetPage(navigation, 'SignIn');
+      else ToastAlert('Silahkan coba beberapa saat lagi!');
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      ToastAlert('Silahkan coba beberapa saat lagi!');
+    }
+  };
 
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>
-      <ImageBackground
+        <ImageBackground
           style={styles.wrapperImage}
           source={ILHeader}
           resizeMode={'stretch'}>
@@ -30,10 +68,7 @@ const Confirmation = ({navigation}) => {
             keyboardType={'numeric'}
           />
           <Gap height={16} />
-          <Button
-            label={'Submit'}
-            onPress={() => navigation.replace('SignIn')}
-          />
+          <Button label={'Submit'} onPress={validation} />
         </View>
       </ScrollView>
     </Container>

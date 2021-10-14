@@ -3,7 +3,7 @@ import {Modal, StyleSheet, Text, TouchableOpacity} from 'react-native';
 import {Button, Gap, Input} from '../../..';
 import {colors, fonts} from '../../../../Themes';
 
-const DigitCodeModal = ({visible, onDismiss, onPress}) => {
+const DigitCodeModal = ({visible, onPress}) => {
   const [code, setCode] = useState('');
 
   return (
@@ -11,11 +11,11 @@ const DigitCodeModal = ({visible, onDismiss, onPress}) => {
       visible={visible}
       transparent={true}
       animationType={'slide'}
-      onRequestClose={onDismiss}>
+      onRequestClose={() => null}>
       <TouchableOpacity
         style={styles.container}
         activeOpacity={1}
-        onPress={onDismiss}>
+        onPress={() => null}>
         <TouchableOpacity
           style={styles.wrapper}
           activeOpacity={1}

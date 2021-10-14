@@ -6,9 +6,11 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import {useDispatch} from 'react-redux';
 import {Button, Container, Gap, Header, Input, Modals} from '../../Components';
-import {ToastAlert} from '../../Helpers';
+import {resetPage, ToastAlert} from '../../Helpers';
 import {IcEditCircle, IcLogout, ILNullPhoto} from '../../Images';
+import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const DetailsProfileMidwife = ({navigation, route}) => {
@@ -16,6 +18,7 @@ const DetailsProfileMidwife = ({navigation, route}) => {
 
   const [visibleLogout, setVisibleLogout] = useState(false);
   const [editable, setEditable] = useState(false);
+  const dispatch = useDispatch();
 
   const photo = data.bidan.photo ? {uri: data.bidan.photo} : ILNullPhoto;
   let labelButton = 'Ubah Kata Sandi';
@@ -25,6 +28,26 @@ const DetailsProfileMidwife = ({navigation, route}) => {
     labelButton = 'Simpan';
     onPress = () => setEditable(false);
   }
+
+  const onLogout = async () => {
+    setVisibleLogout(false);
+    dispatch({type: 'SET_LOADING', value: true});
+    try {
+      const res = Api.post({
+        url: 'auth/logout',
+      });
+
+      dispatch({type: 'SET_LOADING', value: false});
+      if (res) {
+        resetPage(navigation, 'SignIn');
+      } else {
+        ToastAlert('Silahkan coba beberapa saat lagi!');
+      }
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      ToastAlert('Silahkan coba beberapa saat lagi!');
+    }
+  };
 
   return (
     <Container>
@@ -77,9 +100,9 @@ const DetailsProfileMidwife = ({navigation, route}) => {
         visible={visibleLogout}
         desc={'Anda yakin ingin\nkeluar aplikasi ?'}
         onDismiss={() => setVisibleLogout(false)}
-        labelPress={'Keluar'}
-        labelCancel={'Batal'}
-        onPress={() => ToastAlert()}
+        labelPress={'Iya'}
+        labelCancel={'Tidak'}
+        onPress={onLogout}
         onCancel={() => setVisibleLogout(false)}
       />
     </Container>

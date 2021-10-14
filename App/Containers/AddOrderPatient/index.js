@@ -28,24 +28,24 @@ const AddOrderPatient = ({navigation}) => {
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [visibleInfo, setVisibleInfo] = useState(false);
   const dataServiceType = [
-    {id: 1, type: 'Konsultasi'},
-    {id: 2, type: 'Konsultasi'},
-    {id: 3, type: 'Konsultasi'},
-    {id: 4, type: 'Konsultasi'},
-    {id: 5, type: 'Konsultasi'},
-    {id: 6, type: 'Konsultasi'},
-    {id: 7, type: 'Konsultasi'},
-    {id: 8, type: 'Konsultasi'},
+    {name: 1, value: 'Konsultasi'},
+    {name: 2, value: 'Konsultasi'},
+    {name: 3, value: 'Konsultasi'},
+    {name: 4, value: 'Konsultasi'},
+    {name: 5, value: 'Konsultasi'},
+    {name: 6, value: 'Konsultasi'},
+    {name: 7, value: 'Konsultasi'},
+    {name: 8, value: 'Konsultasi'},
   ];
   const dataMidwife = [
-    {id: 1, type: 'Bd. Syantika Apriliani'},
-    {id: 2, type: 'Bd. Syantika Apriliani'},
-    {id: 3, type: 'Bd. Syantika Apriliani'},
-    {id: 4, type: 'Bd. Syantika Apriliani'},
-    {id: 5, type: 'Bd. Syantika Apriliani'},
-    {id: 6, type: 'Bd. Syantika Apriliani'},
-    {id: 7, type: 'Bd. Syantika Apriliani'},
-    {id: 8, type: 'Bd. Syantika Apriliani'},
+    {name: 1, value: 'Bd. Syantika Apriliani'},
+    {name: 2, value: 'Bd. Syantika Apriliani'},
+    {name: 3, value: 'Bd. Syantika Apriliani'},
+    {name: 4, value: 'Bd. Syantika Apriliani'},
+    {name: 5, value: 'Bd. Syantika Apriliani'},
+    {name: 6, value: 'Bd. Syantika Apriliani'},
+    {name: 7, value: 'Bd. Syantika Apriliani'},
+    {name: 8, value: 'Bd. Syantika Apriliani'},
   ];
   return (
     <Container>

@@ -19,8 +19,8 @@ api.interceptors.request.use(async req => {
     req.timeout = 30000;
     req.headers['Content-Type'] = 'application/json';
 
-    if (!token) return req;
-    req.headers['Authorization'] = `Bearer ${token}`;
+    if (token) req.headers['Authorization'] = `Bearer ${token}`;
+
     return req;
   });
 });
@@ -28,6 +28,11 @@ api.interceptors.request.use(async req => {
 export const Api = {
   post: async ({url, body, showLog}) => {
     const data = JSON.stringify(body);
+
+    if (showLog) {
+      console.log('URL', url);
+      console.log('BODY', body);
+    }
 
     try {
       const res = await api.post(url, data);
@@ -40,7 +45,7 @@ export const Api = {
 
       return res.data.data;
     } catch (error) {
-      if (showLog) console.log('API ERROR', error.message);
+      if (showLog) console.log('API ERROR', {error});
       throw error;
     }
   },

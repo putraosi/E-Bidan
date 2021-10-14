@@ -15,6 +15,7 @@ import PreviewPhoto from './PreviewPhoto';
 import SingIn from './SignIn';
 import SignUp from './SignUp';
 import Splash from './Splash';
+import AddPatient from './AddPatient'
 
 export {
   GetStarted,
@@ -29,6 +30,7 @@ export {
   PreviewPhoto,
   AddOrderPatient,
   AddOrderPatientDetails,
+  AddPatient,
   OrderSchedule,
   OrderHistoryPatient,
   OrderDetailPatient,

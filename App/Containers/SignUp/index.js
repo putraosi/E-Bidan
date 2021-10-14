@@ -1,5 +1,4 @@
-import DateTimePicker from '@react-native-community/datetimepicker';
-import React, {useState} from 'react';
+import React from 'react';
 import {
   Image,
   ImageBackground,
@@ -9,35 +8,83 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {
-  Button,
-  Container,
-  Gap,
-  Input,
-  Row,
-  SpaceBeetwen,
-} from '../../Components';
-import {useForm} from '../../Helpers';
-import {IcDate, IcIndonesia, ILHeader, ILLogo} from '../../Images';
-import {moments} from '../../Libs';
+import {useDispatch} from 'react-redux';
+import {Button, Container, Gap, Input, Row} from '../../Components';
+import {constants, ToastAlert, useForm} from '../../Helpers';
+import {ILHeader, ILLogo} from '../../Images';
+import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const SignUp = ({navigation}) => {
   const [form, setForm] = useForm({
-    firstName: '',
-    lastName: '',
-    dateOfBirth: new Date(),
-    husbandName: '',
-    email: '',
-    noHandphone: '',
-    password: '',
-    repeatPassword: '',
+    // name: '',
+    // email: '',
+    // noHandphone: '',
+    // password: '',
+    // repeatPassword: '',
+    name: 'tes 5',
+    email: 'tes7@mailsac.com',
+    noHandphone: '081208120812',
+    password: '12345678',
+    repeatPassword: '12345678',
   });
   const [secureTextEntry, setSecureTextEntry] = useForm({
     _password: true,
     _repeatPassword: true,
   });
-  const [showDatePicker, setShowDatePicker] = useState(false);
+  const dispatch = useDispatch();
+
+  const validation = () => {
+    if (!form.name.trim()) {
+      return ToastAlert('Silahkan masukan nama Anda');
+    } else if (
+      !form.email.trim() ||
+      !constants.REGEX_EMAIL.test(form.email.trim().toLowerCase())
+    ) {
+      return ToastAlert('Silahkan masukan alamat email valid Anda');
+    } else if (!form.noHandphone.trim()) {
+      return ToastAlert('Silahkan masukan nomor handphone Anda');
+    } else if (
+      form.noHandphone.length < 9 ||
+      form.noHandphone.length > 14 ||
+      form.noHandphone.charAt(0) != 0 ||
+      form.noHandphone.charAt(1) != 8
+    ) {
+      return ToastAlert('Silahkan masukan nomor handphone valid Anda');
+    } else if (!form.password.trim()) {
+      return ToastAlert('Silahkan masukan kata sandi');
+    } else if (form.password.length < 8) {
+      return ToastAlert('Kata sandi minimal 8 karakter');
+    } else if (form.password.trim() !== form.repeatPassword.trim()) {
+      return ToastAlert('Ulangi kata sandi Anda tidak sesuai');
+    }
+
+    onRegister();
+  };
+
+  const onRegister = async () => {
+    dispatch({type: 'SET_LOADING', value: true});
+
+    try {
+      const res = await Api.post({
+        url: 'auth/register',
+        body: {
+          name: form.name,
+          email: form.email,
+          phone: form.noHandphone,
+          password: form.password,
+          password_confirmation: form.password,
+        },
+      });
+
+      dispatch({type: 'SET_LOADING', value: false});
+      if (res) navigation.navigate('Confirmation');
+      else ToastAlert('Silahkan coba beberapa saat lagi');
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      ToastAlert('Silahkan coba beberapa saat lagi');
+    }
+  };
 
   return (
     <Container>
@@ -50,35 +97,13 @@ const SignUp = ({navigation}) => {
         </ImageBackground>
         <View showsVerticalScrollIndicator={false} style={styles.wrapper}>
           <Text style={styles.title}>{'Registrasi'}</Text>
-          <SpaceBeetwen>
-            <Input
-              style={styles.input}
-              label={'Nama Depan'}
-              value={form.firstName}
-              onChangeText={value => setForm('firstName', value)}
-            />
-            <Gap width={16} />
-            <Input
-              style={styles.input}
-              label={'Nama Belakang'}
-              value={form.lastName}
-              onChangeText={value => setForm('lastName', value)}
-            />
-          </SpaceBeetwen>
-          <Gap height={12} />
           <Input
-            label={'Tanggal Lahir'}
-            iconRight={IcDate}
-            value={moments(setForm.dateOfBirth).format('DD MMMM YYYY')}
-            editable={false}
-            onPress={() => setShowDatePicker(true)}
+            style={styles.input}
+            label={'Nama'}
+            value={form.name}
+            onChangeText={value => setForm('name', value)}
           />
-          <Gap height={12} />
-          <Input
-            label={'Nama Suami'}
-            value={form.husbandName}
-            onChangeText={value => setForm('husbandName', value)}
-          />
+
           <Gap height={12} />
           <Input
             label={'Alamat E-Mail'}
@@ -86,14 +111,15 @@ const SignUp = ({navigation}) => {
             onChangeText={value => setForm('email', value)}
             keyboardType={'email-address'}
           />
+
           <Gap height={12} />
           <Input
             label={'No Handphone'}
-            iconLeft={IcIndonesia}
             value={form.noHandphone}
             onChangeText={value => setForm('noHandphone', value)}
             keyboardType={'phone-pad'}
           />
+
           <Gap height={12} />
           <Input
             type={'password'}
@@ -101,8 +127,11 @@ const SignUp = ({navigation}) => {
             value={form.password}
             onChangeText={value => setForm('password', value)}
             secureTextEntry={secureTextEntry._password}
-            onTogglePassword={()=> setSecureTextEntry("_password", !secureTextEntry._password)}
+            onTogglePassword={() =>
+              setSecureTextEntry('_password', !secureTextEntry._password)
+            }
           />
+
           <Gap height={12} />
           <Input
             type={'password'}
@@ -110,13 +139,16 @@ const SignUp = ({navigation}) => {
             value={form.repeatPassword}
             onChangeText={value => setForm('repeatPassword', value)}
             secureTextEntry={secureTextEntry._repeatPassword}
-            onTogglePassword={()=> setSecureTextEntry("_repeatPassword", !secureTextEntry._repeatPassword)}
+            onTogglePassword={() =>
+              setSecureTextEntry(
+                '_repeatPassword',
+                !secureTextEntry._repeatPassword,
+              )
+            }
           />
+
           <Gap height={16} />
-          <Button
-            label={'Registrasi'}
-            onPress={() => navigation.replace('Confirmation')}
-          />
+          <Button label={'Registrasi'} onPress={validation} />
           <Row style={styles.wrapperHaveAccount}>
             <Text style={styles.label}>{'Atau sudah mempunyai akun?'}</Text>
             <TouchableOpacity onPress={() => navigation.replace('SignIn')}>
@@ -124,18 +156,6 @@ const SignUp = ({navigation}) => {
             </TouchableOpacity>
           </Row>
         </View>
-
-        {showDatePicker && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={form.dateOfBirth}
-            mode={'date'}
-            onChange={(event, selectedDate) => {
-              setShowDatePicker(false);
-              if (selectedDate) setForm('dateOfBirth', selectedDate);
-            }}
-          />
-        )}
       </ScrollView>
     </Container>
   );
