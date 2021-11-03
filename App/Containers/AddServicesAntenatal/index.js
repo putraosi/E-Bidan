@@ -40,24 +40,6 @@ const AddServicesAntenatal = ({navigation}) => {
     lab: false,
   });
 
-  const [formTreatment, setFormTreatment] = useForm({
-    pregnancyMassage: false,
-    lactationMassage: false,
-    oxytocinMassage: false,
-    acupressureMassage: false,
-    postpartumMassage: false,
-    lactationMassageWithComplaints: false,
-    babyMassage: false,
-    pediatricBabyMassage: false,
-    massagePackage: false,
-    babyHaircut: false,
-    immunization: false,
-    babySpa: false,
-    newBornCare: false,
-    KF_KN: false,
-    circumcision: false,
-    pregnantControl: false,
-  });
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
   const [visibelDatePickerWifeBirthday, setVisibelDatePickerWifeBirthday] =
     useState(false);
@@ -66,209 +48,6 @@ const AddServicesAntenatal = ({navigation}) => {
   const [visibleDatePickerVisitDate, setVisibleDatePickerVisitDate] =
     useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
-
-  const onChangeDate = (event, selectedDate) => {
-    const currentDate = selectedDate || form.executionTime;
-    setVisibleDatePicker(false);
-    setForm('executionTime', currentDate);
-  };
-
-  const renderTreatment = () => {
-    return (
-      <>
-        <Gap height={12} />
-        <Text style={styles.label}>{'Treatment'}</Text>
-        <View style={styles.containerTreatment}>
-          <View style={styles.flex}>
-            <RadioButton
-              type={'rounded'}
-              label={'Pijat Hamil'}
-              isActive={formTreatment.pregnancyMassage}
-              onPress={() =>
-                setFormTreatment(
-                  'pregnancyMassage',
-                  !formTreatment.pregnancyMassage,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pijat Laktasi'}
-              isActive={formTreatment.lactationMassage}
-              onPress={() =>
-                setFormTreatment(
-                  'lactationMassage',
-                  !formTreatment.lactationMassage,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pijat Oksitosin'}
-              isActive={formTreatment.oxytocinMassage}
-              onPress={() =>
-                setFormTreatment(
-                  'oxytocinMassage',
-                  !formTreatment.oxytocinMassage,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pijat Accupressure'}
-              isActive={formTreatment.acupressureMassage}
-              onPress={() =>
-                setFormTreatment(
-                  'acupressureMassage',
-                  !formTreatment.acupressureMassage,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pijat Nifas'}
-              isActive={formTreatment.postpartumMassage}
-              onPress={() =>
-                setFormTreatment(
-                  'postpartumMassage',
-                  !formTreatment.postpartumMassage,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pijat Laktasi Dengan Keluhan'}
-              isActive={formTreatment.lactationMassageWithComplaints}
-              onPress={() =>
-                setFormTreatment(
-                  'lactationMassageWithComplaints',
-                  !formTreatment.lactationMassageWithComplaints,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Baby Massage'}
-              isActive={formTreatment.babyMassage}
-              onPress={() =>
-                setFormTreatment('babyMassage', !formTreatment.babyMassage)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Baby Massage Pediatrik'}
-              isActive={formTreatment.pediatricBabyMassage}
-              onPress={() =>
-                setFormTreatment(
-                  'pediatricBabyMassage',
-                  !formTreatment.pediatricBabyMassage,
-                )
-              }
-            />
-          </View>
-
-          <View style={styles.flex}>
-            <RadioButton
-              type={'rounded'}
-              label={'Paket Pijat'}
-              isActive={formTreatment.massagePackage}
-              onPress={() =>
-                setFormTreatment(
-                  'massagePackage',
-                  !formTreatment.massagePackage,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Cukur Rambut Bayi'}
-              isActive={formTreatment.babyHaircut}
-              onPress={() =>
-                setFormTreatment('babyHaircut', !formTreatment.babyHaircut)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Imunisasi'}
-              isActive={formTreatment.immunization}
-              onPress={() =>
-                setFormTreatment('immunization', !formTreatment.immunization)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Baby Spa'}
-              isActive={formTreatment.babySpa}
-              onPress={() =>
-                setFormTreatment('babySpa', !formTreatment.babySpa)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'New Born Care'}
-              isActive={formTreatment.newBornCare}
-              onPress={() =>
-                setFormTreatment('newBornCare', !formTreatment.newBornCare)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'KF & KN'}
-              isActive={formTreatment.KF_KN}
-              onPress={() => setFormTreatment('KF_KN', !formTreatment.KF_KN)}
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Sunat'}
-              isActive={formTreatment.circumcision}
-              onPress={() =>
-                setFormTreatment('circumcision', !formTreatment.circumcision)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Kontrol Hamil'}
-              isActive={formTreatment.pregnantControl}
-              onPress={() =>
-                setFormTreatment(
-                  'pregnantControl',
-                  !formTreatment.pregnantControl,
-                )
-              }
-            />
-          </View>
-        </View>
-      </>
-    );
-  };
 
   return (
     <Container>
@@ -409,7 +188,11 @@ const AddServicesAntenatal = ({navigation}) => {
           value={form.executionTime}
           mode={'date'}
           minimumDate={new Date()}
-          onChange={onChangeDate}
+          onChange={(event, selectedDate) => {
+            const currentDate = selectedDate || form.executionTime;
+            setVisibleDatePicker(false);
+            setForm('executionTime', currentDate);
+          }}
         />
       )}
 

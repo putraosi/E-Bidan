@@ -1,27 +1,28 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React from 'react';
 import {
+  AddOrderPatient,
+  AddOrderPatientDetails,
+  AddPatient,
+  AddServices,
+  AddServicesAntenatal,
+  AddServicesHomecare,
+  AddServicesImmunization,
   Confirmation,
+  DetailsProfileMidwife,
   DetailsProfilePatient,
   GetStarted,
+  HomeMidwife,
   HomePatient,
+  IncomingOrder,
+  IncomingOrderDetails,
+  OrderDetailPatient,
+  OrderHistoryPatient,
+  OrderSchedule,
+  PreviewPhoto,
   SignUp,
   SingIn,
   Splash,
-  PreviewPhoto,
-  AddOrderPatient,
-  AddOrderPatientDetails,
-  OrderSchedule,
-  OrderHistoryPatient,
-  OrderDetailPatient,
-  HomeMidwife,
-  IncomingOrder,
-  IncomingOrderDetails,
-  DetailsProfileMidwife,
-  AddPatient,
-  AddServices,
-  AddServicesHomecare,
-  AddServicesAntenatal
 } from '../../Containers';
 
 const Stack = createNativeStackNavigator();
@@ -107,6 +108,11 @@ const Router = () => {
       <Stack.Screen
         name="AddServicesAntenatal"
         component={AddServicesAntenatal}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddServicesImmunization"
+        component={AddServicesImmunization}
         options={{headerShown: false}}
       />
 

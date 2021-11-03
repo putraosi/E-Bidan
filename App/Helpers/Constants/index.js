@@ -29,5 +29,16 @@ export const constants = {
     {id: 5, name: 'Lainnya'},
   ],
 
+  SELECT_BIRTHPLACE : [
+    {id: 1, name: 'RS'},
+    {id: 2, name: 'Bidan'},
+    {id: 3, name: 'Puskesmas'},
+    {id: 4, name: 'Bidan Amel'},
+    {id: 5, name: 'Lainnya'},
+  ],
   
+  SELECT_TYPE_DESCRIPTION : [
+    {id: 1, name: 'Hygea'},
+    {id: 2, name: 'Umum'},
+  ]
 };

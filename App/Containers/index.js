@@ -4,6 +4,7 @@ import AddPatient from './AddPatient';
 import AddServices from './AddServices';
 import AddServicesHomecare from './AddServicesHomecare';
 import AddServicesAntenatal from './AddServicesAntenatal';
+import AddServicesImmunization from './AddServicesImmunization';
 import Confirmation from './Confirmation';
 import DetailsProfileMidwife from './DetailsProfileMidwife';
 import DetailsProfilePatient from './DetailsProfilePatient';
@@ -41,5 +42,6 @@ export {
   IncomingOrderDetails,
   AddServices,
   AddServicesHomecare,
-  AddServicesAntenatal
+  AddServicesAntenatal,
+  AddServicesImmunization
 };
