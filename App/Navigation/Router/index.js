@@ -18,7 +18,10 @@ import {
   IncomingOrder,
   IncomingOrderDetails,
   DetailsProfileMidwife,
-  AddPatient
+  AddPatient,
+  AddServices,
+  AddServicesHomecare,
+  AddServicesAntenatal
 } from '../../Containers';
 
 const Stack = createNativeStackNavigator();
@@ -89,6 +92,21 @@ const Router = () => {
       <Stack.Screen
         name="OrderDetailPatient"
         component={OrderDetailPatient}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddServices"
+        component={AddServices}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddServicesHomecare"
+        component={AddServicesHomecare}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddServicesAntenatal"
+        component={AddServicesAntenatal}
         options={{headerShown: false}}
       />
 

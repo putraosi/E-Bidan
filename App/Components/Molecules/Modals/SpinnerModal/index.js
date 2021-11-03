@@ -28,8 +28,8 @@ const SpinnerModal = ({visible, title, data, onDismiss, onPress}) => {
           <ScrollView showsVerticalScrollIndicator={false}>
             {data.map((item, index) => (
               <ItemSample
-                key={item.name}
-                value={item.value}
+                key={item.id}
+                value={item.name}
                 isLast={index == data.length - 1}
                 onPress={onPress}
               />

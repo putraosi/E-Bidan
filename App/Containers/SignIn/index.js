@@ -24,8 +24,8 @@ const SignIn = ({navigation}) => {
   const [form, setForm] = useForm({
     // email: '',
     // password: '',
-    email: 'bidantest@bidanamel.com',
-    password: '12345678',
+    email: 'test9@mailinator.com',
+    password: '123456789',
   });
   const [visibleForgotPassword, setVisibleForgotPassword] = useState(false);
   const dispatch = useDispatch();
@@ -56,11 +56,10 @@ const SignIn = ({navigation}) => {
 
       if (res) {
         const {roles, token} = res;
-        console.log('cek token', token);
 
         storeData('user', res);
         storeData('token', token);
-        storeData('mode', roles.name)
+        storeData('mode', roles.name);
 
         if (roles.name === 'bidan') {
           navigation.replace('HomeMidwife');

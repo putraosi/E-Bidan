@@ -22,9 +22,9 @@ const SignUp = ({navigation}) => {
     // noHandphone: '',
     // password: '',
     // repeatPassword: '',
-    name: 'tes 5',
-    email: 'tes7@mailsac.com',
-    noHandphone: '081208120812',
+    name: 'tes 14',
+    email: 'tes14@mailsac.com',
+    noHandphone: '081208120814',
     password: '12345678',
     repeatPassword: '12345678',
   });

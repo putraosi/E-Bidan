@@ -1,5 +1,9 @@
 import AddOrderPatient from './AddOrderPatient';
 import AddOrderPatientDetails from './AddOrderPatientDetails';
+import AddPatient from './AddPatient';
+import AddServices from './AddServices';
+import AddServicesHomecare from './AddServicesHomecare';
+import AddServicesAntenatal from './AddServicesAntenatal';
 import Confirmation from './Confirmation';
 import DetailsProfileMidwife from './DetailsProfileMidwife';
 import DetailsProfilePatient from './DetailsProfilePatient';
@@ -15,7 +19,6 @@ import PreviewPhoto from './PreviewPhoto';
 import SingIn from './SignIn';
 import SignUp from './SignUp';
 import Splash from './Splash';
-import AddPatient from './AddPatient'
 
 export {
   GetStarted,
@@ -36,4 +39,7 @@ export {
   OrderDetailPatient,
   IncomingOrder,
   IncomingOrderDetails,
+  AddServices,
+  AddServicesHomecare,
+  AddServicesAntenatal
 };

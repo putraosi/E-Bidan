@@ -49,4 +49,19 @@ export const Api = {
       throw error;
     }
   },
+
+  get: async ({url, showLog}) => {
+    if (showLog) console.log('URL', url);
+
+    try {
+      const res = await api.get(url);
+
+      if (showLog) console.log('API RES', res.data);
+
+      return res.data.data;
+    } catch (error) {
+      if (showLog) console.log('API ERROR', {error});
+      throw error;
+    }
+  },
 };

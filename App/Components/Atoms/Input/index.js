@@ -5,10 +5,10 @@ import {
   Text,
   TextInput,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
-import { IcHidePassword, IcShowPassword } from '../../../Images';
-import { colors, fonts } from '../../../Themes';
+import {IcHidePassword, IcShowPassword} from '../../../Images';
+import {colors, fonts} from '../../../Themes';
 import DigitCodeInput from './DigitCodeInput';
 
 const Input = ({
@@ -35,14 +35,15 @@ const Input = ({
   if (iconLeft) paddingLeft = 34;
 
   let colorLabel = colors.black;
-  let backgroundColor = colors.input.backgroundColor.primary;
+  let backgroundColor = colors.white;
+  // let backgroundColor = colors.input.backgroundColor.primary;
 
   if (type) {
     if (type.includes('digit-code'))
       return <DigitCodeInput onChangeText={onChangeText} />;
     if (type.includes('white')) {
       colorLabel = colors.white;
-      backgroundColor = colors.input.backgroundColor.secondary
+      backgroundColor = colors.input.backgroundColor.secondary;
     }
   }
 
@@ -114,6 +115,8 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     flexDirection: 'row',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: colors.borderColor.primary,
   }),
 
   input: (paddingRight, paddingLeft) => ({

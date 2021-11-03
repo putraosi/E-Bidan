@@ -8,6 +8,7 @@ const mainColors = {
   gray1: '#e9e9e9',
   gray2: '#bbbbbb',
   gray3: '#888888',
+  gray4: '#D1CECE',
   white1: '#ffffff',
   black1: '#000000',
   black2: '#4A4A4A',
@@ -84,4 +85,8 @@ export const colors = {
   separator: {
     primary: mainColors.white1,
   },
+
+  borderColor:{
+    primary: mainColors.gray4
+  }
 };

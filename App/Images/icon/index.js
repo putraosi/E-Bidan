@@ -6,7 +6,11 @@ import IcHidePassword from './icon-hide-password.png';
 import IcIndonesia from './icon-indonesian.png';
 import IcLeft from './icon-left.png';
 import IcLogout from './icon-logout.png';
+import IcRadioActive from './icon-radio-active.png';
+import IcRadioInactive from './icon-radio-inactive.png';
 import IcShowPassword from './icon-show-password.png';
+import IcChecked from './icon_checked.png';
+import IcUnchecked from './icon_unchecked.png';
 import IcRightArrow from './right-arrow.png';
 
 export {
@@ -20,4 +24,8 @@ export {
   IcLogout,
   IcEditCircle,
   IcDownGreen,
+  IcChecked,
+  IcUnchecked,
+  IcRadioActive,
+  IcRadioInactive,
 };

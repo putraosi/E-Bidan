@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Image,
   ScrollView,
@@ -13,9 +13,12 @@ import {
   Gap,
   ItemOrderHistory,
   ItemOrderSchedule,
+  Loading,
+  Modals,
   SpaceBeetwen,
 } from '../../Components';
 import {ILPorife} from '../../Images/illustration';
+import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const dataOrderSchedule = [
@@ -32,64 +35,112 @@ const dataOrderHistory = [
 ];
 
 const HomePatient = ({navigation}) => {
+  const [loading, setLoading] = useState(true);
+  const [dataSevices, setDataSevices] = useState(null);
+  const [visibelServices, setVisibelServices] = useState(false);
+
+  useEffect(() => {
+    getServiceCategory();
+  }, []);
+
+  const getServiceCategory = async () => {
+    try {
+      const res = await Api.get({
+        url: 'admin/service-categories',
+      });
+
+      setDataSevices(res);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
+  const onShowService = service => {
+    console.log('cek service', service);
+    setVisibelServices(false);
+
+    let screen = 'AddServicesHomecare';
+    if (service === 'Antenatal (Pemeriksaan Kehamilan)')
+      screen = 'AddServicesAntenatal';
+
+    navigation.navigate(screen);
+  };
+
   return (
     <Container>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <TouchableOpacity
-          style={styles.containerHeader}
-          onPress={() => navigation.navigate('DetailsProfilePatient')}>
-          <Image style={styles.image} source={ILPorife} />
-          <View style={styles.wrapperAccount}>
-            <Text style={styles.name}>{'Anya Geraldin'}</Text>
-            <Text style={styles.email}>{'anyagrl@gmail.com'}</Text>
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <TouchableOpacity
+              style={styles.containerHeader}
+              onPress={() => navigation.navigate('DetailsProfilePatient')}>
+              <Image style={styles.image} source={ILPorife} />
+              <View style={styles.wrapperAccount}>
+                <Text style={styles.name}>{'Anya Geraldin'}</Text>
+                <Text style={styles.email}>{'anyagrl@gmail.com'}</Text>
+              </View>
+            </TouchableOpacity>
+            <View style={styles.slider}>
+              <Text>{'Coming Soon'}</Text>
+            </View>
+
+            <View style={styles.containerOrder}>
+              <SpaceBeetwen>
+                <Text style={styles.title}>{'Jadwal Booking'}</Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('OrderSchedule')}>
+                  <Text style={styles.showAll}>{'Lihat Semua'}</Text>
+                </TouchableOpacity>
+              </SpaceBeetwen>
+              <Gap height={10} />
+
+              {dataOrderSchedule.map(item => (
+                <ItemOrderSchedule
+                  key={item.id}
+                  data={item}
+                  onPress={() => navigation.navigate('OrderDetailPatient')}
+                />
+              ))}
+            </View>
+
+            <View style={styles.containerOrder}>
+              <SpaceBeetwen>
+                <Text style={styles.title}>{'History Booking'}</Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('OrderHistoryPatient')}>
+                  <Text style={styles.showAll}>{'Lihat Semua'}</Text>
+                </TouchableOpacity>
+              </SpaceBeetwen>
+              <Gap height={10} />
+
+              {dataOrderHistory.map(item => (
+                <ItemOrderHistory
+                  key={item.id}
+                  data={item}
+                  onPress={() => navigation.navigate('OrderDetailPatient')}
+                />
+              ))}
+            </View>
+            <Gap height={50} />
+          </ScrollView>
+
+          <View style={styles.containerButton}>
+            <Button type={'circle'} onPress={() => setVisibelServices(true)} />
           </View>
-        </TouchableOpacity>
-        <View style={styles.slider}>
-          <Text>{'Coming Soon'}</Text>
-        </View>
 
-        <View style={styles.containerOrder}>
-          <SpaceBeetwen>
-            <Text style={styles.title}>{'Jadwal Booking'}</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('OrderSchedule')}>
-              <Text style={styles.showAll}>{'Lihat Semua'}</Text>
-            </TouchableOpacity>
-          </SpaceBeetwen>
-          <Gap height={10} />
-
-          {dataOrderSchedule.map(item => (
-            <ItemOrderSchedule
-              key={item.id}
-              data={item}
-              onPress={() => navigation.navigate('OrderDetailPatient')}
-            />
-          ))}
-        </View>
-
-        <View style={styles.containerOrder}>
-          <SpaceBeetwen>
-            <Text style={styles.title}>{'History Booking'}</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('OrderHistoryPatient')}>
-              <Text style={styles.showAll}>{'Lihat Semua'}</Text>
-            </TouchableOpacity>
-          </SpaceBeetwen>
-          <Gap height={10} />
-
-          {dataOrderHistory.map(item => (
-            <ItemOrderHistory key={item.id} data={item} onPress={() => navigation.navigate('OrderDetailPatient')}/>
-          ))}
-        </View>
-        <Gap height={50} />
-      </ScrollView>
-
-      <View style={styles.containerButton}>
-        <Button
-          type={'circle'}
-          onPress={() => navigation.navigate('AddOrderPatient')}
-        />
-      </View>
+          <Modals
+            type={'spinner'}
+            title={'Kategori Layanan'}
+            visible={visibelServices}
+            data={dataSevices}
+            onDismiss={() => setVisibelServices(false)}
+            onPress={value => onShowService(value)}
+          />
+        </>
+      )}
     </Container>
   );
 };
