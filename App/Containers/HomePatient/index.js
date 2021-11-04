@@ -64,6 +64,7 @@ const HomePatient = ({navigation}) => {
     if (service === 'Antenatal (Pemeriksaan Kehamilan)')
       screen = 'AddServicesAntenatal';
     else if (service === 'Imunisasi') screen = 'AddServicesImmunization';
+    else if (service === 'INC') screen = 'AddServicesInc';
 
     navigation.navigate(screen);
   };

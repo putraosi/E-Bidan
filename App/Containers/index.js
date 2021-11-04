@@ -20,6 +20,7 @@ import PreviewPhoto from './PreviewPhoto';
 import SingIn from './SignIn';
 import SignUp from './SignUp';
 import Splash from './Splash';
+import AddServicesInc from './AddServicesInc'
 
 export {
   GetStarted,
@@ -43,5 +44,6 @@ export {
   AddServices,
   AddServicesHomecare,
   AddServicesAntenatal,
-  AddServicesImmunization
+  AddServicesImmunization,
+  AddServicesInc
 };

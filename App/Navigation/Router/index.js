@@ -8,6 +8,7 @@ import {
   AddServicesAntenatal,
   AddServicesHomecare,
   AddServicesImmunization,
+  AddServicesInc,
   Confirmation,
   DetailsProfileMidwife,
   DetailsProfilePatient,
@@ -113,6 +114,11 @@ const Router = () => {
       <Stack.Screen
         name="AddServicesImmunization"
         component={AddServicesImmunization}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddServicesInc"
+        component={AddServicesInc}
         options={{headerShown: false}}
       />
 

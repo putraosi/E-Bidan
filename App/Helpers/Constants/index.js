@@ -40,5 +40,12 @@ export const constants = {
   SELECT_TYPE_DESCRIPTION : [
     {id: 1, name: 'Hygea'},
     {id: 2, name: 'Umum'},
+  ],
+
+  SELECT_TYPE_CHILDBIRTH: [
+    {id: 1, name: 'Spontan LBK'},
+    {id: 2, name: 'Spontan Letak Bokong'},
+    {id: 3, name: 'Spontan Letak Muka'},
+    {id: 4, name: 'Lainnya'},
   ]
 };
