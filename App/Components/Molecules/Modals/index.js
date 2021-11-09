@@ -17,6 +17,7 @@ const Modals = ({
   onDismiss,
   onPress,
   onCancel,
+  onSelect,
   data,
 }) => {
   if (type == 'forgot-password')
@@ -47,6 +48,7 @@ const Modals = ({
         title={title}
         onDismiss={onDismiss}
         onPress={onPress}
+        onSelect={onSelect}
       />
     );
 

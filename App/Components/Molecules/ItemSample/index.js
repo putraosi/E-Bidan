@@ -3,10 +3,12 @@ import {StyleSheet, Text} from 'react-native';
 import {Separator} from '../..';
 import {colors, fonts} from '../../../Themes';
 
-const ItemSample = ({value, isLast, onPress}) => {
+const ItemSample = ({data, value, isLast, onPress, onSelect}) => {
+  const onClick = () => (onSelect ? onSelect(data) : onPress(value));
+
   return (
     <>
-      <Text style={styles.label} onPress={() => onPress(value)}>
+      <Text style={styles.label} onPress={onClick}>
         {value}
       </Text>
       {!isLast && <Separator style={styles.separator} />}

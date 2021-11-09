@@ -47,5 +47,10 @@ export const constants = {
     {id: 2, name: 'Spontan Letak Bokong'},
     {id: 3, name: 'Spontan Letak Muka'},
     {id: 4, name: 'Lainnya'},
+  ],
+
+  SELECT_OPTION : [
+    {id: 1, name: 'Pendampingan'},
+    {id: 2, name: 'Mandiri'},
   ]
 };

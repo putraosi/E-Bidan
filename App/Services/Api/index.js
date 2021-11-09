@@ -50,11 +50,13 @@ export const Api = {
     }
   },
 
-  get: async ({url, showLog}) => {
+  get: async ({url, params = {}, showLog}) => {
     if (showLog) console.log('URL', url);
 
     try {
-      const res = await api.get(url);
+      const res = await api.get(url, {
+        params,
+      });
 
       if (showLog) console.log('API RES', res.data);
 

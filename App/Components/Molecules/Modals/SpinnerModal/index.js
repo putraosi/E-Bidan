@@ -9,7 +9,7 @@ import {
 import {ItemSample} from '../..';
 import {colors, fonts} from '../../../../Themes';
 
-const SpinnerModal = ({visible, title, data, onDismiss, onPress}) => {
+const SpinnerModal = ({visible, title, data, onDismiss, onPress, onSelect}) => {
   return (
     <Modal
       visible={visible}
@@ -29,9 +29,11 @@ const SpinnerModal = ({visible, title, data, onDismiss, onPress}) => {
             {data.map((item, index) => (
               <ItemSample
                 key={item.id}
+                data={item}
                 value={item.name}
                 isLast={index == data.length - 1}
                 onPress={onPress}
+                onSelect={onSelect}
               />
             ))}
           </ScrollView>

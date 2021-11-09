@@ -1,18 +1,21 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {ScrollView, Text, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {
   Button,
   Container,
   Gap,
   Header,
   Input,
+  Loading,
   Modals,
   RadioButton,
   SpaceBeetwen,
 } from '../../Components';
-import {constants, ToastAlert, useForm} from '../../Helpers';
+import {constants, SampleAlert, ToastAlert, useForm} from '../../Helpers';
 import {moments} from '../../Libs';
+import {Api} from '../../Services';
 import styles from './styles';
 
 const userBidanDummy = [
@@ -21,14 +24,19 @@ const userBidanDummy = [
   {id: 3, name: 'Bidan 3'},
 ];
 
+const defalutSelectMidwife = {
+  id: 0,
+  name: 'Pilih',
+};
+
 const AddServicesHomecare = ({navigation}) => {
   const [form, setForm] = useForm({
-    wifeName: '',
+    motherName: '',
     childName: '',
     childAge: '',
     address: '',
     executionTime: new Date(),
-    placeExecution: '',
+    placeExecution: 'Klinik Bidan Amel',
     midwife: '',
     phoneNumber: '',
     price: '',
@@ -51,13 +59,67 @@ const AddServicesHomecare = ({navigation}) => {
     circumcision: false,
     pregnantControl: false,
   });
+  const [loading, setLoading] = useState(true);
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
+  const [dataMidwife, setDataMidwife] = useState([]);
+  const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    getMidwife(new Date());
+  }, []);
+
+  const getMidwife = async date => {
+    try {
+      const res = await Api.get({
+        url: 'admin/practice-schedulles',
+        params: {
+          now: moments(date).format('YYYY-MM-DD'),
+        },
+      });
+
+      dispatch({type: 'SET_LOADING', value: false});
+      setLoading(false);
+      if (res && res.length) {
+        setDataMidwife(res[0].bidans);
+        setSelectMidwife(defalutSelectMidwife);
+      }
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      setLoading(false);
+    }
+  };
 
   const onChangeDate = (event, selectedDate) => {
     const currentDate = selectedDate || form.executionTime;
     setVisibleDatePicker(false);
+    dispatch({type: 'SET_LOADING', value: true});
+    getMidwife(currentDate);
     setForm('executionTime', currentDate);
+  };
+
+  const validation = () => {
+    if (!form.motherName) return ToastAlert('Silahkan isi Nama Ibu Anda');
+    if (!form.childName) return ToastAlert('Silahkan isi Nama Anak Anda');
+    if (!form.childAge) return ToastAlert('Silahkan isi Usia Anak Anda');
+    if (!form.address) return ToastAlert('Silahkan isi Alamat Anda');
+    if (selectMidwife.name == 'Pilih')
+      return ToastAlert('Silahkan isi Bidan Anda');
+    if (!form.phoneNumber) return ToastAlert('Silahkan isi No. Whatsapp Anda');
+    if (Object.values(formTreatment).every(item => item === false))
+      return ToastAlert('Silahkan pilih treatment Anda');
+    if (!form.price) return ToastAlert('Silahkan isi biaya treatment-nya');
+
+    ToastAlert();
+  };
+
+  const onSubmit = async () => {
+    try {
+
+    } catch (error) {
+      console.log('cek e');
+    }
   };
 
   const renderTreatment = () => {
@@ -260,92 +322,109 @@ const AddServicesHomecare = ({navigation}) => {
   return (
     <Container>
       <Header title={'Pesanan Baru'} onDismiss={() => navigation.goBack()} />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.content}>
-          <Input label={'Jenis Layanan'} value={'Homecare'} editable={false} />
+      {loading ? (
+        <Loading />
+      ) : (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          <View style={styles.content}>
+            <Input
+              label={'Jenis Layanan'}
+              value={'Homecare'}
+              editable={false}
+            />
 
-          <Gap height={12} />
-          <Input
-            label={'Nama Istri'}
-            value={form.wifeName}
-            onChangeText={value => setForm('wifeName', value)}
-          />
+            <Gap height={12} />
+            <Input
+              label={'Nama Ibu'}
+              value={form.motherName}
+              onChangeText={value => setForm('motherName', value)}
+            />
 
-          <Gap height={12} />
-          <Input
-            label={'Nama Anak'}
-            value={form.childName}
-            onChangeText={value => setForm('childName', value)}
-          />
+            <Gap height={12} />
+            <Input
+              label={'Nama Anak'}
+              value={form.childName}
+              onChangeText={value => setForm('childName', value)}
+            />
 
-          <Gap height={12} />
-          <Input
-            label={'Usia Anak'}
-            value={form.childAge}
-            keyboardType={'numeric'}
-            onChangeText={value => setForm('childAge', value)}
-          />
+            <Gap height={12} />
+            <Input
+              label={'Usia Anak'}
+              value={form.childAge}
+              keyboardType={'numeric'}
+              onChangeText={value => setForm('childAge', value)}
+            />
 
-          <Gap height={12} />
-          <Input
-            label={'Alamat'}
-            value={form.address}
-            multiline
-            onChangeText={value => setForm('address', value)}
-          />
+            <Gap height={12} />
+            <Input
+              label={'Alamat'}
+              value={form.address}
+              multiline
+              onChangeText={value => setForm('address', value)}
+            />
 
-          <Gap height={12} />
-          <Input
-            label={'Waktu Pelaksanaan'}
-            value={moments(form.executionTime).format('DD MMMM YYYY')}
-            editable={false}
-            onPress={() => setVisibleDatePicker(true)}
-          />
+            <Gap height={12} />
+            <Input
+              label={'Waktu Pelaksanaan'}
+              value={moments(form.executionTime).format('DD MMMM YYYY')}
+              editable={false}
+              onPress={() => setVisibleDatePicker(true)}
+            />
 
-          <Gap height={12} />
-          <Text style={styles.label}>{'Tempat Pelaksanaan'}</Text>
-          <SpaceBeetwen>
-            {constants.SELECT_PLACE_EXECUTION.map(item => (
-              <RadioButton
-                key={item.id}
-                style={styles.flex}
-                label={item.name}
-                isActive={item.name == form.placeExecution}
-                onPress={() => setForm('placeExecution', item.name)}
-              />
-            ))}
-          </SpaceBeetwen>
+            <Gap height={12} />
+            <Text style={styles.label}>{'Tempat Pelaksanaan'}</Text>
+            <SpaceBeetwen>
+              {constants.SELECT_PLACE_EXECUTION.map(item => (
+                <RadioButton
+                  key={item.id}
+                  style={styles.flex}
+                  label={item.name}
+                  isActive={item.name == form.placeExecution}
+                  onPress={() => setForm('placeExecution', item.name)}
+                />
+              ))}
+            </SpaceBeetwen>
 
-          <Gap height={12} />
-          <Input
-            label={'Bidan'}
-            value={form.midwife}
-            editable={false}
-            onPress={() => setVisibleMidwife(true)}
-          />
+            <Gap height={12} />
+            <Input
+              label={'Bidan'}
+              value={selectMidwife.name}
+              editable={false}
+              onPress={() => {
+                if (dataMidwife && dataMidwife.length) setVisibleMidwife(true);
+                else
+                  SampleAlert(
+                    'Mohon Maaf',
+                    `Pada tanggal ${moments(form.executionTime).format(
+                      'DD MMMM YYYY',
+                    )} tidak ada jadwal praktek.\n\nSilahkan pilih tanggal yang lain.`,
+                  );
+              }}
+            />
 
-          <Gap height={12} />
-          <Input
-            label={'No. Whatsapp'}
-            value={form.phoneNumber}
-            keyboardType={'numeric'}
-            onChangeText={value => setForm('phoneNumber', value)}
-          />
+            <Gap height={12} />
+            <Input
+              label={'No. Whatsapp'}
+              value={form.phoneNumber}
+              keyboardType={'numeric'}
+              onChangeText={value => setForm('phoneNumber', value)}
+            />
 
-          {renderTreatment()}
+            {renderTreatment()}
 
-          <Gap height={12} />
-          <Input
-            label={'Biaya Treatment'}
-            value={form.price}
-            keyboardType={'numeric'}
-            onChangeText={value => setForm('price', value)}
-          />
+            <Gap height={12} />
+            <Input
+              label={'Biaya Treatment'}
+              value={form.price}
+              keyboardType={'numeric'}
+              onChangeText={value => setForm('price', value)}
+            />
 
-          <Gap height={20} />
-          <Button label={'Submit'} onPress={() => ToastAlert()} />
-        </View>
-      </ScrollView>
+            <Gap height={20} />
+            <Button label={'Submit'} onPress={validation} />
+          </View>
+        </ScrollView>
+      )}
 
       {visibleDatePicker && (
         <DatePicker
@@ -361,11 +440,11 @@ const AddServicesHomecare = ({navigation}) => {
         type={'spinner'}
         title={'Bidan'}
         visible={visibleMidwife}
-        data={userBidanDummy}
+        data={dataMidwife}
         onDismiss={() => setVisibleMidwife(false)}
-        onPress={value => {
+        onSelect={value => {
           setVisibleMidwife(false);
-          setForm('midwife', value);
+          setSelectMidwife(value);
         }}
       />
     </Container>

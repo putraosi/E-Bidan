@@ -1,14 +1,14 @@
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
 import {
   AddOrderPatient,
   AddOrderPatientDetails,
-  AddPatient,
-  AddServices,
-  AddServicesAntenatal,
+  AddPatient, AddServicesAntenatal,
   AddServicesHomecare,
   AddServicesImmunization,
   AddServicesInc,
+  AddServicesOther,
+  AddServicesReferral,
   Confirmation,
   DetailsProfileMidwife,
   DetailsProfilePatient,
@@ -23,7 +23,7 @@ import {
   PreviewPhoto,
   SignUp,
   SingIn,
-  Splash,
+  Splash
 } from '../../Containers';
 
 const Stack = createNativeStackNavigator();
@@ -97,8 +97,8 @@ const Router = () => {
         options={{headerShown: false}}
       />
       <Stack.Screen
-        name="AddServices"
-        component={AddServices}
+        name="AddServicesReferral"
+        component={AddServicesReferral}
         options={{headerShown: false}}
       />
       <Stack.Screen
@@ -119,6 +119,11 @@ const Router = () => {
       <Stack.Screen
         name="AddServicesInc"
         component={AddServicesInc}
+        options={{headerShown: false}}
+      />
+      <Stack.Screen
+        name="AddServicesOther"
+        component={AddServicesOther}
         options={{headerShown: false}}
       />
 

@@ -17,7 +17,8 @@ import {
   Modals,
   SpaceBeetwen,
 } from '../../Components';
-import {ILPorife} from '../../Images/illustration';
+import {getData} from '../../Helpers';
+import {ILNullPhoto} from '../../Images';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
@@ -36,10 +37,15 @@ const dataOrderHistory = [
 
 const HomePatient = ({navigation}) => {
   const [loading, setLoading] = useState(true);
+  const [dataUser, setDataUser] = useState(null);
   const [dataSevices, setDataSevices] = useState(null);
   const [visibelServices, setVisibelServices] = useState(false);
 
   useEffect(() => {
+    getData('user').then(res => {
+      setDataUser(res);
+    });
+
     getServiceCategory();
   }, []);
 
@@ -57,7 +63,6 @@ const HomePatient = ({navigation}) => {
   };
 
   const onShowService = service => {
-    console.log('cek service', service);
     setVisibelServices(false);
 
     let screen = 'AddServicesHomecare';
@@ -65,9 +70,13 @@ const HomePatient = ({navigation}) => {
       screen = 'AddServicesAntenatal';
     else if (service === 'Imunisasi') screen = 'AddServicesImmunization';
     else if (service === 'INC') screen = 'AddServicesInc';
+    else if (service === 'Pelayanan Rujukan') screen = 'AddServicesReferral';
+    else if (service === 'Lainnya') screen = 'AddServicesOther';
 
     navigation.navigate(screen);
   };
+
+  const photo = ILNullPhoto;
 
   return (
     <Container>
@@ -79,10 +88,10 @@ const HomePatient = ({navigation}) => {
             <TouchableOpacity
               style={styles.containerHeader}
               onPress={() => navigation.navigate('DetailsProfilePatient')}>
-              <Image style={styles.image} source={ILPorife} />
+              <Image style={styles.image} source={photo} />
               <View style={styles.wrapperAccount}>
-                <Text style={styles.name}>{'Anya Geraldin'}</Text>
-                <Text style={styles.email}>{'anyagrl@gmail.com'}</Text>
+                <Text style={styles.name}>{dataUser.name}</Text>
+                <Text style={styles.email}>{dataUser.email}</Text>
               </View>
             </TouchableOpacity>
             <View style={styles.slider}>
@@ -173,6 +182,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.white,
     fontFamily: fonts.primary.bold,
+    textTransform: 'capitalize',
   },
 
   email: {

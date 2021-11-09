@@ -5,7 +5,7 @@ export const ToastAlert = (message = 'Coming Soon') => {
   return Toast.show(message, Toast.SHORT);
 };
 
-export const sampleAlert = message => {
+export const SampleAlert = (title, message) => {
   if (!message) message = 'Coming Soon';
-  Alert.alert('', message, [{text: 'OK', onPress: () => null}]);
+  Alert.alert(title, message, [{text: 'OK', onPress: () => null}]);
 };
