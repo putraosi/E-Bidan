@@ -20,4 +20,9 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
+
+  treatment: {
+    flex: 1,
+    marginBottom: 4,
+  },
 });

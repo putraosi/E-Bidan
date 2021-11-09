@@ -1,6 +1,6 @@
 import DatePicker from '@react-native-community/datetimepicker';
 import React, {useEffect, useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {FlatList, ScrollView, Text, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {
   Button,
@@ -13,7 +13,14 @@ import {
   RadioButton,
   SpaceBeetwen,
 } from '../../Components';
-import {constants, SampleAlert, ToastAlert, useForm} from '../../Helpers';
+import {
+  constants,
+  formatSelectTreatment,
+  formatTreatment,
+  SampleAlert,
+  ToastAlert,
+  useForm,
+} from '../../Helpers';
 import {moments} from '../../Libs';
 import {Api} from '../../Services';
 import styles from './styles';
@@ -41,33 +48,20 @@ const AddServicesHomecare = ({navigation}) => {
     phoneNumber: '',
     price: '',
   });
-  const [formTreatment, setFormTreatment] = useForm({
-    pregnancyMassage: false,
-    lactationMassage: false,
-    oxytocinMassage: false,
-    acupressureMassage: false,
-    postpartumMassage: false,
-    lactationMassageWithComplaints: false,
-    babyMassage: false,
-    pediatricBabyMassage: false,
-    massagePackage: false,
-    babyHaircut: false,
-    immunization: false,
-    babySpa: false,
-    newBornCare: false,
-    KF_KN: false,
-    circumcision: false,
-    pregnantControl: false,
-  });
+
   const [loading, setLoading] = useState(true);
+  const [loadingTreatment, setLoadingTreatment] = useState(true);
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [dataMidwife, setDataMidwife] = useState([]);
   const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
+  const [selectTreatment, setSelectTreatment] = useState(null);
+  const [isView, setIsView] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
     getMidwife(new Date());
+    getTreatments();
   }, []);
 
   const getMidwife = async date => {
@@ -87,7 +81,24 @@ const AddServicesHomecare = ({navigation}) => {
       }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      setLoading(false);
+      navigation.goBack();
+    }
+  };
+
+  const getTreatments = async () => {
+    try {
+      const res = await Api.get({
+        url: 'admin/treatments',
+      });
+      if (res) {
+        const newData = formatTreatment(res);
+        setSelectTreatment(newData);
+        setLoadingTreatment(false);
+      } else {
+        navigation.goBack();
+      }
+    } catch (error) {
+      navigation.goBack();
     }
   };
 
@@ -107,222 +118,25 @@ const AddServicesHomecare = ({navigation}) => {
     if (selectMidwife.name == 'Pilih')
       return ToastAlert('Silahkan isi Bidan Anda');
     if (!form.phoneNumber) return ToastAlert('Silahkan isi No. Whatsapp Anda');
-    if (Object.values(formTreatment).every(item => item === false))
+    if (Object.values(selectTreatment).every(item => item.select === false))
       return ToastAlert('Silahkan pilih treatment Anda');
     if (!form.price) return ToastAlert('Silahkan isi biaya treatment-nya');
 
-    ToastAlert();
+    onSubmit();
   };
 
   const onSubmit = async () => {
+    ToastAlert();
+    const _selectTreatment = formatSelectTreatment(selectTreatment);
+    
     try {
-
-    } catch (error) {
-      console.log('cek e');
-    }
-  };
-
-  const renderTreatment = () => {
-    return (
-      <>
-        <Gap height={12} />
-        <Text style={styles.label}>{'Treatment'}</Text>
-        <View style={styles.containerTreatment}>
-          <View style={styles.flex}>
-            <RadioButton
-              type={'rounded'}
-              label={'Pijat Hamil'}
-              isActive={formTreatment.pregnancyMassage}
-              onPress={() =>
-                setFormTreatment(
-                  'pregnancyMassage',
-                  !formTreatment.pregnancyMassage,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pijat Laktasi'}
-              isActive={formTreatment.lactationMassage}
-              onPress={() =>
-                setFormTreatment(
-                  'lactationMassage',
-                  !formTreatment.lactationMassage,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pijat Oksitosin'}
-              isActive={formTreatment.oxytocinMassage}
-              onPress={() =>
-                setFormTreatment(
-                  'oxytocinMassage',
-                  !formTreatment.oxytocinMassage,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pijat Accupressure'}
-              isActive={formTreatment.acupressureMassage}
-              onPress={() =>
-                setFormTreatment(
-                  'acupressureMassage',
-                  !formTreatment.acupressureMassage,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pijat Nifas'}
-              isActive={formTreatment.postpartumMassage}
-              onPress={() =>
-                setFormTreatment(
-                  'postpartumMassage',
-                  !formTreatment.postpartumMassage,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pijat Laktasi Dengan Keluhan'}
-              isActive={formTreatment.lactationMassageWithComplaints}
-              onPress={() =>
-                setFormTreatment(
-                  'lactationMassageWithComplaints',
-                  !formTreatment.lactationMassageWithComplaints,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Baby Massage'}
-              isActive={formTreatment.babyMassage}
-              onPress={() =>
-                setFormTreatment('babyMassage', !formTreatment.babyMassage)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Baby Massage Pediatrik'}
-              isActive={formTreatment.pediatricBabyMassage}
-              onPress={() =>
-                setFormTreatment(
-                  'pediatricBabyMassage',
-                  !formTreatment.pediatricBabyMassage,
-                )
-              }
-            />
-          </View>
-
-          <View style={styles.flex}>
-            <RadioButton
-              type={'rounded'}
-              label={'Paket Pijat'}
-              isActive={formTreatment.massagePackage}
-              onPress={() =>
-                setFormTreatment(
-                  'massagePackage',
-                  !formTreatment.massagePackage,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Cukur Rambut Bayi'}
-              isActive={formTreatment.babyHaircut}
-              onPress={() =>
-                setFormTreatment('babyHaircut', !formTreatment.babyHaircut)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Imunisasi'}
-              isActive={formTreatment.immunization}
-              onPress={() =>
-                setFormTreatment('immunization', !formTreatment.immunization)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Baby Spa'}
-              isActive={formTreatment.babySpa}
-              onPress={() =>
-                setFormTreatment('babySpa', !formTreatment.babySpa)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'New Born Care'}
-              isActive={formTreatment.newBornCare}
-              onPress={() =>
-                setFormTreatment('newBornCare', !formTreatment.newBornCare)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'KF & KN'}
-              isActive={formTreatment.KF_KN}
-              onPress={() => setFormTreatment('KF_KN', !formTreatment.KF_KN)}
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Sunat'}
-              isActive={formTreatment.circumcision}
-              onPress={() =>
-                setFormTreatment('circumcision', !formTreatment.circumcision)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Kontrol Hamil'}
-              isActive={formTreatment.pregnantControl}
-              onPress={() =>
-                setFormTreatment(
-                  'pregnantControl',
-                  !formTreatment.pregnantControl,
-                )
-              }
-            />
-          </View>
-        </View>
-      </>
-    );
+    } catch (error) {}
   };
 
   return (
     <Container>
       <Header title={'Pesanan Baru'} onDismiss={() => navigation.goBack()} />
-      {loading ? (
+      {loading || loadingTreatment ? (
         <Loading />
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -410,7 +224,31 @@ const AddServicesHomecare = ({navigation}) => {
               onChangeText={value => setForm('phoneNumber', value)}
             />
 
-            {renderTreatment()}
+            <Gap height={12} />
+            <Text style={styles.label}>{'Treatment'}</Text>
+            <FlatList
+              data={selectTreatment}
+              renderItem={({item}) => (
+                <RadioButton
+                  key={item.id}
+                  type={'rounded'}
+                  style={styles.treatment}
+                  label={item.name}
+                  isActive={item.select}
+                  onPress={() => {
+                    const position = selectTreatment.findIndex(
+                      obj => obj.id == item.id,
+                    );
+                    selectTreatment[position].select =
+                      !selectTreatment[position].select;
+                    setIsView(!isView);
+                    setSelectTreatment(selectTreatment);
+                  }}
+                />
+              )}
+              numColumns={2}
+              scrollEnabled={false}
+            />
 
             <Gap height={12} />
             <Input
@@ -447,6 +285,8 @@ const AddServicesHomecare = ({navigation}) => {
           setSelectMidwife(value);
         }}
       />
+
+      {isView && <View />}
     </Container>
   );
 };
