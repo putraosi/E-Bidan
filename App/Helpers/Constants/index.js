@@ -12,7 +12,7 @@ export const constants = {
     {id: 2, name: 'Rumah Pasien'},
   ],
 
-  SELECT_PREGNANCY: [ 
+  SELECT_PREGNANCY: [
     {id: 1, name: '1'},
     {id: 2, name: '2'},
     {id: 3, name: '3'},
@@ -29,15 +29,15 @@ export const constants = {
     {id: 5, name: 'Lainnya'},
   ],
 
-  SELECT_BIRTHPLACE : [
+  SELECT_BIRTHPLACE: [
     {id: 1, name: 'RS'},
     {id: 2, name: 'Bidan'},
     {id: 3, name: 'Puskesmas'},
     {id: 4, name: 'Bidan Amel'},
     {id: 5, name: 'Lainnya'},
   ],
-  
-  SELECT_TYPE_DESCRIPTION : [
+
+  SELECT_TYPE_DESCRIPTION: [
     {id: 1, name: 'Hygea'},
     {id: 2, name: 'Umum'},
   ],
@@ -49,8 +49,19 @@ export const constants = {
     {id: 4, name: 'Lainnya'},
   ],
 
-  SELECT_OPTION : [
+  SELECT_OPTION: [
     {id: 1, name: 'Pendampingan'},
     {id: 2, name: 'Mandiri'},
-  ]
+  ],
+
+  SELECT_ANTENATAL_INFORMATION: [
+    {id: 1, name: "K1", select: false},
+    {id: 2, name: "K2", select: false},
+    {id: 3, name: "LAB", select: false},
+  ],
+
+  SELECT_ANTENATAL_HISTORY: [
+    {id: 1, name: "Spontan", select: false},
+    {id: 2, name: "Sectio Caesarea", select: false},
+  ],
 };

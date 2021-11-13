@@ -13,10 +13,7 @@ export const formatSelectTreatment = data => {
   let newData = [];
   data.map(item => {
     if (item.select == true) {
-      const newItem = {
-        id: item.id.toString(),
-      };
-      newData.push(newItem);
+      newData.push(item.id.toString());
     }
   });
 

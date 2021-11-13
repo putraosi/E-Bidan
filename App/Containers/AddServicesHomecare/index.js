@@ -17,6 +17,7 @@ import {
   constants,
   formatSelectTreatment,
   formatTreatment,
+  getData,
   SampleAlert,
   ToastAlert,
   useForm,
@@ -36,7 +37,7 @@ const defalutSelectMidwife = {
   name: 'Pilih',
 };
 
-const AddServicesHomecare = ({navigation}) => {
+const AddServicesHomecare = ({navigation, route}) => {
   const [form, setForm] = useForm({
     motherName: '',
     childName: '',
@@ -53,6 +54,7 @@ const AddServicesHomecare = ({navigation}) => {
   const [loadingTreatment, setLoadingTreatment] = useState(true);
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
+  const [dataUser, setDataUser] = useState(null);
   const [dataMidwife, setDataMidwife] = useState([]);
   const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
   const [selectTreatment, setSelectTreatment] = useState(null);
@@ -60,6 +62,10 @@ const AddServicesHomecare = ({navigation}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    getData('user').then(res => {
+      setDataUser(res);
+    });
+
     getMidwife(new Date());
     getTreatments();
   }, []);
@@ -126,11 +132,42 @@ const AddServicesHomecare = ({navigation}) => {
   };
 
   const onSubmit = async () => {
+    dispatch({type: 'SET_LOADING', value: true});
     ToastAlert();
     const _selectTreatment = formatSelectTreatment(selectTreatment);
-    
+    const implementation_place =
+      form.placeExecution == 'Klinik Bidan Amel' ? 'bidan' : 'rumah';
+
     try {
-    } catch (error) {}
+      const res = await Api.post({
+        url: 'admin/home-cares',
+        body: {
+          service_category_id: route.params.id,
+          pasien_id: dataUser.id,
+          bidan_id: selectMidwife.id,
+          name_mother: form.motherName,
+          name_son: form.childName,
+          age_son: parseInt(form.childAge),
+          address: form.address,
+          implementation_date: moments(form.executionTime).format('YYYY-MM-DD'),
+          implementation_place,
+          phone: form.phoneNumber,
+          cost: parseInt(form.price),
+          treatments: _selectTreatment,
+        },
+        showLog: true,
+      });
+
+      dispatch({type: 'SET_LOADING', value: false});
+      if (res) {
+        navigation.goBack();
+      } else {
+        ToastAlert('Silahkan coba beberapa saat lagi');
+      }
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      ToastAlert('Silahkan coba beberapa saat lagi');
+    }
   };
 
   return (

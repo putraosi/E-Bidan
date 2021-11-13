@@ -26,7 +26,7 @@ const SpinnerModal = ({visible, title, data, onDismiss, onPress, onSelect}) => {
           onPress={() => null}>
           <Text style={styles.title}>{title}</Text>
           <ScrollView showsVerticalScrollIndicator={false}>
-            {data.map((item, index) => (
+            {data && data.map((item, index) => (
               <ItemSample
                 key={item.id}
                 data={item}

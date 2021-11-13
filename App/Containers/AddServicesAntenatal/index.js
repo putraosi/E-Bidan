@@ -1,6 +1,6 @@
 import DatePicker from '@react-native-community/datetimepicker';
 import React, {useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {FlatList, ScrollView, Text, View} from 'react-native';
 import {
   Button,
   Container,
@@ -48,6 +48,33 @@ const AddServicesAntenatal = ({navigation}) => {
   const [visibleDatePickerVisitDate, setVisibleDatePickerVisitDate] =
     useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
+  const [selectHistory, setSelectHistory] = useState(
+    constants.SELECT_ANTENATAL_HISTORY,
+  );
+  const [selectInformation, setSelectInformation] = useState(
+    constants.SELECT_ANTENATAL_INFORMATION,
+  );
+  const [isView, setIsView] = useState(false);
+
+  const validation = () => {
+    if (!form.wifeName) return ToastAlert('Silahkan isi nama istri anda');
+    if (!form.husbandName) return ToastAlert('Silahkan isi nama suami anda');
+    if (!form.address) return ToastAlert('Silahkan isi alamat anda');
+    else if (
+      form.phoneNumber.length < 9 ||
+      form.phoneNumber.length > 14 ||
+      form.phoneNumber.charAt(0) != 0 ||
+      form.phoneNumber.charAt(1) != 8
+    ) {
+      return ToastAlert('Silahkan masukan nomor no. whatsapp valid Anda');
+    }
+    if (Object.values(selectHistory).every(item => item.select === false))
+      return ToastAlert('Silahkan pilih riwayat persalinan anda');
+    if (Object.values(selectInformation).every(item => item.select === false))
+      return ToastAlert('Silahkan pilih keterangan anda');
+
+    ToastAlert();
+  };
 
   return (
     <Container>
@@ -100,27 +127,37 @@ const AddServicesAntenatal = ({navigation}) => {
 
           <Gap height={12} />
           <Text style={styles.label}>{'Kehamilan Ke'}</Text>
-          {constants.SELECT_PREGNANCY.map(item => (
-            <RadioButton
-              key={item.id}
-              style={styles.radioButton}
-              label={item.name}
-              isActive={item.name == form.pregnancy}
-              onPress={() => setForm('pregnancy', item.name)}
-            />
-          ))}
+          <FlatList
+            data={constants.SELECT_PREGNANCY}
+            renderItem={({item}) => (
+              <RadioButton
+                key={item.id}
+                style={styles.radioButton}
+                label={item.name}
+                isActive={item.name == form.pregnancy}
+                onPress={() => setForm('pregnancy', item.name)}
+              />
+            )}
+            scrollEnabled={false}
+            numColumns={2}
+          />
 
           <Gap height={8} />
           <Text style={styles.label}>{'Abortus'}</Text>
-          {constants.SELECT_ABORTION.map(item => (
-            <RadioButton
-              key={item.id}
-              style={styles.radioButton}
-              label={item.name}
-              isActive={item.name == form.abortion}
-              onPress={() => setForm('abortion', item.name)}
-            />
-          ))}
+          <FlatList
+            data={constants.SELECT_ABORTION}
+            renderItem={({item}) => (
+              <RadioButton
+                key={item.id}
+                style={styles.radioButton}
+                label={item.name}
+                isActive={item.name == form.abortion}
+                onPress={() => setForm('abortion', item.name)}
+              />
+            )}
+            scrollEnabled={false}
+            numColumns={2}
+          />
 
           <Gap height={8} />
           <Input
@@ -140,45 +177,57 @@ const AddServicesAntenatal = ({navigation}) => {
 
           <Gap height={12} />
           <Text style={styles.label}>{'Riwayat Persalinan'}</Text>
-          <RadioButton
-            type={'rounded'}
-            label={'Spontan'}
-            isActive={form.spontaneous}
-            onPress={() => setForm('spontaneous', !form.spontaneous)}
-          />
-          <Gap height={4} />
-          <RadioButton
-            type={'rounded'}
-            label={'Sectio Caesarea'}
-            isActive={form.sectioCaesarea}
-            onPress={() => setForm('sectioCaesarea', !form.sectioCaesarea)}
+          <FlatList
+            data={selectHistory}
+            renderItem={({item}) => (
+              <RadioButton
+                key={item.id}
+                type={'rounded'}
+                style={styles.radioButton}
+                label={item.name}
+                isActive={item.select}
+                onPress={() => {
+                  const position = selectHistory.findIndex(
+                    obj => obj.id == item.id,
+                  );
+                  selectHistory[position].select =
+                    !selectHistory[position].select;
+                  setIsView(!isView);
+                  setSelectHistory(selectHistory);
+                }}
+              />
+            )}
+            scrollEnabled={false}
           />
 
-          <Gap height={12} />
+          <Gap height={8} />
           <Text style={styles.label}>{'Keterangan'}</Text>
-          <RadioButton
-            type={'rounded'}
-            label={'K1'}
-            isActive={form.k1}
-            onPress={() => setForm('k1', !form.k1)}
-          />
-          <Gap height={4} />
-          <RadioButton
-            type={'rounded'}
-            label={'K2'}
-            isActive={form.k2}
-            onPress={() => setForm('k2', !form.k2)}
-          />
-          <Gap height={4} />
-          <RadioButton
-            type={'rounded'}
-            label={'LAB'}
-            isActive={form.lab}
-            onPress={() => setForm('lab', !form.lab)}
+          <FlatList
+            data={selectInformation}
+            renderItem={({item}) => (
+              <RadioButton
+                key={item.id}
+                type={'rounded'}
+                style={styles.radioButton}
+                label={item.name}
+                isActive={item.select}
+                onPress={() => {
+                  const position = selectInformation.findIndex(
+                    obj => obj.id == item.id,
+                  );
+                  selectInformation[position].select =
+                    !selectInformation[position].select;
+                  setIsView(!isView);
+                  setSelectInformation(selectInformation);
+                }}
+              />
+            )}
+            numColumns={3}
+            scrollEnabled={false}
           />
 
-          <Gap height={20} />
-          <Button label={'Submit'} onPress={() => ToastAlert()} />
+          <Gap height={16} />
+          <Button label={'Submit'} onPress={validation} />
         </View>
       </ScrollView>
 
@@ -249,6 +298,8 @@ const AddServicesAntenatal = ({navigation}) => {
           setForm('midwife', value);
         }}
       />
+
+      {isView && <View />}
     </Container>
   );
 };

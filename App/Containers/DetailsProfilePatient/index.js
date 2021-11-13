@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   Container,
@@ -17,8 +18,9 @@ import {
   Row,
   SpaceBeetwen,
 } from '../../Components';
-import {ToastAlert} from '../../Helpers';
+import {resetPage, ToastAlert} from '../../Helpers';
 import {IcEditCircle, IcLogout, ILPorife} from '../../Images';
+import { Api } from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const DetailsProfilePatient = ({navigation}) => {
@@ -26,6 +28,27 @@ const DetailsProfilePatient = ({navigation}) => {
   const [secureTextEntry1, setSecureTextEntry1] = useState(true);
   const [secureTextEntry2, setSecureTextEntry2] = useState(true);
   const [newPassword, setNewPassword] = useState('');
+  const dispatch = useDispatch()
+
+  const onLogout = async () => {
+    setVisibleLogout(false);
+    dispatch({type: 'SET_LOADING', value: true});
+    try {
+      const res = Api.post({
+        url: 'auth/logout',
+      });
+
+      dispatch({type: 'SET_LOADING', value: false});
+      if (res) {
+        resetPage(navigation, 'SignIn');
+      } else {
+        ToastAlert('Silahkan coba beberapa saat lagi!');
+      }
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      ToastAlert('Silahkan coba beberapa saat lagi!');
+    }
+  };
 
   return (
     <Container>
@@ -114,7 +137,7 @@ const DetailsProfilePatient = ({navigation}) => {
         onDismiss={() => setVisibleLogout(false)}
         labelPress={'Keluar'}
         labelCancel={'Batal'}
-        onPress={() => ToastAlert()}
+        onPress={onLogout}
         onCancel={() => setVisibleLogout(false)}
       />
     </Container>

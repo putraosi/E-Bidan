@@ -62,18 +62,19 @@ const HomePatient = ({navigation}) => {
     }
   };
 
-  const onShowService = service => {
+  const onShowService = select => {
     setVisibelServices(false);
 
     let screen = 'AddServicesHomecare';
-    if (service === 'Antenatal (Pemeriksaan Kehamilan)')
+    if (select.name === 'Antenatal (Pemeriksaan Kehamilan)')
       screen = 'AddServicesAntenatal';
-    else if (service === 'Imunisasi') screen = 'AddServicesImmunization';
-    else if (service === 'INC') screen = 'AddServicesInc';
-    else if (service === 'Pelayanan Rujukan') screen = 'AddServicesReferral';
-    else if (service === 'Lainnya') screen = 'AddServicesOther';
+    else if (select.name === 'Imunisasi') screen = 'AddServicesImmunization';
+    else if (select.name === 'INC') screen = 'AddServicesInc';
+    else if (select.name === 'Pelayanan Rujukan')
+      screen = 'AddServicesReferral';
+    else if (select.name === 'Lainnya') screen = 'AddServicesOther';
 
-    navigation.navigate(screen);
+    navigation.navigate(screen, {id: select.id});
   };
 
   const photo = ILNullPhoto;
@@ -148,7 +149,7 @@ const HomePatient = ({navigation}) => {
             visible={visibelServices}
             data={dataSevices}
             onDismiss={() => setVisibelServices(false)}
-            onPress={value => onShowService(value)}
+            onSelect={value => onShowService(value)}
           />
         </>
       )}
