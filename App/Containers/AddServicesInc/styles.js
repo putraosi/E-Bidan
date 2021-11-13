@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
-import { colors, fonts } from '../../Themes';
+import {StyleSheet} from 'react-native';
+import {colors, fonts} from '../../Themes';
 
 export default StyleSheet.create({
   flex: {flex: 1},
@@ -16,13 +16,18 @@ export default StyleSheet.create({
     marginBottom: 6,
   },
 
-  radioTypeChildbirth:{
+  radioTypeChildbirth: {
     flex: 1,
-    marginBottom: 4
+    marginBottom: 4,
   },
 
-  containerCompanionMidwife:{
+  containerCompanionMidwife: {
     justifyContent: 'space-between',
     flexDirection: 'row',
-  }
+  },
+
+  radioButton: {
+    flex: 1,
+    marginBottom: 4,
+  },
 });
