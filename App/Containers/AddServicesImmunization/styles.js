@@ -21,7 +21,8 @@ export default StyleSheet.create({
     flexDirection: 'row',
   },
 
-  radioButton:{
-    marginBottom: 4
-  }
+  radioButton: {
+    flex: 1,
+    marginBottom: 4,
+  },
 });

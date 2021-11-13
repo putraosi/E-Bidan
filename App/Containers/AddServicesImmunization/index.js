@@ -1,6 +1,6 @@
 import DatePicker from '@react-native-community/datetimepicker';
 import React, {useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {FlatList, ScrollView, Text, View} from 'react-native';
 import {
   Button,
   Container,
@@ -14,25 +14,20 @@ import {constants, ToastAlert, useForm} from '../../Helpers';
 import {moments} from '../../Libs';
 import styles from './styles';
 
-const userBidanDummy = [
-  {id: 1, name: 'Bidan 1'},
-  {id: 2, name: 'Bidan 2'},
-  {id: 3, name: 'Bidan 3'},
-];
-
 const AddServicesImmunization = ({navigation}) => {
   const [form, setForm] = useForm({
     name: '',
     gender: 'Pria',
     birthday: new Date(),
-    wifeName: '',
-    husbandName: '',
+    motherName: '',
+    fatherName: '',
     birthplace: 'RS',
     address: '',
     phoneNumber: '',
     visitDate: new Date(),
     typeDescription: 'Hygea',
   });
+
   const [formTypeImmunization, setFormTypeImmunization] = useForm({
     HB0: false,
     BCG: false,
@@ -53,172 +48,30 @@ const AddServicesImmunization = ({navigation}) => {
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
   const [visibleDatePickerVisitDate, setVisibleDatePickerVisitDate] =
     useState(false);
+  const [selectTypeImmunization, setSelectTypeImmunization] = useState(
+    constants.SELECT_TYPE_IMMUNIZATION,
+  );
+  const [isView, setIsView] = useState(false);
 
-  const renderTypeImmunization = () => {
-    return (
-      <>
-        <Gap height={12} />
-        <Text style={styles.label}>{'Treatment'}</Text>
-        <View style={styles.containerTypeImmunization}>
-          <View style={styles.flex}>
-            <RadioButton
-              type={'rounded'}
-              label={'HB 0'}
-              isActive={formTypeImmunization.HB0}
-              onPress={() =>
-                setFormTypeImmunization('HB0', !formTypeImmunization.HB0)
-              }
-            />
+  const validation = () => {
+    if (!form.name) return ToastAlert('Silahkan isi nama anda');
+    if (!form.motherName) return ToastAlert('Silahkan isi nama ibu anda');
+    if (!form.fatherName) return ToastAlert('Silahkan isi nama ayah anda');
+    if (!form.address) return ToastAlert('Silahkan isi alamat anda');
+    else if (
+      form.phoneNumber.length < 9 ||
+      form.phoneNumber.length > 14 ||
+      form.phoneNumber.charAt(0) != 0 ||
+      form.phoneNumber.charAt(1) != 8
+    ) {
+      return ToastAlert('Silahkan masukan nomor no. whatsapp valid Anda');
+    }
+    if (
+      Object.values(selectTypeImmunization).every(item => item.select === false)
+    )
+      return ToastAlert('Silahkan pilih jenis imunisasi anda');
 
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'BCG'}
-              isActive={formTypeImmunization.BCG}
-              onPress={() =>
-                setFormTypeImmunization('BCG', !formTypeImmunization.BCG)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pentabio 1'}
-              isActive={formTypeImmunization.pentabio1}
-              onPress={() =>
-                setFormTypeImmunization(
-                  'pentabio1',
-                  !formTypeImmunization.pentabio1,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pentabio 2'}
-              isActive={formTypeImmunization.pentabio2}
-              onPress={() =>
-                setFormTypeImmunization(
-                  'pentabio2',
-                  !formTypeImmunization.pentabio2,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pentabio 3'}
-              isActive={formTypeImmunization.pentabio3}
-              onPress={() =>
-                setFormTypeImmunization(
-                  'pentabio3',
-                  !formTypeImmunization.pentabio3,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Polio 1'}
-              isActive={formTypeImmunization.polio1}
-              onPress={() =>
-                setFormTypeImmunization('polio1', !formTypeImmunization.polio1)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Polio 2'}
-              isActive={formTypeImmunization.polio2}
-              onPress={() =>
-                setFormTypeImmunization('polio2', !formTypeImmunization.polio2)
-              }
-            />
-          </View>
-
-          <View style={styles.flex}>
-            <RadioButton
-              type={'rounded'}
-              label={'Polio 3'}
-              isActive={formTypeImmunization.polio3}
-              onPress={() =>
-                setFormTypeImmunization('polio3', !formTypeImmunization.polio3)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Polio 4'}
-              isActive={formTypeImmunization.polio4}
-              onPress={() =>
-                setFormTypeImmunization('polio4', !formTypeImmunization.polio4)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'IPV'}
-              isActive={formTypeImmunization.IPV}
-              onPress={() =>
-                setFormTypeImmunization('IPV', !formTypeImmunization.IPV)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'MR'}
-              isActive={formTypeImmunization.MR}
-              onPress={() =>
-                setFormTypeImmunization('MR', !formTypeImmunization.MR)
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Pentabio Booster (Ulangan)'}
-              isActive={formTypeImmunization.pentabio_booster}
-              onPress={() =>
-                setFormTypeImmunization(
-                  'pentabio_booster',
-                  !formTypeImmunization.pentabio_booster,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'MR Booster (Ulangan)'}
-              isActive={formTypeImmunization.MR_booster}
-              onPress={() =>
-                setFormTypeImmunization(
-                  'MR_booster',
-                  !formTypeImmunization.MR_booster,
-                )
-              }
-            />
-
-            <Gap height={4} />
-            <RadioButton
-              type={'rounded'}
-              label={'Lainnya'}
-              isActive={formTypeImmunization.other}
-              onPress={() =>
-                setFormTypeImmunization('other', !formTypeImmunization.other)
-              }
-            />
-          </View>
-        </View>
-      </>
-    );
+    ToastAlert();
   };
 
   return (
@@ -260,28 +113,33 @@ const AddServicesImmunization = ({navigation}) => {
           <Gap height={12} />
           <Input
             label={'Nama Ibu'}
-            value={form.wifeName}
-            onChangeText={value => setForm('wifeName', value)}
+            value={form.motherName}
+            onChangeText={value => setForm('motherName', value)}
           />
 
           <Gap height={12} />
           <Input
-            label={'Nama Ayah'}
-            value={form.husbandName}
-            onChangeText={value => setForm('husbandName', value)}
+            label={'Nama Ibu'}
+            value={form.fatherName}
+            onChangeText={value => setForm('fatherName', value)}
           />
 
           <Gap height={12} />
           <Text style={styles.label}>{'Tempat Lahir'}</Text>
-          {constants.SELECT_BIRTHPLACE.map(item => (
-            <RadioButton
-              key={item.id}
-              style={styles.radioButton}
-              label={item.name}
-              isActive={item.name == form.birthplace}
-              onPress={() => setForm('birthplace', item.name)}
-            />
-          ))}
+          <FlatList
+            data={constants.SELECT_BIRTHPLACE}
+            renderItem={({item}) => (
+              <RadioButton
+                key={item.id}
+                style={styles.radioButton}
+                label={item.name}
+                isActive={item.name == form.birthplace}
+                onPress={() => setForm('birthplace', item.name)}
+              />
+            )}
+            scrollEnabled={false}
+            numColumns={2}
+          />
 
           <Gap height={12} />
           <Input
@@ -299,9 +157,33 @@ const AddServicesImmunization = ({navigation}) => {
             onChangeText={value => setForm('phoneNumber', value)}
           />
 
-          {renderTypeImmunization()}
-
           <Gap height={12} />
+          <Text style={styles.label}>{'Jenis Immunisasi'}</Text>
+          <FlatList
+            data={selectTypeImmunization}
+            renderItem={({item}) => (
+              <RadioButton
+                key={item.id}
+                type={'rounded'}
+                style={styles.radioButton}
+                label={item.name}
+                isActive={item.select}
+                onPress={() => {
+                  const position = selectTypeImmunization.findIndex(
+                    obj => obj.id == item.id,
+                  );
+                  selectTypeImmunization[position].select =
+                    !selectTypeImmunization[position].select;
+                  setIsView(!isView);
+                  setSelectTypeImmunization(selectTypeImmunization);
+                }}
+              />
+            )}
+            numColumns={2}
+            scrollEnabled={false}
+          />
+
+          <Gap height={8} />
           <Input
             label={'Tanggal Kunjungan Hari Ini'}
             value={moments(form.visitDate).format('DD MMMM YYYY')}
@@ -310,7 +192,7 @@ const AddServicesImmunization = ({navigation}) => {
           />
 
           <Gap height={12} />
-          <Text style={styles.label}>{'Jenis Kelamin'}</Text>
+          <Text style={styles.label}>{'Keterangan'}</Text>
           <SpaceBeetwen>
             {constants.SELECT_TYPE_DESCRIPTION.map(item => (
               <RadioButton
@@ -324,7 +206,7 @@ const AddServicesImmunization = ({navigation}) => {
           </SpaceBeetwen>
 
           <Gap height={20} />
-          <Button label={'Submit'} onPress={() => ToastAlert()} />
+          <Button label={'Submit'} onPress={validation} />
         </View>
       </ScrollView>
 
@@ -355,6 +237,8 @@ const AddServicesImmunization = ({navigation}) => {
           }}
         />
       )}
+
+      {isView && <View />}
     </Container>
   );
 };

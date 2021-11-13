@@ -31,10 +31,10 @@ export const constants = {
 
   SELECT_BIRTHPLACE: [
     {id: 1, name: 'RS'},
-    {id: 2, name: 'Bidan'},
-    {id: 3, name: 'Puskesmas'},
-    {id: 4, name: 'Bidan Amel'},
-    {id: 5, name: 'Lainnya'},
+    {id: 2, name: 'Puskesmas'},
+    {id: 3, name: 'Bidan'},
+    {id: 4, name: 'Lainnya'},
+    {id: 5, name: 'Bidan Amel'},
   ],
 
   SELECT_TYPE_DESCRIPTION: [
@@ -47,6 +47,23 @@ export const constants = {
     {id: 2, name: 'Spontan Letak Bokong'},
     {id: 3, name: 'Spontan Letak Muka'},
     {id: 4, name: 'Lainnya'},
+  ],
+
+  SELECT_TYPE_IMMUNIZATION: [
+    {id: 1, name: "HB 0", select: false},
+    {id: 2, name: "Polio 3", select: false},
+    {id: 3, name: "BCG", select: false},
+    {id: 4, name: "Polio 4", select: false},
+    {id: 5, name: "Pentabio 1", select: false},
+    {id: 6, name: "IPV", select: false},
+    {id: 7, name: "Pentabio 2", select: false},
+    {id: 8, name: "MR", select: false},
+    {id: 9, name: "Pentabio 3", select: false},
+    {id: 10, name: "Pentabio Booster (Ulangan)", select: false},
+    {id: 11, name: "Polio 1", select: false},
+    {id: 12, name: "MR Booster (Ulangan)", select: false},
+    {id: 13, name: "Polio 2", select: false},
+    {id: 14, name: "Lainnya", select: false},
   ],
 
   SELECT_OPTION: [
