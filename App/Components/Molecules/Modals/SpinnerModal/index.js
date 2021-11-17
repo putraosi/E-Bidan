@@ -57,7 +57,7 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     backgroundColor: colors.primary,
-    maxHeight: 200,
+    maxHeight: 250,
     padding: 16,
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
