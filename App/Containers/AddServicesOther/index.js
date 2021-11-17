@@ -17,10 +17,10 @@ const AddServicesOther = ({navigation}) => {
   const [form, setForm] = useForm({
     date: new Date(),
     name: '',
-    wifeName: '',
     age: '',
-    husbandName: '',
-    wifeAge: '',
+    motherName: '',
+    motherAge: '',
+    fatherName: '',
     address: '',
     phoneNumber: '',
     diagnosis: '',
@@ -40,6 +40,27 @@ const AddServicesOther = ({navigation}) => {
   });
 
   const [visibleDate, setVisibleDate] = useState(false);
+
+  const validation = () => {
+    if (!form.name) return ToastAlert('Silahkan isi nama anda');
+    if (!form.age) return ToastAlert('Silahkan isi usia anda');
+    if (!form.motherName) return ToastAlert('Silahkan isi nama ibu anda');
+    if (!form.motherAge) return ToastAlert('Silahkan isi usia ibu anda');
+    if (!form.fatherName) return ToastAlert('Silahkan isi nama ayah anda');
+    if (!form.address) return ToastAlert('Silahkan isi alamat anda');
+    if (Object.values(formServiceType).every(item => item === false))
+      return ToastAlert('Silahkan pilih treatment anda');
+    if (
+      form.phoneNumber.length < 9 ||
+      form.phoneNumber.length > 14 ||
+      form.phoneNumber.charAt(0) != 0 ||
+      form.phoneNumber.charAt(1) != 8
+    ) {
+      return ToastAlert('Silahkan masukan nomor no. whatsapp valid Anda');
+    }
+
+    ToastAlert();
+  };
 
   const renderServiceType = () => {
     return (
@@ -162,13 +183,6 @@ const AddServicesOther = ({navigation}) => {
 
           <Gap height={12} />
           <Input
-            label={'Nama Ibu/Nama Istri'}
-            value={form.wifeName}
-            onChangeText={value => setForm('wifeName', value)}
-          />
-
-          <Gap height={12} />
-          <Input
             label={'Usia'}
             value={form.age}
             keyboardType={'numeric'}
@@ -177,17 +191,24 @@ const AddServicesOther = ({navigation}) => {
 
           <Gap height={12} />
           <Input
-            label={'Nama Ayah/Nama Suami'}
-            value={form.husbandName}
-            onChangeText={value => setForm('husbandName', value)}
+            label={'Nama Ibu'}
+            value={form.motherName}
+            onChangeText={value => setForm('motherName', value)}
           />
 
           <Gap height={12} />
           <Input
             label={'Usia Istri'}
-            value={form.wifeAge}
+            value={form.motherAge}
             keyboardType={'numeric'}
-            onChangeText={value => setForm('wifeAge', value)}
+            onChangeText={value => setForm('motherAge', value)}
+          />
+
+          <Gap height={12} />
+          <Input
+            label={'Nama Ayah'}
+            value={form.fatherName}
+            onChangeText={value => setForm('fatherName', value)}
           />
 
           <Gap height={12} />
@@ -217,7 +238,7 @@ const AddServicesOther = ({navigation}) => {
           />
 
           <Gap height={20} />
-          <Button label={'Submit'} onPress={() => ToastAlert()} />
+          <Button label={'Submit'} onPress={validation} />
         </View>
       </ScrollView>
 
