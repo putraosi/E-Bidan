@@ -159,12 +159,15 @@ const AddServicesHomecare = ({navigation, route}) => {
       });
 
       dispatch({type: 'SET_LOADING', value: false});
+      console.log('cek res', res);
       if (res) {
         navigation.goBack();
+        ToastAlert('Sukses menambahkan layanan baru');
       } else {
         ToastAlert('Silahkan coba beberapa saat lagi');
       }
     } catch (error) {
+      console.log('cek e', {error});
       dispatch({type: 'SET_LOADING', value: false});
       ToastAlert('Silahkan coba beberapa saat lagi');
     }

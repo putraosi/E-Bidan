@@ -57,13 +57,14 @@ const SignIn = ({navigation}) => {
       if (res) {
         const {roles, token} = res;
 
-        storeData('user', res);
         storeData('token', token);
         storeData('mode', roles.name);
 
         if (roles.name === 'bidan') {
+          storeData('user', res);
           navigation.replace('HomeMidwife');
         } else {
+          storeData('user', res.pasien);
           navigation.replace('HomePatient');
         }
 

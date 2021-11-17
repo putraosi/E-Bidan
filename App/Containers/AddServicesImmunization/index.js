@@ -58,7 +58,7 @@ const AddServicesImmunization = ({navigation}) => {
     if (!form.motherName) return ToastAlert('Silahkan isi nama ibu anda');
     if (!form.fatherName) return ToastAlert('Silahkan isi nama ayah anda');
     if (!form.address) return ToastAlert('Silahkan isi alamat anda');
-    else if (
+    if (
       form.phoneNumber.length < 9 ||
       form.phoneNumber.length > 14 ||
       form.phoneNumber.charAt(0) != 0 ||
