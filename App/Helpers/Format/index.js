@@ -9,7 +9,7 @@ export const formatTreatment = data => {
   });
 };
 
-export const formatSelectTreatment = data => {
+export const formatSelectedId = data => {
   let newData = [];
   data.map(item => {
     if (item.select == true) {

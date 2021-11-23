@@ -64,7 +64,9 @@ const SignIn = ({navigation}) => {
           storeData('user', res);
           navigation.replace('HomeMidwife');
         } else {
-          storeData('user', res.pasien);
+          let newData = res.pasien;
+          newData.roles = roles.name;
+          storeData('user', newData);
           navigation.replace('HomePatient');
         }
 

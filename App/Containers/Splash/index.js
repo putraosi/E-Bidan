@@ -7,10 +7,11 @@ import {colors} from '../../Themes';
 const Splash = ({navigation}) => {
   useEffect(() => {
     getData('user').then(res => {
+      console.log('cek masuk', res);
       if (res) {
         const {roles} = res;
 
-        if (roles.name === 'bidan') {
+        if (roles === 'bidan') {
           navigation.replace('HomeMidwife');
         } else {
           navigation.replace('HomePatient');

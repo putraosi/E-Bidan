@@ -15,7 +15,7 @@ import {
 } from '../../Components';
 import {
   constants,
-  formatSelectTreatment,
+  formatSelectedId,
   formatTreatment,
   getData,
   SampleAlert,
@@ -122,7 +122,7 @@ const AddServicesHomecare = ({navigation, route}) => {
     if (!form.childAge) return ToastAlert('Silahkan isi Usia Anak Anda');
     if (!form.address) return ToastAlert('Silahkan isi Alamat Anda');
     if (selectMidwife.name == 'Pilih')
-      return ToastAlert('Silahkan isi Bidan Anda');
+      return ToastAlert('Silahkan pilih bidan anda');
     if (!form.phoneNumber) return ToastAlert('Silahkan isi No. Whatsapp Anda');
     if (Object.values(selectTreatment).every(item => item.select === false))
       return ToastAlert('Silahkan pilih treatment Anda');
@@ -134,7 +134,7 @@ const AddServicesHomecare = ({navigation, route}) => {
   const onSubmit = async () => {
     dispatch({type: 'SET_LOADING', value: true});
     ToastAlert();
-    const _selectTreatment = formatSelectTreatment(selectTreatment);
+    const _selectTreatment = formatSelectedId(selectTreatment);
     const implementation_place =
       form.placeExecution == 'Klinik Bidan Amel' ? 'bidan' : 'rumah';
 
@@ -155,11 +155,9 @@ const AddServicesHomecare = ({navigation, route}) => {
           cost: parseInt(form.price),
           treatments: _selectTreatment,
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
-      console.log('cek res', res);
       if (res) {
         navigation.goBack();
         ToastAlert('Sukses menambahkan layanan baru');
@@ -167,7 +165,6 @@ const AddServicesHomecare = ({navigation, route}) => {
         ToastAlert('Silahkan coba beberapa saat lagi');
       }
     } catch (error) {
-      console.log('cek e', {error});
       dispatch({type: 'SET_LOADING', value: false});
       ToastAlert('Silahkan coba beberapa saat lagi');
     }

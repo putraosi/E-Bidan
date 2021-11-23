@@ -1,3 +1,4 @@
+import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   Image,
@@ -40,6 +41,7 @@ const HomePatient = ({navigation}) => {
   const [dataUser, setDataUser] = useState(null);
   const [dataSevices, setDataSevices] = useState(null);
   const [visibelServices, setVisibelServices] = useState(false);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     getData('user').then(res => {
@@ -48,6 +50,12 @@ const HomePatient = ({navigation}) => {
 
     getServiceCategory();
   }, []);
+
+  useEffect(() => {
+    if (isFocused) {
+      console.log('cek masuk');
+    }
+  }, [isFocused]);
 
   const getServiceCategory = async () => {
     try {
@@ -74,7 +82,7 @@ const HomePatient = ({navigation}) => {
       screen = 'AddServicesReferral';
     else if (select.name === 'Lainnya') screen = 'AddServicesOther';
 
-    navigation.navigate(screen, {id: select.id});
+    navigation.navigate(screen, {id: select.id, userId: dataUser.id});
   };
 
   const photo = ILNullPhoto;
