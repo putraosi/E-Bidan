@@ -9,6 +9,7 @@ import {
   Header,
   Input,
   Loading,
+  ModalAlert,
   Modals,
   RadioButton,
   SpaceBeetwen,
@@ -54,6 +55,7 @@ const AddServicesHomecare = ({navigation, route}) => {
   const [loadingTreatment, setLoadingTreatment] = useState(true);
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
+  const [visibleSuccess, setVisibleSuccess] = useState(false);
   const [dataUser, setDataUser] = useState(null);
   const [dataMidwife, setDataMidwife] = useState([]);
   const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
@@ -133,7 +135,6 @@ const AddServicesHomecare = ({navigation, route}) => {
 
   const onSubmit = async () => {
     dispatch({type: 'SET_LOADING', value: true});
-    ToastAlert();
     const _selectTreatment = formatSelectedId(selectTreatment);
     const implementation_place =
       form.placeExecution == 'Klinik Bidan Amel' ? 'bidan' : 'rumah';
@@ -159,8 +160,7 @@ const AddServicesHomecare = ({navigation, route}) => {
 
       dispatch({type: 'SET_LOADING', value: false});
       if (res) {
-        navigation.goBack();
-        ToastAlert('Sukses menambahkan layanan baru');
+        setVisibleSuccess(true);
       } else {
         ToastAlert('Silahkan coba beberapa saat lagi');
       }
@@ -321,6 +321,13 @@ const AddServicesHomecare = ({navigation, route}) => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
         }}
+      />
+
+      <ModalAlert
+        visible={visibleSuccess}
+        desc={'Selamat anda telah berhasil\nmendaftar di layanan kami'}
+        onDismiss={() => navigation.goBack()}
+        onPress={() => navigation.goBack()}
       />
 
       {isView && <View />}

@@ -1,7 +1,7 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, {useEffect, useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   Container,
@@ -11,11 +11,17 @@ import {
   Loading,
   Modals,
   RadioButton,
-  SpaceBeetwen,
+  SpaceBeetwen
 } from '../../Components';
-import {constants, SampleAlert, ToastAlert, useForm} from '../../Helpers';
-import {moments} from '../../Libs';
-import {Api} from '../../Services';
+import {
+  constants,
+  formatSelectedGrouped,
+  SampleAlert,
+  ToastAlert,
+  useForm
+} from '../../Helpers';
+import { moments } from '../../Libs';
+import { Api } from '../../Services';
 import styles from './styles';
 
 const defalutSelectMidwife = {
@@ -30,7 +36,6 @@ const AddServicesAntenatal = ({navigation, route}) => {
     abortion: 'Pilih',
     pregnancyAge: '1 Minggu',
     visitDate: new Date(),
-    laborHistory: 'Spontan',
     remark: 'K1',
   });
 
@@ -41,6 +46,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
   const [visibelPregnancyAge, setVisibelPregnancyAge] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
+  const [visibleSuccess, setVisibleSuccess] = useState(false);
   const [selectHistory, setSelectHistory] = useState(
     constants.SELECT_ANTENATAL_HISTORY,
   );
@@ -102,6 +108,8 @@ const AddServicesAntenatal = ({navigation, route}) => {
   const onSubmit = async () => {
     dispatch({type: 'SET_LOADING', value: true});
     let abortus = form.abortion;
+    const labor_history = formatSelectedGrouped(selectHistory);
+    const remarks = formatSelectedGrouped(selectInformation);
 
     if (abortus == 'Tidak Pernah') abortus = 0;
 
@@ -117,23 +125,19 @@ const AddServicesAntenatal = ({navigation, route}) => {
           abortus: parseInt(abortus),
           gestational_age: form.pregnancyAge,
           visit_date: moments(form.visitDate).format('YYYY-MM-DD'),
-          labor_history: form.laborHistory,
-          remarks: form.remark,
+          labor_history,
+          remarks,
         },
         showLog: true,
       });
 
-      console.log('cek res', res);
-
       dispatch({type: 'SET_LOADING', value: false});
       if (res) {
-        navigation.goBack();
-        ToastAlert('Sukses menambahkan layanan baru');
+        setVisibleSuccess(true);
       } else {
         ToastAlert('Silahkan coba beberapa saat lagi');
       }
     } catch (error) {
-      console.log('cek e', {error});
       dispatch({type: 'SET_LOADING', value: false});
       ToastAlert('Silahkan coba beberapa saat lagi');
     }
@@ -214,13 +218,22 @@ const AddServicesAntenatal = ({navigation, route}) => {
             <Gap height={12} />
             <Text style={styles.label}>{'Riwayat Persalinan'}</Text>
             <SpaceBeetwen>
-              {constants.SELECT_ANTENATAL_HISTORY.map(item => (
+              {selectHistory.map(item => (
                 <RadioButton
                   key={item.id}
                   style={styles.flex}
+                  type={'rounded'}
                   label={item.name}
-                  isActive={item.name == form.laborHistory}
-                  onPress={() => setForm('laborHistory', item.name)}
+                  isActive={item.select}
+                  onPress={() => {
+                    const position = selectHistory.findIndex(
+                      obj => obj.id == item.id,
+                    );
+                    selectHistory[position].select =
+                      !selectHistory[position].select;
+                    setIsView(!isView);
+                    setSelectHistory(selectHistory);
+                  }}
                 />
               ))}
             </SpaceBeetwen>
@@ -228,13 +241,22 @@ const AddServicesAntenatal = ({navigation, route}) => {
             <Gap height={12} />
             <Text style={styles.label}>{'Keterangan'}</Text>
             <SpaceBeetwen>
-              {constants.SELECT_ANTENATAL_INFORMATION.map(item => (
+              {selectInformation.map(item => (
                 <RadioButton
                   key={item.id}
                   style={styles.flex}
+                  type={'rounded'}
                   label={item.name}
-                  isActive={item.name == form.remark}
-                  onPress={() => setForm('remark', item.name)}
+                  isActive={item.select}
+                  onPress={() => {
+                    const position = selectInformation.findIndex(
+                      obj => obj.id == item.id,
+                    );
+                    selectInformation[position].select =
+                      !selectInformation[position].select;
+                    setIsView(!isView);
+                    setSelectInformation(selectInformation);
+                  }}
                 />
               ))}
             </SpaceBeetwen>
@@ -307,6 +329,13 @@ const AddServicesAntenatal = ({navigation, route}) => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
         }}
+      />
+
+      <ModalAlert
+        visible={visibleSuccess}
+        desc={'Selamat anda telah berhasil\nmendaftar di layanan kami'}
+        onDismiss={() => navigation.goBack()}
+        onPress={() => navigation.goBack()}
       />
 
       {isView && <View />}

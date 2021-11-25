@@ -7,7 +7,6 @@ import {colors} from '../../Themes';
 const Splash = ({navigation}) => {
   useEffect(() => {
     getData('user').then(res => {
-      console.log('cek masuk', res);
       if (res) {
         const {roles} = res;
 

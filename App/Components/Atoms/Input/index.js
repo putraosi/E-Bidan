@@ -48,11 +48,12 @@ const Input = ({
   }
 
   const showPassword = type && type.includes('password');
+  const shoeLabel = label ? true : false;
   const Div = onPress ? TouchableOpacity : View;
 
   return (
     <View style={[styles.container, style]}>
-      <Text style={styles.label(colorLabel)}>{label}</Text>
+      {shoeLabel && <Text style={styles.label(colorLabel)}>{label}</Text>}
       <Div style={styles.wrapper(backgroundColor)} onPress={onPress}>
         {iconLeft && (
           <Image

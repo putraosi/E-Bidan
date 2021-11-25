@@ -3,8 +3,8 @@ export const constants = {
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
 
   SELECT_GENDER: [
-    {id: 'male', name: 'Pria'},
-    {id: 'female', name: 'Wanita'},
+    {id: 'male', name: 'Laki-Laki'},
+    {id: 'female', name: 'Perempuan'},
   ],
 
   SELECT_PLACE_EXECUTION: [
@@ -53,8 +53,8 @@ export const constants = {
     {id: 1, name: 'RS'},
     {id: 2, name: 'Puskesmas'},
     {id: 3, name: 'Bidan'},
-    {id: 4, name: 'Lainnya'},
-    {id: 5, name: 'Bidan Amel'},
+    {id: 4, name: 'Bidan Amel'},
+    {id: 5, name: 'Lainnya'},
   ],
 
   SELECT_TYPE_DESCRIPTION: [
@@ -136,13 +136,13 @@ export const constants = {
 
   SELECT_ANTENATAL_INFORMATION: [
     {id: 1, name: 'K1', select: false},
-    {id: 2, name: 'K2', select: false},
+    {id: 2, name: 'K4', select: false},
     {id: 3, name: 'LAB', select: false},
   ],
 
   SELECT_ANTENATAL_HISTORY: [
     {id: 1, name: 'Spontan', select: false},
-    {id: 2, name: 'Sectio Caesarea', select: false},
+    {id: 2, name: 'Sectio Caesaria', select: false},
   ],
 
   SELECT_COMPANINON_MIDWIFE: [
