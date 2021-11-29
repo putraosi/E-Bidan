@@ -9,6 +9,7 @@ import {
   Header,
   Input,
   Loading,
+  ModalAlert,
   Modals,
   RadioButton,
   SpaceBeetwen

@@ -309,23 +309,15 @@ const AddServicesImmunization = ({navigation, route}) => {
             <FlatList
               data={selectBirthPlace}
               renderItem={({item}) => (
-                <View style={styles.radioButton}>
-                  <RadioButton
-                    key={item.id}
-                    label={item.name}
-                    isActive={item.name == form.birthPlace.name}
-                    onPress={() => setForm('birthPlace', item)}
-                  />
-                  {item.name == form.birthPlace.name && item.name == 'Lainnya' && (
-                    <>
-                      <Gap height={4} />
-                      <Input
-                        value={form.birthPlaceName}
-                        onChangeText={value => setForm('birthPlaceName', value)}
-                      />
-                    </>
-                  )}
-                </View>
+                <RadioButton
+                  style={styles.radioButton}
+                  key={item.id}
+                  label={item.name}
+                  isActive={item.name == form.birthPlace.name}
+                  other={form.birthPlaceName}
+                  onChangeText={value => setForm('birthPlaceName', value)}
+                  onPress={() => setForm('birthPlace', item)}
+                />
               )}
               scrollEnabled={false}
               numColumns={2}
@@ -360,35 +352,24 @@ const AddServicesImmunization = ({navigation, route}) => {
             <FlatList
               data={selectTypeImmunization}
               renderItem={({item}) => (
-                <View style={styles.radioButton}>
-                  <RadioButton
-                    key={item.id}
-                    type={'rounded'}
-                    label={item.name}
-                    isActive={item.select}
-                    onPress={() => {
-                      const position = selectTypeImmunization.findIndex(
-                        obj => obj.id == item.id,
-                      );
-                      selectTypeImmunization[position].select =
-                        !selectTypeImmunization[position].select;
-                      setIsView(!isView);
-                      setSelectTypeImmunization(selectTypeImmunization);
-                    }}
-                  />
-
-                  {item.select && item.name == 'Lainnya' && (
-                    <>
-                      <Gap height={4} />
-                      <Input
-                        value={form.immunizationTypeName}
-                        onChangeText={value =>
-                          setForm('immunizationTypeName', value)
-                        }
-                      />
-                    </>
-                  )}
-                </View>
+                <RadioButton
+                  style={styles.radioButton}
+                  key={item.id}
+                  type={'rounded'}
+                  label={item.name}
+                  isActive={item.select}
+                  other={form.immunizationTypeName}
+                  onChangeText={value => setForm('immunizationTypeName', value)}
+                  onPress={() => {
+                    const position = selectTypeImmunization.findIndex(
+                      obj => obj.id == item.id,
+                    );
+                    selectTypeImmunization[position].select =
+                      !selectTypeImmunization[position].select;
+                    setIsView(!isView);
+                    setSelectTypeImmunization(selectTypeImmunization);
+                  }}
+                />
               )}
               numColumns={2}
               scrollEnabled={false}
