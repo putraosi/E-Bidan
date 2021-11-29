@@ -1,5 +1,6 @@
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity} from 'react-native';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Input} from '..';
 import {
   IcChecked,
   IcRadioActive,
@@ -8,7 +9,16 @@ import {
 } from '../../../Images';
 import {colors, fonts} from '../../../Themes';
 
-const RadioButton = ({style, type, disable, label, isActive, onPress}) => {
+const RadioButton = ({
+  style,
+  type,
+  disable,
+  label,
+  other,
+  onChangeText,
+  isActive,
+  onPress,
+}) => {
   let Icon = IcRadioInactive;
 
   if (type && type.includes('rounded')) {
@@ -19,16 +29,24 @@ const RadioButton = ({style, type, disable, label, isActive, onPress}) => {
   }
 
   return (
-    <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
-      <Image style={styles.image} source={Icon} />
-      <Text style={styles.label}>{label}</Text>
-    </TouchableOpacity>
+    <View style={styles.flex}>
+      <TouchableOpacity style={[styles.container, style]} onPress={onPress}>
+        <Image style={styles.image} source={Icon} />
+        <Text style={styles.label}>{label}</Text>
+      </TouchableOpacity>
+
+      {isActive && label == 'Lainnya' && (
+        <Input value={other} onChangeText={onChangeText} />
+      )}
+    </View>
   );
 };
 
 export default RadioButton;
 
 const styles = StyleSheet.create({
+  flex: {flex: 1},
+
   container: {
     maxWidth: '100%',
     flexDirection: 'row',

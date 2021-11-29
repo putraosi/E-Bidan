@@ -145,14 +145,4 @@ export const constants = {
     {id: 2, name: 'Sectio Caesaria', select: false},
   ],
 
-  SELECT_COMPANINON_MIDWIFE: [
-    {id: 1, name: 'Bidan Amel', select: false},
-    {id: 2, name: 'Bidan Rani', select: false},
-    {id: 3, name: 'Bidan Nisa', select: false},
-    {id: 4, name: 'Bidan Iwana', select: false},
-    {id: 5, name: 'Bidan Syifa', select: false},
-    {id: 6, name: 'Bidan Ningsih', select: false},
-    {id: 7, name: 'Bidan Dwi', select: false},
-    {id: 8, name: 'Bidan Hansa', select: false},
-  ],
 };
