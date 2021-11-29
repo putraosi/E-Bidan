@@ -50,23 +50,6 @@ const AddServicesImmunization = ({navigation, route}) => {
     typeDescription: '',
   });
 
-  const [formTypeImmunization, setFormTypeImmunization] = useForm({
-    HB0: false,
-    BCG: false,
-    pentabio1: false,
-    pentabio2: false,
-    pentabio3: false,
-    polio1: false,
-    polio2: false,
-    polio3: false,
-    polio4: false,
-    IPV: false,
-    MR: false,
-    pentabio_booster: false,
-    MR_booster: false,
-    other: false,
-  });
-
   const [loading, setLoading] = useState(true);
   const [loadingTypeImmunization, setLoadingTypeImmunization] = useState(true);
   const [loadingMidwife, setLoadingMidwife] = useState(true);
@@ -196,6 +179,9 @@ const AddServicesImmunization = ({navigation, route}) => {
       return ToastAlert('Silahkan isi jenis imunisasi Anda');
     }
 
+    if (selectMidwife.name == 'Pilih')
+      return ToastAlert('Silahkan pilih bidan Anda');
+
     onSubmit();
   };
 
@@ -232,7 +218,6 @@ const AddServicesImmunization = ({navigation, route}) => {
           birth_place_name: _birthPlaceName,
           immunization_type_name: _immunizationTypeName,
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});

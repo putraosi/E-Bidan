@@ -87,7 +87,7 @@ export const constants = {
   ],
 
   SELECT_OPTION: [
-    {id: 1, name: 'Pendampingan'},
+    {id: 1, name: 'Pendamping'},
     {id: 2, name: 'Mandiri'},
   ],
 

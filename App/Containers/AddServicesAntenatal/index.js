@@ -129,7 +129,6 @@ const AddServicesAntenatal = ({navigation, route}) => {
           labor_history,
           remarks,
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});

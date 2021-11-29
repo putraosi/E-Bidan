@@ -124,7 +124,6 @@ const AddServicesInc = ({navigation, route}) => {
           pasien_id: route.params.userId,
           visit_date: moments(form.visitDate).format('YYYY-MM-DD'),
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
