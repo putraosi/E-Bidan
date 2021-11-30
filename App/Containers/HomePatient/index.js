@@ -53,7 +53,7 @@ const HomePatient = ({navigation}) => {
 
   useEffect(() => {
     if (isFocused) {
-      console.log('cek focused');
+      console.log('focused');
     }
   }, [isFocused]);
 

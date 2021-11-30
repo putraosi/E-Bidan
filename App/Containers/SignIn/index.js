@@ -1,24 +1,24 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
-  View,
+  View
 } from 'react-native';
-import {useDispatch} from 'react-redux';
-import {Button, Container, Gap, Input, Modals, Row} from '../../Components';
+import { useDispatch } from 'react-redux';
+import { Button, Container, Gap, Input, Modals, Row } from '../../Components';
 import {
   constants,
-  sampleAlert,
+  SampleAlert,
   storeData,
   ToastAlert,
-  useForm,
+  useForm
 } from '../../Helpers';
-import {ILHeader, ILLogo} from '../../Images';
-import {Api} from '../../Services/Api';
-import {colors, fonts} from '../../Themes';
+import { ILHeader, ILLogo } from '../../Images';
+import { Api } from '../../Services/Api';
+import { colors, fonts } from '../../Themes';
 
 const SignIn = ({navigation}) => {
   const [form, setForm] = useForm({
@@ -35,9 +35,9 @@ const SignIn = ({navigation}) => {
       form.email.trim() === '' ||
       !constants.REGEX_EMAIL.test(form.email.trim().toLowerCase())
     ) {
-      sampleAlert('Silahkan masukan alamat email valid Anda');
+      return SampleAlert('', 'Silahkan masukan alamat email valid Anda');
     } else if (form.password.trim() === '') {
-      sampleAlert('Silahkan masukan kata sandi Anda');
+      return SampleAlert('', 'Silahkan masukan kata sandi Anda');
     }
 
     onLogin();
@@ -52,6 +52,7 @@ const SignIn = ({navigation}) => {
           username: form.email,
           password: form.password,
         },
+        showLog: true
       });
 
       if (res) {
@@ -73,11 +74,11 @@ const SignIn = ({navigation}) => {
         dispatch({type: 'SET_LOADING', value: false});
       } else {
         dispatch({type: 'SET_LOADING', value: false});
-        sampleAlert('Silahkan masukan data login Anda dengan benar');
+        SampleAlert('', 'Silahkan masukan data login Anda dengan benar');
       }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      sampleAlert('Silahkan masukan data login Anda dengan benar');
+      SampleAlert('', 'Silahkan masukan data login Anda dengan benar');
     }
   };
 

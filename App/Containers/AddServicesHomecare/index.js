@@ -1,7 +1,7 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, {useEffect, useState} from 'react';
-import {FlatList, ScrollView, Text, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { FlatList, ScrollView, Text, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   Container,
@@ -12,7 +12,7 @@ import {
   ModalAlert,
   Modals,
   RadioButton,
-  SpaceBeetwen,
+  SpaceBeetwen
 } from '../../Components';
 import {
   constants,
@@ -21,10 +21,10 @@ import {
   getData,
   SampleAlert,
   ToastAlert,
-  useForm,
+  useForm
 } from '../../Helpers';
-import {moments} from '../../Libs';
-import {Api} from '../../Services';
+import { moments } from '../../Libs';
+import { Api } from '../../Services';
 import styles from './styles';
 
 const userBidanDummy = [
@@ -86,6 +86,8 @@ const AddServicesHomecare = ({navigation, route}) => {
       if (res && res.length) {
         setDataMidwife(res[0].bidans);
         setSelectMidwife(defalutSelectMidwife);
+      }else{
+        setDataMidwife([])
       }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
@@ -98,6 +100,7 @@ const AddServicesHomecare = ({navigation, route}) => {
       const res = await Api.get({
         url: 'admin/treatments',
       });
+
       if (res) {
         const newData = formatTreatment(res);
         setSelectTreatment(newData);

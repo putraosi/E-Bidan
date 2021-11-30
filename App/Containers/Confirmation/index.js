@@ -22,6 +22,7 @@ const Confirmation = ({navigation}) => {
     if (codeConfirmation.length > 6 || codeConfirmation.length < 6) {
       return ToastAlert('Mohon maaf maksimal kode verifikasi tidak sesuai');
     }
+    
     onVerify();
   };
 

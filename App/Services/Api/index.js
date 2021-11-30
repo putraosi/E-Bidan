@@ -44,9 +44,10 @@ export const Api = {
       // }
 
       return res.data.data;
-    } catch (error) {
-      if (showLog) console.log('API ERROR', {error});
-      throw error;
+    } catch (e) {
+      if (showLog) console.log('API ERROR', {e});
+
+      throw e;
     }
   },
 
