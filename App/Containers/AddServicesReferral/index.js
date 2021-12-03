@@ -27,13 +27,13 @@ const defalutSelectMidwife = {
 const AddServicesReferral = ({navigation, route}) => {
   const [form, setForm] = useForm({
     referenceDate: new Date(),
-    motherName: 'mother 1',
-    fatherName: 'father 1',
-    motherAge: '24',
-    address: 'jalan ajalan',
-    phoneNumber: '08120810822',
-    diagnosis: 'dia n',
-    hospital: 'RS 1',
+    motherName: '',
+    fatherName: '',
+    motherAge: '',
+    address: '',
+    phoneNumber: '',
+    diagnosis: '',
+    hospital: '',
     visitDate: new Date(),
     option: 'Pendamping',
   });

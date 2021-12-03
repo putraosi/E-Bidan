@@ -17,16 +17,11 @@ import {colors, fonts} from '../../Themes';
 
 const SignUp = ({navigation}) => {
   const [form, setForm] = useForm({
-    // name: '',
-    // email: '',
-    // noHandphone: '',
-    // password: '',
-    // repeatPassword: '',
-    name: 'tes 14',
-    email: 'tes14@mailsac.com',
-    noHandphone: '081208120814',
-    password: '12345678',
-    repeatPassword: '12345678',
+    name: '',
+    email: '',
+    noHandphone: '',
+    password: '',
+    repeatPassword: '',
   });
   const [secureTextEntry, setSecureTextEntry] = useForm({
     _password: true,

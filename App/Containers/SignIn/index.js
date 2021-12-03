@@ -22,10 +22,8 @@ import {colors, fonts} from '../../Themes';
 
 const SignIn = ({navigation}) => {
   const [form, setForm] = useForm({
-    // email: '',
-    // password: '',
-    email: 'test9@mailinator.com',
-    password: '123456789',
+    email: '',
+    password: '',
   });
   const [visibleForgotPassword, setVisibleForgotPassword] = useState(false);
   const dispatch = useDispatch();
@@ -52,6 +50,7 @@ const SignIn = ({navigation}) => {
           username: form.email,
           password: form.password,
         },
+        showLog: true
       });
 
       if (res) {

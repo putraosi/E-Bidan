@@ -10,22 +10,14 @@ import {colors} from '../../Themes';
 
 const AddPatient = ({navigation}) => {
   const [form, setForm] = useForm({
-    // name: '',
-    // gender: '',
-    // birth_place: '',
-    // birth_date: new Date(),
-    // email: '',
-    // noHandphone: '',
-    // address: '',
-    // spouse: '',
-    name: 'Pasien 1',
-    gender: 'Pria',
-    birth_place: 'Tangerang',
+    name: '',
+    gender: '',
+    birth_place: '',
     birth_date: new Date(),
-    email: 'pasien1@mailsac.com',
-    noHandphone: '081208120811',
-    address: 'Jalan Kemana Saja',
-    spouse: 'Suami 1',
+    email: '',
+    noHandphone: '',
+    address: '',
+    spouse: '',
   });
   const [visibleGender, setVisibleGender] = useState(false);
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
@@ -85,6 +77,7 @@ const AddPatient = ({navigation}) => {
           spouse: form.spouse,
           status: 'active',
         },
+        showLog: true
       });
       dispatch({type: 'SET_LOADING', value: false});
       if (res) {

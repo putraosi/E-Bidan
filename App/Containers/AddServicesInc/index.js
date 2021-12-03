@@ -300,7 +300,7 @@ const AddServicesInc = ({navigation, route}) => {
           testID="dateTimePicker"
           value={form.birthDate}
           mode={'date'}
-          minimumDate={new Date()}
+          maximumDate={new Date()}
           onChange={(event, selectedDate) => {
             const currentDate = selectedDate || form.birthDate;
             setVisibleBirthDate(false);
