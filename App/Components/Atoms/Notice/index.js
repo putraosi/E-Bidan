@@ -6,7 +6,7 @@ import NoticeRounded from './NoticeRounded';
 const Notice = ({type, category}) => {
   if (type == 'rounded') return <NoticeRounded category={category} />;
 
-  let label = 'Proses';
+  let label = 'Baru';
   let backgroundColor = colors.notice.progress.backgroundColor;
   let color = colors.notice.progress.color;
 
@@ -31,16 +31,16 @@ export default Notice;
 
 const styles = StyleSheet.create({
   container: backgroundColor => ({
-    width: 56,
-    height: 12,
+    width: 70,
+    height: 18,
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor,
-    borderRadius: 2,
+    borderRadius: 4,
   }),
 
   label: color => ({
-    fontSize: 6,
+    fontSize: 12,
     color,
     fontFamily: fonts.primary.regular,
     textTransform: 'capitalize',

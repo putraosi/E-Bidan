@@ -1,24 +1,24 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   ImageBackground,
   ScrollView,
   StyleSheet,
   Text,
-  View
+  View,
 } from 'react-native';
-import { useDispatch } from 'react-redux';
-import { Button, Container, Gap, Input, Modals, Row } from '../../Components';
+import {useDispatch} from 'react-redux';
+import {Button, Container, Gap, Input, Modals, Row} from '../../Components';
 import {
   constants,
   SampleAlert,
   storeData,
   ToastAlert,
-  useForm
+  useForm,
 } from '../../Helpers';
-import { ILHeader, ILLogo } from '../../Images';
-import { Api } from '../../Services/Api';
-import { colors, fonts } from '../../Themes';
+import {ILHeader, ILLogo} from '../../Images';
+import {Api} from '../../Services/Api';
+import {colors, fonts} from '../../Themes';
 
 const SignIn = ({navigation}) => {
   const [form, setForm] = useForm({
@@ -52,7 +52,6 @@ const SignIn = ({navigation}) => {
           username: form.email,
           password: form.password,
         },
-        showLog: true
       });
 
       if (res) {

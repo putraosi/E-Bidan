@@ -6,6 +6,7 @@ import IcHidePassword from './icon-hide-password.png';
 import IcIndonesia from './icon-indonesian.png';
 import IcLeft from './icon-left.png';
 import IcLogout from './icon-logout.png';
+import IcMenu from './icon-menu.png';
 import IcRadioActive from './icon-radio-active.png';
 import IcRadioInactive from './icon-radio-inactive.png';
 import IcShowPassword from './icon-show-password.png';
@@ -15,6 +16,7 @@ import IcRightArrow from './right-arrow.png';
 
 export {
   IcDate,
+  IcMenu,
   IcAdd,
   IcLeft,
   IcRightArrow,

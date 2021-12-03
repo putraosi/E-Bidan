@@ -18,16 +18,10 @@ import {
   Modals,
   SpaceBeetwen,
 } from '../../Components';
-import {getData} from '../../Helpers';
+import {getData, ToastAlert} from '../../Helpers';
 import {ILNullPhoto} from '../../Images';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
-
-const dataOrderSchedule = [
-  {id: 1, category: 'pending'},
-  {id: 2, category: 'progress'},
-  {id: 3, category: 'pending'},
-];
 const dataOrderHistory = [
   {id: 1, category: 'accepted'},
   {id: 2, category: 'rejected'},
@@ -38,7 +32,10 @@ const dataOrderHistory = [
 
 const HomePatient = ({navigation}) => {
   const [loading, setLoading] = useState(true);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [loadingOrderSchedule, setLoadingOrderSchedule] = useState(true);
   const [dataUser, setDataUser] = useState(null);
+  const [dataOrderSchedule, setDataOrderSchedule] = useState([]);
   const [dataSevices, setDataSevices] = useState(null);
   const [visibelServices, setVisibelServices] = useState(false);
   const isFocused = useIsFocused();
@@ -46,6 +43,7 @@ const HomePatient = ({navigation}) => {
   useEffect(() => {
     getData('user').then(res => {
       setDataUser(res);
+      setLoadingUser(false);
     });
 
     getServiceCategory();
@@ -54,6 +52,7 @@ const HomePatient = ({navigation}) => {
   useEffect(() => {
     if (isFocused) {
       console.log('focused');
+      getBooking();
     }
   }, [isFocused]);
 
@@ -67,6 +66,24 @@ const HomePatient = ({navigation}) => {
       setLoading(false);
     } catch (error) {
       setLoading(false);
+    }
+  };
+
+  const getBooking = async () => {
+    try {
+      const res = await Api.get({
+        url: 'admin/bookings',
+        params: {
+          type: 'pasien',
+          per_page: 3,
+        },
+        showLog: true,
+      });
+
+      setDataOrderSchedule(res);
+      setLoadingOrderSchedule(false);
+    } catch (error) {
+      setLoadingOrderSchedule(false);
     }
   };
 
@@ -87,6 +104,9 @@ const HomePatient = ({navigation}) => {
 
   const photo = ILNullPhoto;
 
+  // console.log('cek user', dataUser);
+  // console.log('cek booking', dataOrderSchedule);
+
   return (
     <Container>
       {loading ? (
@@ -94,15 +114,21 @@ const HomePatient = ({navigation}) => {
       ) : (
         <>
           <ScrollView showsVerticalScrollIndicator={false}>
-            <TouchableOpacity
-              style={styles.containerHeader}
-              onPress={() => navigation.navigate('DetailsProfilePatient')}>
-              <Image style={styles.image} source={photo} />
-              <View style={styles.wrapperAccount}>
-                <Text style={styles.name}>{dataUser.name}</Text>
-                <Text style={styles.email}>{dataUser.email}</Text>
-              </View>
-            </TouchableOpacity>
+            {loadingUser ? (
+              <Loading />
+            ) : (
+              <TouchableOpacity
+                style={styles.containerHeader}
+                onPress={() =>
+                  navigation.navigate('DetailsProfilePatient', {data: dataUser})
+                }>
+                <Image style={styles.image} source={photo} />
+                <View style={styles.wrapperAccount}>
+                  <Text style={styles.name}>{dataUser.name}</Text>
+                  <Text style={styles.email}>{dataUser.email}</Text>
+                </View>
+              </TouchableOpacity>
+            )}
             <View style={styles.slider}>
               <Text>{'Coming Soon'}</Text>
             </View>
@@ -112,18 +138,24 @@ const HomePatient = ({navigation}) => {
                 <Text style={styles.title}>{'Jadwal Booking'}</Text>
                 <TouchableOpacity
                   onPress={() => navigation.navigate('OrderSchedule')}>
-                  <Text style={styles.showAll}>{'Lihat Semua'}</Text>
+                  {!loadingOrderSchedule && (
+                    <Text style={styles.showAll}>{'Lihat Semua'}</Text>
+                  )}
                 </TouchableOpacity>
               </SpaceBeetwen>
               <Gap height={10} />
 
-              {dataOrderSchedule.map(item => (
-                <ItemOrderSchedule
-                  key={item.id}
-                  data={item}
-                  onPress={() => navigation.navigate('OrderDetailPatient')}
-                />
-              ))}
+              {loadingOrderSchedule ? (
+                <Loading />
+              ) : (
+                dataOrderSchedule.map(item => (
+                  <ItemOrderSchedule
+                    key={item.id}
+                    data={item}
+                    onPress={() => ToastAlert()}
+                  />
+                ))
+              )}
             </View>
 
             <View style={styles.containerOrder}>
@@ -184,11 +216,11 @@ const styles = StyleSheet.create({
   },
 
   wrapperAccount: {
-    marginLeft: 8,
+    marginLeft: 16,
   },
 
   name: {
-    fontSize: 14,
+    fontSize: 18,
     color: colors.white,
     fontFamily: fonts.primary.bold,
     textTransform: 'capitalize',

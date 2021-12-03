@@ -7,7 +7,8 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useDispatch } from 'react-redux';
+import DeviceInfo from 'react-native-device-info';
+import {useDispatch} from 'react-redux';
 import {
   Button,
   Container,
@@ -15,20 +16,22 @@ import {
   Header,
   Input,
   Modals,
-  Row,
+  ModalSelect,
   SpaceBeetwen,
 } from '../../Components';
-import {resetPage, ToastAlert} from '../../Helpers';
-import {IcEditCircle, IcLogout, ILPorife} from '../../Images';
-import { Api } from '../../Services';
+import {constants, resetPage, ToastAlert} from '../../Helpers';
+import {IcEditCircle, IcMenu, ILNullPhoto} from '../../Images';
+import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
-const DetailsProfilePatient = ({navigation}) => {
+const DetailsProfilePatient = ({navigation, route}) => {
   const [visibleLogout, setVisibleLogout] = useState(false);
+  const [visibleSelect, setVisibleSelect] = useState(false);
   const [secureTextEntry1, setSecureTextEntry1] = useState(true);
   const [secureTextEntry2, setSecureTextEntry2] = useState(true);
   const [newPassword, setNewPassword] = useState('');
-  const dispatch = useDispatch()
+  const [isChange, setIsChange] = useState(false);
+  const dispatch = useDispatch();
 
   const onLogout = async () => {
     setVisibleLogout(false);
@@ -50,84 +53,75 @@ const DetailsProfilePatient = ({navigation}) => {
     }
   };
 
+  const data = route.params.data;
+
+  let labelButtonFirst = 'Ubah';
+  let onPressFirst = () => setIsChange(true);
+  // console.log('cek user', data);
+  const photo = data.photo ? {uri: data.photo} : ILNullPhoto;
+  const editable = isChange ? true : false;
+
+  if (isChange) {
+    labelButtonFirst = 'Simpan';
+    onPressFirst = () => ToastAlert();
+  }
+
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Header
           onDismiss={() => navigation.goBack()}
-          iconRight={IcLogout}
-          onPress={() => setVisibleLogout(true)}
+          iconRight={IcMenu}
+          onPress={() => setVisibleSelect(true)}
         />
         <View style={styles.containerHeader}>
           <TouchableOpacity onPress={() => ToastAlert()}>
-            <Image style={styles.image} source={ILPorife} />
-            <TouchableOpacity
-              style={styles.containerEdit}
-              onPress={() => ToastAlert()}>
-              <Image style={styles.edit} source={IcEditCircle} />
-            </TouchableOpacity>
+            <Image style={styles.image} source={photo} />
+            {isChange && (
+              <TouchableOpacity
+                style={styles.containerEdit}
+                onPress={() => ToastAlert()}>
+                <Image style={styles.edit} source={IcEditCircle} />
+              </TouchableOpacity>
+            )}
           </TouchableOpacity>
-          <Text style={styles.name}>{'Anya Geraldin'}</Text>
-          <Text style={styles.email}>{'anyagrl@gmail.com'}</Text>
         </View>
 
         <View style={styles.content}>
-          <Row>
-            <Input
-              style={styles.input}
-              label={'Nama Depan'}
-              value={'Anya'}
-              editable={false}
-            />
-            <Gap width={16} />
-            <Input
-              style={styles.input}
-              label={'Nama Belakang'}
-              value={'Geraldin'}
-              editable={false}
-            />
-          </Row>
+          <Input
+            style={styles.input}
+            label={'Nama'}
+            value={data.name}
+            editable={editable}
+          />
+
           <Gap height={12} />
           <Input label={'Email'} value={'anyagrl@gmail.com'} editable={false} />
+
           <Gap height={12} />
-          <Input
-            label={'No. Hanphone'}
-            value={'+62 899 8899 5623'}
-            editable={false}
-          />
-          <Gap height={12} />
-          <Input
-            label={'Kata Sandi'}
-            type={'password'}
-            value={'12345678'}
-            secureTextEntry={secureTextEntry1}
-            editable={false}
-            onTogglePassword={() => setSecureTextEntry1(!secureTextEntry1)}
-          />
-          <Gap height={12} />
-          <Input
-            label={'Ubah Kata Sandi'}
-            type={'password'}
-            value={newPassword}
-            onChangeText={value => setNewPassword(value)}
-            secureTextEntry={secureTextEntry2}
-            onTogglePassword={() => setSecureTextEntry2(!secureTextEntry2)}
-          />
+          <Input label={'No. Hanphone'} value={data.phone} editable={false} />
           <Gap height={20} />
           <SpaceBeetwen>
             <Button
               styleButton={styles.button}
-              label={'Ubah'}
-              onPress={() => ToastAlert()}
+              label={labelButtonFirst}
+              onPress={onPressFirst}
             />
-            <Gap width={16} />
-            <Button
-              styleButton={styles.button}
-              type={'white'}
-              label={'Batal'}
-              onPress={() => navigation.goBack()}
-            />
+            {isChange && (
+              <>
+                <Gap width={16} />
+                <Button
+                  styleButton={styles.button}
+                  type={'white'}
+                  label={'Batal'}
+                  onPress={() => setIsChange(false)}
+                />
+              </>
+            )}
           </SpaceBeetwen>
+
+          <Text
+            style={styles.version}>{`Version ${DeviceInfo.getVersion()}`}</Text>
         </View>
       </ScrollView>
 
@@ -139,6 +133,20 @@ const DetailsProfilePatient = ({navigation}) => {
         labelCancel={'Batal'}
         onPress={onLogout}
         onCancel={() => setVisibleLogout(false)}
+      />
+
+      <ModalSelect
+        visible={visibleSelect}
+        data={constants.MENU_ITEM_PROFILE}
+        onDismiss={() => setVisibleSelect(false)}
+        onPress={value => {
+          setVisibleSelect(false);
+          if (value == 'Keluar') {
+            setVisibleLogout(true);
+          } else {
+            ToastAlert();
+          }
+        }}
       />
     </Container>
   );
@@ -183,6 +191,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.text.primary,
     fontFamily: fonts.primary.regular,
+  },
+
+  version: {
+    fontSize: 12,
+    color: colors.text.secondary,
+    fontFamily: fonts.primary.regular,
+    textAlign: 'center',
+    marginTop: 16,
   },
 
   content: {

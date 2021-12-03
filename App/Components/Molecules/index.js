@@ -4,8 +4,9 @@ import ItemOldPatient from './ItemOldPatient';
 import ItemOrderHistory from './ItemOrderHistory';
 import ItemOrderSchedule from './ItemOrderSchedule';
 import ItemSample from './ItemSample';
+import ModalAlert from './ModalAlert';
 import Modals from './Modals';
-import ModalAlert from './ModalAlert'
+import ModalSelect from './ModalSelect';
 
 export {
   ItemOrderSchedule,
@@ -15,5 +16,6 @@ export {
   ItemSample,
   Modals,
   ModalAlert,
+  ModalSelect,
   Header,
 };

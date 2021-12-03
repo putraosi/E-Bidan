@@ -4,22 +4,23 @@ import {IcRightArrow} from '../../../Images/icon';
 import {ILPorife} from '../../../Images/illustration';
 import {colors, fonts} from '../../../Themes';
 import {Gap, Notice, Row, SpaceBeetwen} from '../../Atoms';
+import {moments} from '../../../Libs'
 
+// DUMMY
 const ItemOrderSchedule = ({data, onPress}) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <SpaceBeetwen>
         <Image style={styles.image} source={ILPorife} />
         <View style={styles.containerAccount}>
-          <Text style={styles.name}>{'Bd. Syantika Apriliani'}</Text>
+          <Text style={styles.name}>{'Bd. Syantika Apriliani'}</Text> 
           <Text style={styles.type}>{'Imunisasi'}</Text>
           <Gap height={2} />
-          <Notice category={data.category} />
+          <Notice category={data.request_status.name} />
         </View>
         <Row>
           <View style={styles.wrapperDateTime}>
-            <Text style={styles.date}>{'30 Agustus 2021'}</Text>
-            <Text style={styles.time}>{'10.00 - 13.00'}</Text>
+            <Text style={styles.date}>{moments(data.booking_date).format('DD MMM YYYY')}</Text>
           </View>
           <Image style={styles.arrow} source={IcRightArrow} />
         </Row>
@@ -50,9 +51,9 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: 46,
-    height: 46,
-    borderRadius: 46 / 2,
+    width: 60,
+    height: 60,
+    borderRadius: 60 / 2,
     marginRight: 8,
     borderWidth: 1,
     borderColor: colors.primary,
@@ -64,7 +65,7 @@ const styles = StyleSheet.create({
 
   name: {
     fontSize: 14,
-    color: colors.primary,
+    color: colors.text.primary,
     fontFamily: fonts.primary.regular,
   },
 
@@ -80,7 +81,7 @@ const styles = StyleSheet.create({
   },
 
   date: {
-    fontSize: 12,
+    fontSize: 16,
     color: colors.black,
     fontFamily: fonts.primary.regular,
   },
