@@ -1,6 +1,7 @@
 import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
+  FlatList,
   Image,
   ScrollView,
   StyleSheet,
@@ -11,6 +12,7 @@ import {
 import {
   Button,
   Container,
+  EmptyList,
   Gap,
   ItemOrderHistory,
   ItemOrderSchedule,
@@ -22,20 +24,15 @@ import {getData, ToastAlert} from '../../Helpers';
 import {ILNullPhoto} from '../../Images';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
-const dataOrderHistory = [
-  {id: 1, category: 'accepted'},
-  {id: 2, category: 'rejected'},
-  {id: 3, category: 'accepted'},
-  {id: 4, category: 'accepted'},
-  {id: 5, category: 'rejected'},
-];
 
 const HomePatient = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
   const [loadingOrderSchedule, setLoadingOrderSchedule] = useState(true);
+  const [loadingOrderHistory, setLoadingOrderHistory] = useState(false);
   const [dataUser, setDataUser] = useState(null);
   const [dataOrderSchedule, setDataOrderSchedule] = useState([]);
+  const [dataOrderHistory, setDataOrderHistory] = useState([]);
   const [dataSevices, setDataSevices] = useState(null);
   const [visibelServices, setVisibelServices] = useState(false);
   const isFocused = useIsFocused();
@@ -102,7 +99,10 @@ const HomePatient = ({navigation}) => {
     navigation.navigate(screen, {id: select.id, userId: dataUser.id});
   };
 
-  const photo = ILNullPhoto;
+  const photo =
+    dataUser && dataUser.pasien && dataUser.pasien.photo
+      ? {url: dataUser.pasien.photo}
+      : ILNullPhoto;
 
   // console.log('cek user', dataUser);
   // console.log('cek booking', dataOrderSchedule);
@@ -138,7 +138,7 @@ const HomePatient = ({navigation}) => {
                 <Text style={styles.title}>{'Jadwal Booking'}</Text>
                 <TouchableOpacity
                   onPress={() => navigation.navigate('OrderSchedule')}>
-                  {!loadingOrderSchedule && (
+                  {!loadingOrderSchedule && dataOrderSchedule.length > 0 && (
                     <Text style={styles.showAll}>{'Lihat Semua'}</Text>
                   )}
                 </TouchableOpacity>
@@ -148,13 +148,20 @@ const HomePatient = ({navigation}) => {
               {loadingOrderSchedule ? (
                 <Loading />
               ) : (
-                dataOrderSchedule.map(item => (
-                  <ItemOrderSchedule
-                    key={item.id}
-                    data={item}
-                    onPress={() => ToastAlert()}
-                  />
-                ))
+                <FlatList
+                  showsVerticalScrollIndicator={false}
+                  keyExtractor={item => item.id}
+                  data={dataOrderSchedule}
+                  renderItem={({item}) => (
+                    <ItemOrderSchedule
+                      data={item}
+                      onPress={() => ToastAlert()}
+                    />
+                  )}
+                  ListEmptyComponent={() => (
+                    <EmptyList desc="Belum terdapat jadwal booking." />
+                  )}
+                />
               )}
             </View>
 
@@ -163,18 +170,31 @@ const HomePatient = ({navigation}) => {
                 <Text style={styles.title}>{'History Booking'}</Text>
                 <TouchableOpacity
                   onPress={() => navigation.navigate('OrderHistoryPatient')}>
-                  <Text style={styles.showAll}>{'Lihat Semua'}</Text>
+                  {!loadingOrderHistory && dataOrderHistory.length > 0 && (
+                    <Text style={styles.showAll}>{'Lihat Semua'}</Text>
+                  )}
                 </TouchableOpacity>
               </SpaceBeetwen>
               <Gap height={10} />
-
-              {dataOrderHistory.map(item => (
-                <ItemOrderHistory
-                  key={item.id}
-                  data={item}
-                  onPress={() => navigation.navigate('OrderDetailPatient')}
+              {loadingOrderHistory ? (
+                <Loading />
+              ) : (
+                <FlatList
+                  showsVerticalScrollIndicator={false}
+                  keyExtractor={item => item.id}
+                  data={dataOrderHistory}
+                  renderItem={({item}) => (
+                    <ItemOrderHistory
+                      key={item.id}
+                      data={item}
+                      onPress={() => ToastAlert()}
+                    />
+                  )}
+                  ListEmptyComponent={() => (
+                    <EmptyList desc="Belum terdapat history booking." />
+                  )}
                 />
-              ))}
+              )}
             </View>
             <Gap height={50} />
           </ScrollView>

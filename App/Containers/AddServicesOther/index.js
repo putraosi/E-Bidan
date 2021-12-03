@@ -172,7 +172,7 @@ const AddServicesOther = ({navigation}) => {
       <Header title={'Pesanan Baru'} onDismiss={() => navigation.goBack()} />
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
-          <Input label={'Jenis Layanan'} value={'Lainnya'} editable={false} />
+          <Input label={'Jenis Layanan'} value={'Lainnya'} disable />
 
           <Gap height={12} />
           <Input

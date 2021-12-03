@@ -27,6 +27,7 @@ export const colors = {
   white: mainColors.white1,
   black: mainColors.black1,
   yellow: mainColors.yellow1,
+  transparent: mainColors.transparent,
   backgroundColor: mainColors.gray1,
   backgroundColorModal: mainColors.blackTransparent1,
   backgroundColorBlue: mainColors.blueTranparent1,

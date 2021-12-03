@@ -40,7 +40,7 @@ const AddServicesInc = ({navigation, route}) => {
     babyWeight: '',
     babyLength: '',
     description: '',
-    price: '',
+    price: '0',
   });
 
   const [loading, setLoading] = useState(true);
@@ -90,7 +90,6 @@ const AddServicesInc = ({navigation, route}) => {
     if (selectMidwife.name == 'Pilih')
       return ToastAlert('Silahkan pilih bidan Anda');
     if (!form.description) return ToastAlert('Silahkan isi keterangan anda');
-    if (!form.price) return ToastAlert('Silahkan isi biaya anda');
 
     onSubmit();
   };
@@ -146,7 +145,7 @@ const AddServicesInc = ({navigation, route}) => {
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.content}>
-            <Input label={'Jenis Layanan'} value={'INC'} editable={false} />
+            <Input label={'Jenis Layanan'} value={'INC'} disable />
 
             <Gap height={12} />
             <Input
@@ -279,14 +278,6 @@ const AddServicesInc = ({navigation, route}) => {
               label={'Keterangan'}
               value={form.description}
               onChangeText={value => setForm('description', value)}
-            />
-
-            <Gap height={12} />
-            <Input
-              label={'Biaya'}
-              value={form.price}
-              keyboardType={'numeric'}
-              onChangeText={value => setForm('price', value)}
             />
 
             <Gap height={20} />

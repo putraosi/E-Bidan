@@ -1,7 +1,7 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, { useEffect, useState } from 'react';
-import { FlatList, ScrollView, Text, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {FlatList, ScrollView, Text, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {
   Button,
   Container,
@@ -12,7 +12,7 @@ import {
   ModalAlert,
   Modals,
   RadioButton,
-  SpaceBeetwen
+  SpaceBeetwen,
 } from '../../Components';
 import {
   constants,
@@ -21,10 +21,10 @@ import {
   getData,
   SampleAlert,
   ToastAlert,
-  useForm
+  useForm,
 } from '../../Helpers';
-import { moments } from '../../Libs';
-import { Api } from '../../Services';
+import {moments} from '../../Libs';
+import {Api} from '../../Services';
 import styles from './styles';
 
 const userBidanDummy = [
@@ -48,7 +48,7 @@ const AddServicesHomecare = ({navigation, route}) => {
     placeExecution: 'Klinik Bidan Amel',
     midwife: '',
     phoneNumber: '',
-    price: '',
+    price: '0',
   });
 
   const [loading, setLoading] = useState(true);
@@ -86,8 +86,8 @@ const AddServicesHomecare = ({navigation, route}) => {
       if (res && res.length) {
         setDataMidwife(res[0].bidans);
         setSelectMidwife(defalutSelectMidwife);
-      }else{
-        setDataMidwife([])
+      } else {
+        setDataMidwife([]);
       }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
@@ -121,6 +121,17 @@ const AddServicesHomecare = ({navigation, route}) => {
     setForm('executionTime', currentDate);
   };
 
+  const onChangeTreatmentFee = item => {
+    let price = 0;
+    item.map(check => {
+      if (check.select) {
+        price += check.price;
+      }
+    });
+
+    setForm('price', price.toString());
+  };
+
   const validation = () => {
     if (!form.motherName) return ToastAlert('Silahkan isi Nama Ibu Anda');
     if (!form.childName) return ToastAlert('Silahkan isi Nama Anak Anda');
@@ -131,7 +142,6 @@ const AddServicesHomecare = ({navigation, route}) => {
     if (!form.phoneNumber) return ToastAlert('Silahkan isi No. Whatsapp Anda');
     if (Object.values(selectTreatment).every(item => item.select === false))
       return ToastAlert('Silahkan pilih treatment Anda');
-    if (!form.price) return ToastAlert('Silahkan isi biaya treatment-nya');
 
     onSubmit();
   };
@@ -184,7 +194,7 @@ const AddServicesHomecare = ({navigation, route}) => {
             <Input
               label={'Jenis Layanan'}
               value={'Homecare'}
-              editable={false}
+              disable
             />
 
             <Gap height={12} />
@@ -282,6 +292,7 @@ const AddServicesHomecare = ({navigation, route}) => {
                     selectTreatment[position].select =
                       !selectTreatment[position].select;
                     setIsView(!isView);
+                    onChangeTreatmentFee(selectTreatment);
                     setSelectTreatment(selectTreatment);
                   }}
                 />
@@ -294,7 +305,7 @@ const AddServicesHomecare = ({navigation, route}) => {
             <Input
               label={'Biaya Treatment'}
               value={form.price}
-              keyboardType={'numeric'}
+              disable
               onChangeText={value => setForm('price', value)}
             />
 

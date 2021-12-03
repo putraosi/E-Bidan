@@ -4,6 +4,7 @@ export const formatTreatment = data => {
       id: item.id,
       name: item.name,
       select: false,
+      price: item.cost ? item.cost : 0,
     };
     return newItem;
   });

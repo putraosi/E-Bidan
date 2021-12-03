@@ -5,29 +5,30 @@ import {
   StyleSheet,
   TouchableOpacity,
   View,
+  Text
 } from 'react-native';
+import DeviceInfo from 'react-native-device-info';
 import {useDispatch} from 'react-redux';
-import {Button, Container, Gap, Header, Input, Modals} from '../../Components';
-import {resetPage, ToastAlert} from '../../Helpers';
-import {IcEditCircle, IcLogout, ILNullPhoto} from '../../Images';
+import {Button, Container, Gap, Header, Input, Modals, ModalSelect, SpaceBeetwen} from '../../Components';
+import {constants, resetPage, ToastAlert, useForm} from '../../Helpers';
+import {IcEditCircle, IcMenu, ILNullPhoto} from '../../Images';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const DetailsProfileMidwife = ({navigation, route}) => {
   const data = route.params.data;
 
+  console.log('cek data', data);
+
+  const [form, setForm] = useForm({
+    name: data.name,
+    email: data.email,
+    phoneNumber: data.phone,
+  });
   const [visibleLogout, setVisibleLogout] = useState(false);
-  const [editable, setEditable] = useState(false);
+  const [visibleSelect, setVisibleSelect] = useState(false);
+  const [isChange, setIsChange] = useState(false);
   const dispatch = useDispatch();
-
-  const photo = data.bidan.photo ? {uri: data.bidan.photo} : ILNullPhoto;
-  let labelButton = 'Ubah Kata Sandi';
-  let onPress = () => ToastAlert();
-
-  if (editable) {
-    labelButton = 'Simpan';
-    onPress = () => setEditable(false);
-  }
 
   const onLogout = async () => {
     setVisibleLogout(false);
@@ -49,50 +50,73 @@ const DetailsProfileMidwife = ({navigation, route}) => {
     }
   };
 
+  let labelButtonFirst = 'Ubah';
+  let onPressFirst = () => setIsChange(true);
+  const photo = data.photo ? {uri: data.photo} : ILNullPhoto;
+  const editable = isChange ? true : false;
+
+  if (isChange) {
+    labelButtonFirst = 'Simpan';
+    onPressFirst = () => ToastAlert();
+  }
+
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>
         <Header
           onDismiss={() => navigation.goBack()}
-          iconRight={editable ? null : IcLogout}
-          onPress={() => setVisibleLogout(true)}
+          iconRight={IcMenu}
+          onPress={() => setVisibleSelect(true)}
         />
         <View style={styles.containerHeader}>
-          <TouchableOpacity
-            onPress={() => {
-              if (editable) ToastAlert();
-              else navigation.navigate('PreviewPhoto', {image: photo});
-            }}>
+          <TouchableOpacity onPress={() => ToastAlert()}>
             <Image style={styles.image} source={photo} />
+            {isChange && (
+              <TouchableOpacity
+                style={styles.containerEdit}
+                onPress={() => ToastAlert()}>
+                <Image style={styles.edit} source={IcEditCircle} />
+              </TouchableOpacity>
+            )}
           </TouchableOpacity>
         </View>
 
         <View style={styles.content}>
-          {!editable && (
-            <TouchableOpacity
-              style={styles.containerEdit}
-              onPress={() => setEditable(true)}>
-              <Image style={styles.edit} source={IcEditCircle} />
-            </TouchableOpacity>
-          )}
-
           <Input
             style={styles.input}
             label={'Nama'}
-            value={data.bidan.name}
+            value={form.name}
             editable={editable}
-          />
-          <Gap height={12} />
-          <Input label={'Email'} value={data.bidan.email} editable={false} />
-          <Gap height={12} />
-          <Input
-            label={'No. Hanphone'}
-            value={data.bidan.phone}
-            editable={editable}
+            onChangeText={value => setForm('name', value)}
           />
 
-          <Gap height={16} />
-          <Button label={labelButton} onPress={onPress} />
+          <Gap height={12} />
+          <Input label={'Email'} value={form.email} disable />
+
+          <Gap height={12} />
+          <Input label={'No. Hanphone'} value={form.phoneNumber} disable />
+          <Gap height={20} />
+          <SpaceBeetwen>
+            <Button
+              styleButton={styles.button}
+              label={labelButtonFirst}
+              onPress={onPressFirst}
+            />
+            {isChange && (
+              <>
+                <Gap width={16} />
+                <Button
+                  styleButton={styles.button}
+                  type={'white'}
+                  label={'Batal'}
+                  onPress={() => setIsChange(false)}
+                />
+              </>
+            )}
+          </SpaceBeetwen>
+
+          <Text
+            style={styles.version}>{`Version ${DeviceInfo.getVersion()}`}</Text>
         </View>
       </ScrollView>
 
@@ -100,10 +124,24 @@ const DetailsProfileMidwife = ({navigation, route}) => {
         visible={visibleLogout}
         desc={'Anda yakin ingin\nkeluar aplikasi ?'}
         onDismiss={() => setVisibleLogout(false)}
-        labelPress={'Iya'}
-        labelCancel={'Tidak'}
+        labelPress={'Keluar'}
+        labelCancel={'Batal'}
         onPress={onLogout}
         onCancel={() => setVisibleLogout(false)}
+      />
+
+      <ModalSelect
+        visible={visibleSelect}
+        data={constants.MENU_ITEM_PROFILE}
+        onDismiss={() => setVisibleSelect(false)}
+        onPress={value => {
+          setVisibleSelect(false);
+          if (value == 'Keluar') {
+            setVisibleLogout(true);
+          } else {
+            ToastAlert();
+          }
+        }}
       />
     </Container>
   );
@@ -149,6 +187,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: colors.text.primary,
     fontFamily: fonts.primary.regular,
+  },
+
+  version: {
+    fontSize: 12,
+    color: colors.text.secondary,
+    fontFamily: fonts.primary.regular,
+    textAlign: 'center',
+    marginTop: 16,
   },
 
   content: {

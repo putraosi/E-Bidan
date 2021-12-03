@@ -1,3 +1,4 @@
+import EmptyList from './EmptyList';
 import Header from './Header';
 import IncomingOrderItems from './IncomingOrderItems';
 import ItemOldPatient from './ItemOldPatient';
@@ -18,4 +19,5 @@ export {
   ModalAlert,
   ModalSelect,
   Header,
+  EmptyList,
 };

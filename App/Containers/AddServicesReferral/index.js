@@ -1,7 +1,7 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, {useEffect, useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { ScrollView, Text, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   Container,
@@ -12,11 +12,11 @@ import {
   ModalAlert,
   Modals,
   RadioButton,
-  SpaceBeetwen,
+  SpaceBeetwen
 } from '../../Components';
-import {constants, SampleAlert, ToastAlert, useForm} from '../../Helpers';
-import {moments} from '../../Libs';
-import {Api} from '../../Services';
+import { constants, SampleAlert, ToastAlert, useForm } from '../../Helpers';
+import { moments } from '../../Libs';
+import { Api } from '../../Services';
 import styles from './styles';
 
 const defalutSelectMidwife = {
@@ -141,7 +141,7 @@ const AddServicesReferral = ({navigation, route}) => {
             <Input
               label={'Jenis Layanan'}
               value={'Pelayanan Rujukan'}
-              editable={false}
+              disable
             />
 
             <Gap height={12} />

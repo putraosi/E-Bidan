@@ -155,7 +155,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
             <Input
               label={'Jenis Layanan'}
               value={'Antenatal (Pemeriksaan Kehamilan)'}
-              editable={false}
+              disable
             />
 
             <Gap height={12} />

@@ -19,17 +19,23 @@ import {
   ModalSelect,
   SpaceBeetwen,
 } from '../../Components';
-import {constants, resetPage, ToastAlert} from '../../Helpers';
+import {constants, resetPage, ToastAlert, useForm} from '../../Helpers';
 import {IcEditCircle, IcMenu, ILNullPhoto} from '../../Images';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const DetailsProfilePatient = ({navigation, route}) => {
+  const data = route.params.data;
+
+  const [form, setForm] = useForm({
+    name: data.name,
+    email: data.email,
+    phoneNumber: data.phone,
+    address: data.address,
+    spouse: data.spouse,
+  });
   const [visibleLogout, setVisibleLogout] = useState(false);
   const [visibleSelect, setVisibleSelect] = useState(false);
-  const [secureTextEntry1, setSecureTextEntry1] = useState(true);
-  const [secureTextEntry2, setSecureTextEntry2] = useState(true);
-  const [newPassword, setNewPassword] = useState('');
   const [isChange, setIsChange] = useState(false);
   const dispatch = useDispatch();
 
@@ -53,11 +59,8 @@ const DetailsProfilePatient = ({navigation, route}) => {
     }
   };
 
-  const data = route.params.data;
-
   let labelButtonFirst = 'Ubah';
   let onPressFirst = () => setIsChange(true);
-  // console.log('cek user', data);
   const photo = data.photo ? {uri: data.photo} : ILNullPhoto;
   const editable = isChange ? true : false;
 
@@ -91,15 +94,34 @@ const DetailsProfilePatient = ({navigation, route}) => {
           <Input
             style={styles.input}
             label={'Nama'}
-            value={data.name}
+            value={form.name}
             editable={editable}
+            onChangeText={value => setForm('name', value)}
           />
 
           <Gap height={12} />
-          <Input label={'Email'} value={'anyagrl@gmail.com'} editable={false} />
+          <Input
+            style={styles.input}
+            label={'Nama Pasangan'}
+            value={form.spouse}
+            editable={editable}
+            onChangeText={value => setForm('spouse', value)}
+          />
 
           <Gap height={12} />
-          <Input label={'No. Hanphone'} value={data.phone} editable={false} />
+          <Input
+            style={styles.input}
+            label={'Alamat'}
+            value={form.address}
+            editable={editable}
+            onChangeText={value => setForm('address', value)}
+          />
+
+          <Gap height={12} />
+          <Input label={'Email'} value={form.email} disable />
+
+          <Gap height={12} />
+          <Input label={'No. Hanphone'} value={form.phoneNumber} disable />
           <Gap height={20} />
           <SpaceBeetwen>
             <Button

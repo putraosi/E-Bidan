@@ -60,7 +60,9 @@ const SignIn = ({navigation}) => {
         storeData('mode', roles.name);
 
         if (roles.name === 'bidan') {
-          storeData('user', res);
+          let newData = res.bidan;
+          newData.roles = roles.name;
+          storeData('user', newData);
           navigation.replace('HomeMidwife');
         } else {
           let newData = res.pasien;

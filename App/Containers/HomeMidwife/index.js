@@ -1,5 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {
+  FlatList,
   Image,
   ScrollView,
   StyleSheet,
@@ -9,6 +10,7 @@ import {
 } from 'react-native';
 import {
   Container,
+  EmptyList,
   Gap,
   IncomingOrderItems,
   ItemOldPatient,
@@ -20,52 +22,49 @@ import {IcAdd, ILNullPhoto} from '../../Images';
 import {colors, fonts} from '../../Themes';
 
 const HomeMidwife = ({navigation}) => {
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
+  const [loadingUser, setLoadingUser] = useState(true);
   const [dataUser, setDataUser] = useState(null);
 
-  const dataIncomingOrder = [
-    {id: 1, category: 'pending'},
-    {id: 2, category: 'progress'},
-  ];
+  const dataIncomingOrder = [];
 
-  const dataOldPatient = [
-    {id: 1, category: 'pending'},
-    {id: 2, category: 'progress'},
-  ];
+  const dataOldPatient = [];
 
   useEffect(() => {
     getData('user').then(res => {
       setDataUser(res);
-      setLoading(false);
+      setLoadingUser(false);
     });
   }, []);
 
-  if (loading)
-    return (
-      <Container>
-        <Loading />
-      </Container>
-    );
+  const photo =
+    dataUser && dataUser.bidan && dataUser.bidan.photo
+      ? {url: dataUser.bidan.photo}
+      : ILNullPhoto;
 
-  const photo = dataUser.bidan.photo
-    ? {url: dataUser.bidan.photo}
-    : ILNullPhoto;
+  console.log('cek data', dataUser);
 
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <TouchableOpacity
-          style={styles.containerHeader}
-          activeOpacity={0.8}
-          onPress={() =>
-            navigation.navigate('DetailsProfileMidwife', {data: dataUser})
-          }>
-          <Image style={styles.photo} source={photo} />
-          <Text style={styles.name}>{dataUser.bidan.name}</Text>
-          <Text style={styles.type}>{dataUser.roles.name}</Text>
-        </TouchableOpacity>
+        {loadingUser ? (
+          <Loading />
+        ) : (
+          <TouchableOpacity
+            style={styles.containerHeader}
+            activeOpacity={0.8}
+            onPress={() =>
+              navigation.navigate('DetailsProfileMidwife', {data: dataUser})
+            }>
+            <Image style={styles.photo} source={photo} />
+            <Text style={styles.name}>{dataUser.name}</Text>
+            <Text style={styles.type}>{dataUser.roles}</Text>
+          </TouchableOpacity>
+        )}
         <Gap height={16} />
-        <TouchableOpacity style={styles.wrapper} onPress={() => navigation.navigate('AddPatient')}>
+        <TouchableOpacity
+          style={styles.wrapper}
+          onPress={() => navigation.navigate('AddPatient')}>
           <Row>
             <View style={styles.wrapperAdd}>
               <Image style={styles.iconAdd} source={IcAdd} />
@@ -77,21 +76,34 @@ const HomeMidwife = ({navigation}) => {
         <Text style={styles.subTitle}>{'Pesanan Masuk'} </Text>
 
         <View style={styles.wrapper}>
-          {dataIncomingOrder.map(item => (
-            <IncomingOrderItems
-              key={item.id}
-              data={item}
-              onPress={() => navigation.navigate('IncomingOrderDetails')}
-            />
-          ))}
-          <Text
-            style={styles.next}
-            onPress={() => navigation.navigate('IncomingOrder')}>
-            {'Selengkapnya'}{' '}
-          </Text>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            keyExtractor={item => item.id}
+            data={dataIncomingOrder}
+            renderItem={({item}) => (
+              <IncomingOrderItems
+                key={item.id}
+                data={item}
+                onPress={() => ToastAlert()}
+              />
+            )}
+            ListEmptyComponent={() => (
+              <EmptyList
+                type={'secondary'}
+                desc="Belum terdapat pesanan masuk."
+              />
+            )}
+          />
+          {dataIncomingOrder.length > 0 && (
+            <Text
+              style={styles.next}
+              onPress={() => navigation.navigate('IncomingOrder')}>
+              {'Selengkapnya'}
+            </Text>
+          )}
         </View>
 
-        <Text style={styles.subTitle}>{'Pasien Lama'} </Text>
+        <Text style={styles.subTitle}>{'Histori Pesanan'} </Text>
 
         <View style={styles.wrapper}>
           {dataOldPatient.map(item => (
@@ -101,9 +113,29 @@ const HomeMidwife = ({navigation}) => {
               onPress={() => ToastAlert()}
             />
           ))}
-          <Text style={styles.next} onPress={() => ToastAlert()}>
-            {'Selengkapnya'}{' '}
-          </Text>
+          <FlatList
+            showsVerticalScrollIndicator={false}
+            keyExtractor={item => item.id}
+            data={dataOldPatient}
+            renderItem={({item}) => (
+              <ItemOldPatient
+                key={item.id}
+                data={item}
+                onPress={() => ToastAlert()}
+              />
+            )}
+            ListEmptyComponent={() => (
+              <EmptyList
+                type={'secondary'}
+                desc="Belum terdapat histori pesanan."
+              />
+            )}
+          />
+          {dataOldPatient.length > 0 && (
+            <Text style={styles.next} onPress={() => ToastAlert()}>
+              {'Selengkapnya'}{' '}
+            </Text>
+          )}
         </View>
         <Gap height={16} />
       </ScrollView>

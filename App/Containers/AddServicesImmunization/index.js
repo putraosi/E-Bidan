@@ -243,7 +243,7 @@ const AddServicesImmunization = ({navigation, route}) => {
             <Input
               label={'Jenis Layanan'}
               value={'Imunisasi'}
-              editable={false}
+              disable
             />
 
             <Gap height={12} />
