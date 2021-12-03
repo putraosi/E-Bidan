@@ -47,7 +47,13 @@ export const Api = {
     } catch (e) {
       if (showLog) console.log('API ERROR', {e});
 
-      throw e;
+      const value = {e};
+      const error = {
+        code: value.e.response.status,
+        message: value.e.response.data.errors[0],
+      };
+
+      throw error;
     }
   },
 

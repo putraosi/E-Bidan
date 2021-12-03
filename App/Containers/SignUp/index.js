@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {Button, Container, Gap, Input, Row} from '../../Components';
-import {constants, ToastAlert, useForm} from '../../Helpers';
+import {constants, SampleAlert, ToastAlert, useForm} from '../../Helpers';
 import {ILHeader, ILLogo} from '../../Images';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
@@ -70,6 +70,7 @@ const SignUp = ({navigation}) => {
           password: form.password,
           password_confirmation: form.password,
         },
+        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
@@ -77,7 +78,7 @@ const SignUp = ({navigation}) => {
       else ToastAlert('Silahkan coba beberapa saat lagi');
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      ToastAlert('Silahkan coba beberapa saat lagi');
+      SampleAlert('', error.message);
     }
   };
 
