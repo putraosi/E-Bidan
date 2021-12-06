@@ -1,7 +1,7 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, { useEffect, useState } from 'react';
-import { ScrollView, Text, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {ScrollView, Text, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {
   Button,
   Container,
@@ -12,17 +12,17 @@ import {
   ModalAlert,
   Modals,
   RadioButton,
-  SpaceBeetwen
+  SpaceBeetwen,
 } from '../../Components';
 import {
   constants,
   formatSelectedGrouped,
   SampleAlert,
   ToastAlert,
-  useForm
+  useForm,
 } from '../../Helpers';
-import { moments } from '../../Libs';
-import { Api } from '../../Services';
+import {moments} from '../../Libs';
+import {Api} from '../../Services';
 import styles from './styles';
 
 const defalutSelectMidwife = {
@@ -206,12 +206,12 @@ const AddServicesAntenatal = ({navigation, route}) => {
               onPress={() => {
                 if (dataMidwife && dataMidwife.length) setVisibleMidwife(true);
                 else
-                  SampleAlert(
-                    'Mohon Maaf',
-                    `Pada tanggal ${moments(form.visitDate).format(
+                  SampleAlert({
+                    title: 'Mohon Maaf',
+                    message: `Pada tanggal ${moments(form.visitDate).format(
                       'DD MMMM YYYY',
                     )} tidak ada jadwal praktek.\n\nSilahkan pilih tanggal yang lain.`,
-                  );
+                  });
               }}
             />
 
@@ -321,7 +321,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
 
       <Modals
         type={'spinner'}
-        title={'Bidan'}
+        title={'Pilih Bidan'}
         visible={visibleMidwife}
         data={dataMidwife}
         onDismiss={() => setVisibleMidwife(false)}

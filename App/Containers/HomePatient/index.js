@@ -1,5 +1,5 @@
-import {useIsFocused} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import { useIsFocused } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import {
   FlatList,
   Image,
@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import {
   Button,
@@ -18,12 +18,12 @@ import {
   ItemOrderSchedule,
   Loading,
   Modals,
-  SpaceBeetwen,
+  SpaceBeetwen
 } from '../../Components';
-import {getData, ToastAlert} from '../../Helpers';
-import {ILNullPhoto} from '../../Images';
-import {Api} from '../../Services';
-import {colors, fonts} from '../../Themes';
+import { getData, ToastAlert } from '../../Helpers';
+import { ILNullPhoto } from '../../Images';
+import { Api } from '../../Services';
+import { colors, fonts } from '../../Themes';
 
 const HomePatient = ({navigation}) => {
   const [loading, setLoading] = useState(true);
@@ -74,7 +74,6 @@ const HomePatient = ({navigation}) => {
           type: 'pasien',
           per_page: 3,
         },
-        showLog: true,
       });
 
       setDataOrderSchedule(res);
@@ -104,16 +103,13 @@ const HomePatient = ({navigation}) => {
       ? {url: dataUser.pasien.photo}
       : ILNullPhoto;
 
-  // console.log('cek user', dataUser);
-  // console.log('cek booking', dataOrderSchedule);
-
   return (
     <Container>
       {loading ? (
         <Loading />
       ) : (
         <>
-          <ScrollView showsVerticalScrollIndicator={false}>
+          <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
             {loadingUser ? (
               <Loading />
             ) : (

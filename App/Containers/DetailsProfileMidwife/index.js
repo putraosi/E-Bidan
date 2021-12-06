@@ -18,8 +18,6 @@ import {colors, fonts} from '../../Themes';
 const DetailsProfileMidwife = ({navigation, route}) => {
   const data = route.params.data;
 
-  console.log('cek data', data);
-
   const [form, setForm] = useForm({
     name: data.name,
     email: data.email,

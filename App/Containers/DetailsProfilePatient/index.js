@@ -19,7 +19,13 @@ import {
   ModalSelect,
   SpaceBeetwen,
 } from '../../Components';
-import {constants, resetPage, ToastAlert, useForm} from '../../Helpers';
+import {
+  constants,
+  resetPage,
+  SampleAlert,
+  ToastAlert,
+  useForm,
+} from '../../Helpers';
 import {IcEditCircle, IcMenu, ILNullPhoto} from '../../Images';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
@@ -27,7 +33,10 @@ import {colors, fonts} from '../../Themes';
 const DetailsProfilePatient = ({navigation, route}) => {
   const data = route.params.data;
 
+  console.log('cek data', data);
+
   const [form, setForm] = useForm({
+    photo: data.photo,
     name: data.name,
     email: data.email,
     phoneNumber: data.phone,
@@ -35,7 +44,9 @@ const DetailsProfilePatient = ({navigation, route}) => {
     spouse: data.spouse,
   });
   const [visibleLogout, setVisibleLogout] = useState(false);
+  const [visibleEdit, setVisibleEdit] = useState(false);
   const [visibleSelect, setVisibleSelect] = useState(false);
+  const [visibleSelectPhoto, setVisibleSelectPhoto] = useState(false);
   const [isChange, setIsChange] = useState(false);
   const dispatch = useDispatch();
 
@@ -59,14 +70,37 @@ const DetailsProfilePatient = ({navigation, route}) => {
     }
   };
 
+  const onUpdate = async () => {
+    setVisibleEdit(false);
+
+    dispatch({type: 'SET_LOADING', value: true});
+    try {
+      const res = await Api.post({
+        url: `admin/pasiens/${data.id}`,
+        body: {
+          photo: form.photo ? form.photo : null,
+          name: form.name,
+          spouse: form.spouse,
+          address: form.address,
+          _method: 'put',
+        },
+        showLog: true,
+      });
+      dispatch({type: 'SET_LOADING', value: false});
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      SampleAlert({message: error.message});
+    }
+  };
+
   let labelButtonFirst = 'Ubah';
   let onPressFirst = () => setIsChange(true);
-  const photo = data.photo ? {uri: data.photo} : ILNullPhoto;
+  const photo = form.photo ? {uri: form.photo} : ILNullPhoto;
   const editable = isChange ? true : false;
 
   if (isChange) {
     labelButtonFirst = 'Simpan';
-    onPressFirst = () => ToastAlert();
+    onPressFirst = () => setVisibleEdit(true);
   }
 
   return (
@@ -83,7 +117,7 @@ const DetailsProfilePatient = ({navigation, route}) => {
             {isChange && (
               <TouchableOpacity
                 style={styles.containerEdit}
-                onPress={() => ToastAlert()}>
+                onPress={() => setVisibleSelectPhoto(true)}>
                 <Image style={styles.edit} source={IcEditCircle} />
               </TouchableOpacity>
             )}
@@ -149,12 +183,22 @@ const DetailsProfilePatient = ({navigation, route}) => {
 
       <Modals
         visible={visibleLogout}
-        desc={'Anda yakin ingin\nkeluar aplikasi ?'}
+        desc={'Anda yakin ingin\nkeluar aplikasi?'}
         onDismiss={() => setVisibleLogout(false)}
         labelPress={'Keluar'}
         labelCancel={'Batal'}
         onPress={onLogout}
         onCancel={() => setVisibleLogout(false)}
+      />
+
+      <Modals
+        visible={visibleEdit}
+        desc={'Anda yakin ingin\nmengubah profil?'}
+        onDismiss={() => setVisibleEdit(false)}
+        labelPress={'Ya'}
+        labelCancel={'Tidak'}
+        onPress={onUpdate}
+        onCancel={() => setVisibleEdit(false)}
       />
 
       <ModalSelect
@@ -165,6 +209,20 @@ const DetailsProfilePatient = ({navigation, route}) => {
           setVisibleSelect(false);
           if (value == 'Keluar') {
             setVisibleLogout(true);
+          } else {
+            ToastAlert();
+          }
+        }}
+      />
+
+      <ModalSelect
+        visible={visibleSelectPhoto}
+        data={constants.SELECT_PHOTO}
+        onDismiss={() => setVisibleSelectPhoto(false)}
+        onPress={value => {
+          setVisibleSelectPhoto(false);
+          if (value == 'Gallery') {
+            ToastAlert('Gallery');
           } else {
             ToastAlert();
           }

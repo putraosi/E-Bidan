@@ -42,8 +42,6 @@ const HomeMidwife = ({navigation}) => {
       ? {url: dataUser.bidan.photo}
       : ILNullPhoto;
 
-  console.log('cek data', dataUser);
-
   return (
     <Container>
       <ScrollView showsVerticalScrollIndicator={false}>

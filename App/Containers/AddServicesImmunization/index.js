@@ -240,11 +240,7 @@ const AddServicesImmunization = ({navigation, route}) => {
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.content}>
-            <Input
-              label={'Jenis Layanan'}
-              value={'Imunisasi'}
-              disable
-            />
+            <Input label={'Jenis Layanan'} value={'Imunisasi'} disable />
 
             <Gap height={12} />
             <Input
@@ -376,12 +372,12 @@ const AddServicesImmunization = ({navigation, route}) => {
               onPress={() => {
                 if (dataMidwife && dataMidwife.length) setVisibleMidwife(true);
                 else
-                  SampleAlert(
-                    'Mohon Maaf',
-                    `Pada tanggal ${moments(form.visitDate).format(
+                  SampleAlert({
+                    title: 'Mohon Maaf',
+                    message: `Pada tanggal ${moments(form.visitDate).format(
                       'DD MMMM YYYY',
                     )} tidak ada jadwal praktek.\n\nSilahkan pilih tanggal yang lain.`,
-                  );
+                  });
               }}
             />
 
@@ -437,7 +433,7 @@ const AddServicesImmunization = ({navigation, route}) => {
 
       <Modals
         type={'spinner'}
-        title={'Bidan'}
+        title={'Pilih Bidan'}
         visible={visibleMidwife}
         data={dataMidwife}
         onDismiss={() => setVisibleMidwife(false)}

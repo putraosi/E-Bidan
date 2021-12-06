@@ -136,7 +136,7 @@ const AddOrderPatient = ({navigation}) => {
 
       <Modals
         type={'spinner'}
-        title={'Bidan'}
+        title={'Pilih Bidan'}
         visible={visibleMidwife}
         data={dataMidwife}
         onDismiss={() => setVisibleMidwife(false)}

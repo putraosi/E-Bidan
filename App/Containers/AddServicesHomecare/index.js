@@ -27,12 +27,6 @@ import {moments} from '../../Libs';
 import {Api} from '../../Services';
 import styles from './styles';
 
-const userBidanDummy = [
-  {id: 1, name: 'Bidan 1'},
-  {id: 2, name: 'Bidan 2'},
-  {id: 3, name: 'Bidan 3'},
-];
-
 const defalutSelectMidwife = {
   id: 0,
   name: 'Pilih',
@@ -191,11 +185,7 @@ const AddServicesHomecare = ({navigation, route}) => {
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.content}>
-            <Input
-              label={'Jenis Layanan'}
-              value={'Homecare'}
-              disable
-            />
+            <Input label={'Jenis Layanan'} value={'Homecare'} disable />
 
             <Gap height={12} />
             <Input
@@ -257,12 +247,12 @@ const AddServicesHomecare = ({navigation, route}) => {
               onPress={() => {
                 if (dataMidwife && dataMidwife.length) setVisibleMidwife(true);
                 else
-                  SampleAlert(
-                    'Mohon Maaf',
-                    `Pada tanggal ${moments(form.executionTime).format(
+                  SampleAlert({
+                    title: 'Mohon Maaf',
+                    message: `Pada tanggal ${moments(form.executionTime).format(
                       'DD MMMM YYYY',
                     )} tidak ada jadwal praktek.\n\nSilahkan pilih tanggal yang lain.`,
-                  );
+                  });
               }}
             />
 
@@ -327,7 +317,7 @@ const AddServicesHomecare = ({navigation, route}) => {
 
       <Modals
         type={'spinner'}
-        title={'Bidan'}
+        title={'Pilih Bidan'}
         visible={visibleMidwife}
         data={dataMidwife}
         onDismiss={() => setVisibleMidwife(false)}

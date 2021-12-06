@@ -264,12 +264,12 @@ const AddServicesInc = ({navigation, route}) => {
               onPress={() => {
                 if (dataMidwife && dataMidwife.length) setVisibleMidwife(true);
                 else
-                  SampleAlert(
-                    'Mohon Maaf',
-                    `Pada tanggal ${moments(form.visitDate).format(
+                  SampleAlert({
+                    title: 'Mohon Maaf',
+                    message: `Pada tanggal ${moments(form.visitDate).format(
                       'DD MMMM YYYY',
                     )} tidak ada jadwal praktek.\n\nSilahkan pilih tanggal yang lain.`,
-                  );
+                  });
               }}
             />
 
@@ -332,7 +332,7 @@ const AddServicesInc = ({navigation, route}) => {
 
       <Modals
         type={'spinner'}
-        title={'Bidan'}
+        title={'Pilih Bidan'}
         visible={visibleMidwife}
         data={dataMidwife}
         onDismiss={() => setVisibleMidwife(false)}

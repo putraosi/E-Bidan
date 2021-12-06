@@ -145,10 +145,13 @@ export const constants = {
     {id: 2, name: 'Sectio Caesaria', select: false},
   ],
 
+  MENU_ITEM_PROFILE: [
+    {id: 1, name: 'Ubah Kata Sandi'},
+    {id: 2, name: 'Keluar'},
+  ],
 
-MENU_ITEM_PROFILE : [
-  {id: 1, name: 'Ubah Kata Sandi'},
-  {id: 2, name: 'Keluar'},
-]
-
+  SELECT_PHOTO: [
+    {id: 1, name: 'Gallery'},
+    {id: 2, name: 'Kamera'},
+  ],
 };

@@ -77,7 +77,6 @@ const AddPatient = ({navigation}) => {
           spouse: form.spouse,
           status: 'active',
         },
-        showLog: true
       });
       dispatch({type: 'SET_LOADING', value: false});
       if (res) {

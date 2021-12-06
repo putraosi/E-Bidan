@@ -26,6 +26,7 @@ const SignIn = ({navigation}) => {
     password: '',
   });
   const [visibleForgotPassword, setVisibleForgotPassword] = useState(false);
+  const [secureTextEntry, setSecureTextEntry] = useState(true);
   const dispatch = useDispatch();
 
   const validation = () => {
@@ -33,9 +34,9 @@ const SignIn = ({navigation}) => {
       form.email.trim() === '' ||
       !constants.REGEX_EMAIL.test(form.email.trim().toLowerCase())
     ) {
-      return SampleAlert('', 'Silahkan masukan alamat email valid Anda');
+      return SampleAlert({message: 'Silahkan masukan alamat email valid Anda'});
     } else if (form.password.trim() === '') {
-      return SampleAlert('', 'Silahkan masukan kata sandi Anda');
+      return SampleAlert({message: 'Silahkan masukan kata sandi Anda'});
     }
 
     onLogin();
@@ -50,7 +51,6 @@ const SignIn = ({navigation}) => {
           username: form.email,
           password: form.password,
         },
-        showLog: true
       });
 
       if (res) {
@@ -74,11 +74,11 @@ const SignIn = ({navigation}) => {
         dispatch({type: 'SET_LOADING', value: false});
       } else {
         dispatch({type: 'SET_LOADING', value: false});
-        SampleAlert('', 'Silahkan masukan data login Anda dengan benar');
+        SampleAlert({message: 'Silahkan masukan data login Anda dengan benar'});
       }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      SampleAlert('', 'Silahkan masukan data login Anda dengan benar');
+      SampleAlert({message: 'Silahkan masukan data login Anda dengan benar'});
     }
   };
 
@@ -128,7 +128,9 @@ const SignIn = ({navigation}) => {
               label={'Kata Sandi'}
               value={form.password}
               onChangeText={value => setForm('password', value)}
-              secureTextEntry
+              type={'password'}
+              secureTextEntry={secureTextEntry}
+              onTogglePassword={() => setSecureTextEntry(!secureTextEntry)}
             />
 
             <Gap height={12} />

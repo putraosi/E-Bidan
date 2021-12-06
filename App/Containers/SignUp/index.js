@@ -70,7 +70,6 @@ const SignUp = ({navigation}) => {
           password: form.password,
           password_confirmation: form.password,
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
@@ -78,7 +77,7 @@ const SignUp = ({navigation}) => {
       else ToastAlert('Silahkan coba beberapa saat lagi');
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      SampleAlert('', error.message);
+      SampleAlert({message: error.message});
     }
   };
 
