@@ -27,6 +27,12 @@ import {
   useForm,
 } from '../../Helpers';
 import {IcEditCircle, IcMenu, ILNullPhoto} from '../../Images';
+import {
+  checkPermissionCamera,
+  checkPermissionGallery,
+  openCamera,
+  openGallery,
+} from '../../Libs';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
@@ -47,6 +53,7 @@ const DetailsProfilePatient = ({navigation, route}) => {
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [visibleSelect, setVisibleSelect] = useState(false);
   const [visibleSelectPhoto, setVisibleSelectPhoto] = useState(false);
+  const [selectPhoto, setSelectPhoto] = useState(null);
   const [isChange, setIsChange] = useState(false);
   const dispatch = useDispatch();
 
@@ -219,12 +226,24 @@ const DetailsProfilePatient = ({navigation, route}) => {
         visible={visibleSelectPhoto}
         data={constants.SELECT_PHOTO}
         onDismiss={() => setVisibleSelectPhoto(false)}
-        onPress={value => {
+        onPress={async value => {
           setVisibleSelectPhoto(false);
           if (value == 'Gallery') {
-            ToastAlert('Gallery');
+            const granted = checkPermissionGallery();
+            if (granted) {
+              const callback = await openGallery();
+              const item = callback.assets[0];
+              setSelectPhoto(item);
+              setForm('photo', item.uri);
+            }
           } else {
-            ToastAlert();
+            const granted = checkPermissionCamera();
+            if (granted) {
+              const callback = await openCamera();
+              const item = callback.assets[0];
+              setSelectPhoto(item);
+              setForm('photo', item.uri);
+            }
           }
         }}
       />
