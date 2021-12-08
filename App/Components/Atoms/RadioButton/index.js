@@ -35,7 +35,7 @@ const RadioButton = ({
         <Text style={styles.label}>{label}</Text>
       </TouchableOpacity>
 
-      {isActive && label == 'Lainnya' && (
+      {isActive && (label == 'Lainnya' || label == 'Faskes Lain') && (
         <Input value={other} onChangeText={onChangeText} />
       )}
     </View>

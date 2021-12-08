@@ -1,6 +1,6 @@
 import DatePicker from '@react-native-community/datetimepicker';
 import React, {useEffect, useState} from 'react';
-import {ScrollView, Text, View} from 'react-native';
+import {FlatList, ScrollView, Text, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {
   Button,
@@ -35,9 +35,19 @@ const AddServicesAntenatal = ({navigation, route}) => {
     phoneNumber: '',
     pregnancy: 'Pilih',
     abortion: 'Pilih',
-    pregnancyAge: '1 Minggu',
+    pregnancyAge: '',
     visitDate: new Date(),
+    visitTime: new Date(),
+    hpht: new Date(),
+    hpl: new Date(),
+    menstrualDisorders: '',
     remark: 'K1',
+    otherDiseaseHistory: '',
+    historyPlaceBirth: '',
+    otherHistoryPlaceBirth: '',
+    bloodGroup: '',
+    husbandsTotalMarriage: '',
+    wifesTotalMarriage: '',
   });
 
   const [loading, setLoading] = useState(true);
@@ -45,7 +55,8 @@ const AddServicesAntenatal = ({navigation, route}) => {
   const [visiblePregnancy, setVisiblePregnancy] = useState(false);
   const [visibleAbortion, setVisibleAbortion] = useState(false);
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
-  const [visibelPregnancyAge, setVisibelPregnancyAge] = useState(false);
+  const [visibleTimePicker, setVisibleTimePicker] = useState(false);
+  const [visibleDatePickerHPHT, setVisibleDatePickerHPHT] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
   const [selectHistory, setSelectHistory] = useState(
@@ -55,11 +66,16 @@ const AddServicesAntenatal = ({navigation, route}) => {
     constants.SELECT_ANTENATAL_INFORMATION,
   );
   const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
+  const [selectDiseaseHistory, setSelectDiseaseHistory] = useState(
+    constants.SELECT_DISEASE_HISTORY,
+  );
+  const [gestationalAge, setGestationalAge] = useState('');
   const [isView, setIsView] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
     getMidwife(new Date());
+    checkGestationalAge(form.visitDate, form.hpht);
   }, []);
 
   const getMidwife = async date => {
@@ -83,6 +99,18 @@ const AddServicesAntenatal = ({navigation, route}) => {
     }
   };
 
+  const checkGestationalAge = (_visitDate, _hpht) => {
+    const diff = Math.abs(moments(_visitDate).diff(_hpht, 'days'));
+    let desc = '';
+
+    if (diff % 7 == 0) desc = `${diff / 7} Minggu`;
+    else if (diff / 7 >= 1)
+      desc = `${(diff / 7).toFixed(0)} Minggu ${diff % 7} Hari`;
+    else desc = `${diff} Hari`;
+
+    setGestationalAge(desc);
+  };
+
   const validation = () => {
     if (
       form.phoneNumber.length < 9 ||
@@ -95,7 +123,11 @@ const AddServicesAntenatal = ({navigation, route}) => {
     if (form.pregnancy == 'Pilih')
       return ToastAlert('Silahkan pilih kehamilan ke berapa Anda');
     if (form.abortion == 'Pilih')
-      return ToastAlert('Silahkan pilih abortus Anda');
+      return ToastAlert('Silahkan pilih keguguran ke berapa Anda');
+    if (!form.pregnancyAge)
+      return ToastAlert(
+        'Silahkan isi perkiraan usia kehamilan saat kunjungan Anda',
+      );
     if (selectMidwife.name == 'Pilih')
       return ToastAlert('Silahkan pilih bidan Anda');
     if (Object.values(selectHistory).every(item => item.select === false))
@@ -103,7 +135,8 @@ const AddServicesAntenatal = ({navigation, route}) => {
     if (Object.values(selectInformation).every(item => item.select === false))
       return ToastAlert('Silahkan pilih keterangan Anda');
 
-    onSubmit();
+    ToastAlert();
+    // onSubmit();
   };
 
   const onSubmit = async () => {
@@ -143,6 +176,34 @@ const AddServicesAntenatal = ({navigation, route}) => {
     }
   };
 
+  const onChangeSelectHistory = item => {
+    const position = selectHistory.findIndex(obj => obj.id == item.id);
+
+    const newSelected = !selectHistory[position].select;
+    let newSelect = selectHistory;
+
+    const nowValue = selectHistory[position].name;
+    if (nowValue == 'Belum Pernah') {
+      newSelect = selectHistory.map(item => {
+        const newItem = {
+          id: item.id,
+          name: item.name,
+          select: item.name == 'Belum Pernah' ? newSelected : false,
+        };
+        return newItem;
+      });
+    } else {
+      const positionFalse = selectHistory.findIndex(
+        obj => obj.name == 'Belum Pernah',
+      );
+      newSelect[positionFalse].select = false;
+      newSelect[position].select = !newSelect[position].select;
+    }
+
+    setIsView(!isView);
+    setSelectHistory(newSelect);
+  };
+
   return (
     <Container>
       <Header title={'Pesanan Baru'} onDismiss={() => navigation.goBack()} />
@@ -174,20 +235,19 @@ const AddServicesAntenatal = ({navigation, route}) => {
               onPress={() => setVisiblePregnancy(true)}
             />
 
-            <Gap height={8} />
+            <Gap height={12} />
             <Input
-              label={'Abortus'}
+              label={'Keguguran'}
               value={form.abortion}
               editable={false}
               onPress={() => setVisibleAbortion(true)}
             />
 
-            <Gap height={8} />
+            <Gap height={12} />
             <Input
-              label={'Perkiraan Usia Kehamilaan Saat Kunjungan'}
+              label={'Perkiraan Usia Kehamilan Saat Kunjungan'}
               value={form.pregnancyAge}
-              editable={false}
-              onPress={() => setVisibelPregnancyAge(true)}
+              onChangeText={value => setForm('pregnancyAge', value)}
             />
 
             <Gap height={12} />
@@ -196,6 +256,14 @@ const AddServicesAntenatal = ({navigation, route}) => {
               value={moments(form.visitDate).format('DD MMMM YYYY')}
               editable={false}
               onPress={() => setVisibleDatePicker(true)}
+            />
+
+            <Gap height={12} />
+            <Input
+              label={'Waktu Kunjungan'}
+              value={moments(form.visitTime).format('HH:mm')}
+              editable={false}
+              onPress={() => setVisibleTimePicker(true)}
             />
 
             <Gap height={12} />
@@ -216,6 +284,61 @@ const AddServicesAntenatal = ({navigation, route}) => {
             />
 
             <Gap height={12} />
+            <Input
+              label={'Hari Pertama Haid Terakhir (HPHT)'}
+              value={moments(form.hpht).format('DD MMMM YYYY')}
+              editable={false}
+              onPress={() => setVisibleDatePickerHPHT(true)}
+            />
+
+            <Gap height={12} />
+            <Input
+              label={'Hari Perkiraan Lahir (HPL)'}
+              value={moments(form.hpl).format('DD MMMM YYYY')}
+              disable
+            />
+
+            <Gap height={12} />
+            <Input label={'Usia Kehamilan'} value={gestationalAge} disable />
+
+            <Gap height={12} />
+            <Text style={styles.label}>
+              {'Riwayat Penyakit (Penyakit Berat)'}
+            </Text>
+            <FlatList
+              data={selectDiseaseHistory}
+              renderItem={({item}) => (
+                <RadioButton
+                  style={styles.radioButton}
+                  key={item.id}
+                  type={'rounded'}
+                  label={item.name}
+                  isActive={item.select}
+                  other={form.otherDiseaseHistory}
+                  onChangeText={value => setForm('otherDiseaseHistory', value)}
+                  onPress={() => {
+                    const position = selectDiseaseHistory.findIndex(
+                      obj => obj.id == item.id,
+                    );
+                    selectDiseaseHistory[position].select =
+                      !selectDiseaseHistory[position].select;
+                    setIsView(!isView);
+                    setSelectDiseaseHistory(selectDiseaseHistory);
+                  }}
+                />
+              )}
+              numColumns={2}
+              scrollEnabled={false}
+            />
+
+            <Gap height={8} />
+            <Input
+              label={'Gangguan Menstruasi (jika ada)'}
+              value={form.menstrualDisorders}
+              onChangeText={value => setForm('menstrualDisorders', value)}
+            />
+
+            <Gap height={12} />
             <Text style={styles.label}>{'Riwayat Persalinan'}</Text>
             <SpaceBeetwen>
               {selectHistory.map(item => (
@@ -225,17 +348,65 @@ const AddServicesAntenatal = ({navigation, route}) => {
                   type={'rounded'}
                   label={item.name}
                   isActive={item.select}
-                  onPress={() => {
-                    const position = selectHistory.findIndex(
-                      obj => obj.id == item.id,
-                    );
-                    selectHistory[position].select =
-                      !selectHistory[position].select;
-                    setIsView(!isView);
-                    setSelectHistory(selectHistory);
-                  }}
+                  onPress={() => onChangeSelectHistory(item)}
                 />
               ))}
+            </SpaceBeetwen>
+
+            <Gap height={12} />
+            <Text style={styles.label}>{'Riwayat Tempat Bersalin'}</Text>
+            <SpaceBeetwen>
+              {constants.SELECT_HISTORY_PLACE_BIRTH.map(item => (
+                <RadioButton
+                  style={styles.radioButton}
+                  key={item.id}
+                  label={item.name}
+                  isActive={item.name == form.historyPlaceBirth}
+                  other={form.otherHistoryPlaceBirth}
+                  onChangeText={value =>
+                    setForm('otherHistoryPlaceBirth', value)
+                  }
+                  onPress={() => setForm('historyPlaceBirth', item.name)}
+                />
+              ))}
+            </SpaceBeetwen>
+
+            <Gap height={8} />
+            <Text style={styles.label}>{'Golongan Darah'}</Text>
+            <FlatList
+              data={constants.SELECT_BLOOD_GROUP}
+              renderItem={({item}) => (
+                <RadioButton
+                  style={styles.radioButton}
+                  key={item.id}
+                  label={item.name}
+                  isActive={item.name == form.bloodGroup}
+                  onPress={() => setForm('bloodGroup', item.name)}
+                />
+              )}
+              scrollEnabled={false}
+              numColumns={2}
+            />
+
+            <Gap height={8} />
+            <SpaceBeetwen>
+              <Input
+                style={styles.flex}
+                label={'Total Nikah Suami'}
+                value={form.husbandsTotalMarriage}
+                keyboardType={'numeric'}
+                onChangeText={value => setForm('husbandsTotalMarriage', value)}
+              />
+
+              <Gap width={16} />
+
+              <Input
+                style={styles.flex}
+                label={'Total Nikah Istri'}
+                value={form.wifesTotalMarriage}
+                keyboardType={'numeric'}
+                onChangeText={value => setForm('wifesTotalMarriage', value)}
+              />
             </SpaceBeetwen>
 
             <Gap height={12} />
@@ -269,7 +440,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
 
       <Modals
         type={'spinner'}
-        title={'Kehamilan Ke'}
+        title={'Pilih Kehamilan Ke'}
         visible={visiblePregnancy}
         data={constants.SELECT_PREGNANCY}
         onDismiss={() => setVisiblePregnancy(false)}
@@ -281,25 +452,13 @@ const AddServicesAntenatal = ({navigation, route}) => {
 
       <Modals
         type={'spinner'}
-        title={'Abortus'}
+        title={'Pilih Keguguran'}
         visible={visibleAbortion}
         data={constants.SELECT_ABORTION}
         onDismiss={() => setVisibleAbortion(false)}
         onSelect={value => {
           setVisibleAbortion(false);
           setForm('abortion', value.name);
-        }}
-      />
-
-      <Modals
-        type={'spinner'}
-        title={'Perkiraan Usi Kehamilan'}
-        visible={visibelPregnancyAge}
-        data={constants.SELECT_GESTATIONAL_AGE}
-        onDismiss={() => setVisibelPregnancyAge(false)}
-        onSelect={value => {
-          setVisibelPregnancyAge(false);
-          setForm('pregnancyAge', value.name);
         }}
       />
 
@@ -314,7 +473,37 @@ const AddServicesAntenatal = ({navigation, route}) => {
             setVisibleDatePicker(false);
             dispatch({type: 'SET_LOADING', value: true});
             getMidwife(currentDate);
+            checkGestationalAge(currentDate, form.hpht);
             setForm('visitDate', currentDate);
+          }}
+        />
+      )}
+
+      {visibleTimePicker && (
+        <DatePicker
+          testID="dateTimePicker"
+          value={form.visitTime}
+          mode={'time'}
+          is24Hour={true}
+          onChange={(event, selectedDate) => {
+            const currentDate = selectedDate || form.visitTime;
+            setVisibleTimePicker(false);
+            setForm('visitTime', currentDate);
+          }}
+        />
+      )}
+
+      {visibleDatePickerHPHT && (
+        <DatePicker
+          testID="dateTimePicker"
+          value={form.hpht}
+          mode={'date'}
+          maximumDate={new Date()}
+          onChange={(event, selectedDate) => {
+            const currentDate = selectedDate || form.hpht;
+            setVisibleDatePickerHPHT(false);
+            checkGestationalAge(form.visitDate, currentDate);
+            setForm('hpht', currentDate);
           }}
         />
       )}
