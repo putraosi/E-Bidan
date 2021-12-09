@@ -1,7 +1,7 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, {useEffect, useState} from 'react';
-import {FlatList, ScrollView, Text, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { FlatList, ScrollView, Text, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   Container,
@@ -12,29 +12,30 @@ import {
   ModalAlert,
   Modals,
   RadioButton,
-  SpaceBeetwen,
+  SpaceBeetwen
 } from '../../Components';
 import {
   constants,
+  formatSelect,
   formatSelectedGrouped,
+  formatSelectedId,
   SampleAlert,
   ToastAlert,
-  useForm,
+  useForm
 } from '../../Helpers';
-import {moments} from '../../Libs';
-import {Api} from '../../Services';
+import { moments } from '../../Libs';
+import { Api } from '../../Services';
 import styles from './styles';
 
 const defalutSelectMidwife = {
   id: 0,
-  name: 'Pilih',
+  name: '',
 };
 
 const AddServicesAntenatal = ({navigation, route}) => {
   const [form, setForm] = useForm({
-    phoneNumber: '',
-    pregnancy: 'Pilih',
-    abortion: 'Pilih',
+    pregnancy: '',
+    abortion: '',
     pregnancyAge: '',
     visitDate: new Date(),
     visitTime: new Date(),
@@ -51,6 +52,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
   });
 
   const [loading, setLoading] = useState(true);
+  const [loadingDiseaseHistory, setLoadingDiseaseHistory] = useState(true);
   const [dataMidwife, setDataMidwife] = useState([]);
   const [visiblePregnancy, setVisiblePregnancy] = useState(false);
   const [visibleAbortion, setVisibleAbortion] = useState(false);
@@ -62,9 +64,6 @@ const AddServicesAntenatal = ({navigation, route}) => {
   const [selectHistory, setSelectHistory] = useState(
     constants.SELECT_ANTENATAL_HISTORY,
   );
-  const [selectInformation, setSelectInformation] = useState(
-    constants.SELECT_ANTENATAL_INFORMATION,
-  );
   const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
   const [selectDiseaseHistory, setSelectDiseaseHistory] = useState(
     constants.SELECT_DISEASE_HISTORY,
@@ -75,6 +74,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
 
   useEffect(() => {
     getMidwife(new Date());
+    getDiseasehistory();
     checkGestationalAge(form.visitDate, form.hpht);
   }, []);
 
@@ -99,6 +99,24 @@ const AddServicesAntenatal = ({navigation, route}) => {
     }
   };
 
+  const getDiseasehistory = async () => {
+    try {
+      const res = await Api.get({
+        url: 'admin/disease_histories',
+      });
+
+      if (res) {
+        const formated = formatSelect(res, true);
+        setSelectDiseaseHistory(formated);
+        setLoadingDiseaseHistory(false);
+      } else setLoadingDiseaseHistory(false);
+
+      setLoadingDiseaseHistory(false);
+    } catch (error) {
+      setLoadingDiseaseHistory(false);
+    }
+  };
+
   const checkGestationalAge = (_visitDate, _hpht) => {
     const diff = Math.abs(moments(_visitDate).diff(_hpht, 'days'));
     let desc = '';
@@ -112,55 +130,77 @@ const AddServicesAntenatal = ({navigation, route}) => {
   };
 
   const validation = () => {
-    if (
-      form.phoneNumber.length < 9 ||
-      form.phoneNumber.length > 14 ||
-      form.phoneNumber.charAt(0) != 0 ||
-      form.phoneNumber.charAt(1) != 8
-    ) {
-      return ToastAlert('Silahkan masukan nomor no. whatsapp valid Anda');
-    }
-    if (form.pregnancy == 'Pilih')
+    const position = selectDiseaseHistory.findIndex(
+      obj => obj.name == 'Lainnya',
+    );
+
+    if (!form.pregnancy)
       return ToastAlert('Silahkan pilih kehamilan ke berapa Anda');
-    if (form.abortion == 'Pilih')
+    if (!form.abortion)
       return ToastAlert('Silahkan pilih keguguran ke berapa Anda');
     if (!form.pregnancyAge)
       return ToastAlert(
         'Silahkan isi perkiraan usia kehamilan saat kunjungan Anda',
       );
-    if (selectMidwife.name == 'Pilih')
-      return ToastAlert('Silahkan pilih bidan Anda');
+    if (!selectMidwife.name) return ToastAlert('Silahkan pilih bidan Anda');
+    if (selectDiseaseHistory[position].select && !form.otherDiseaseHistory) {
+      return ToastAlert('Silahkan isi riwayat penyakit Anda');
+    }
     if (Object.values(selectHistory).every(item => item.select === false))
       return ToastAlert('Silahkan pilih riwayat persalinan Anda');
-    if (Object.values(selectInformation).every(item => item.select === false))
-      return ToastAlert('Silahkan pilih keterangan Anda');
+    if (!form.historyPlaceBirth)
+      return ToastAlert('Silahkan pilih tempat bersalin Anda');
+    if (form.historyPlaceBirth == 'Faskes Lain' && !form.otherHistoryPlaceBirth)
+      return ToastAlert('Silahkan isi tempat bersalin Anda');
+    if (!form.bloodGroup)
+      return ToastAlert('Silahkan pilih golongan darah Anda');
+    if (!form.husbandsTotalMarriage)
+      return ToastAlert('Silahkan isi total nikah suami');
+    if (!form.wifesTotalMarriage)
+      return ToastAlert('Silahkan isi total nikah istri');
 
-    ToastAlert();
-    // onSubmit();
+    onSubmit();
   };
 
   const onSubmit = async () => {
     dispatch({type: 'SET_LOADING', value: true});
     let abortus = form.abortion;
+    let disease_history_name = form.otherDiseaseHistory;
     const labor_history = formatSelectedGrouped(selectHistory);
-    const remarks = formatSelectedGrouped(selectInformation);
+    const visit_date = `${moments(form.visitDate).format(
+      'YYYY-MM-DD',
+    )} ${moments(form.visitTime).format('HH:mm:ss')}`;
+    const maternity_plan =
+      form.historyPlaceBirth == 'Bidan Amel'
+        ? form.historyPlaceBirth
+        : form.otherHistoryPlaceBirth;
+    const disease_history_id = formatSelectedId(selectDiseaseHistory);
 
     if (abortus == 'Tidak Pernah') abortus = 0;
+    if (disease_history_id.length == 0) disease_history_name = '';
 
     try {
       const res = await Api.post({
         url: 'admin/antenatals',
         body: {
           service_category_id: route.params.id,
-          pasien_id: route.params.userId,
-          bidan_id: selectMidwife.id,
-          phone_wa: form.phoneNumber,
           pregnancy: parseInt(form.pregnancy),
           abortus: parseInt(abortus),
           gestational_age: form.pregnancyAge,
-          visit_date: moments(form.visitDate).format('YYYY-MM-DD'),
+          visit_date,
+          pasien_id: route.params.userId,
+          bidan_id: selectMidwife.id,
           labor_history,
-          remarks,
+          date_last_haid: moments(form.hpht).format('YYYY-MM-DD'),
+          date_estimate_birth: moments(form.hpl).format('YYYY-MM-DD'),
+          is_new: true,
+          menstrual_disorders: form.menstrualDisorders,
+          maternity_plan,
+          blood_group: form.bloodGroup,
+          marital_status_wife: parseInt(form.wifesTotalMarriage),
+          marital_status_husband: parseInt(form.husbandsTotalMarriage),
+          disease_history_id,
+          disease_history_name,
         },
       });
 
@@ -208,7 +248,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
     <Container>
       <Header title={'Pesanan Baru'} onDismiss={() => navigation.goBack()} />
 
-      {loading ? (
+      {loading || loadingDiseaseHistory ? (
         <Loading />
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -221,16 +261,9 @@ const AddServicesAntenatal = ({navigation, route}) => {
 
             <Gap height={12} />
             <Input
-              label={'No. Whatsapp'}
-              value={form.phoneNumber}
-              keyboardType={'numeric'}
-              onChangeText={value => setForm('phoneNumber', value)}
-            />
-
-            <Gap height={12} />
-            <Input
               label={'Kehamilan Ke'}
               value={form.pregnancy}
+              placeholder={'Pilih'}
               editable={false}
               onPress={() => setVisiblePregnancy(true)}
             />
@@ -239,6 +272,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
             <Input
               label={'Keguguran'}
               value={form.abortion}
+              placeholder={'Pilih'}
               editable={false}
               onPress={() => setVisibleAbortion(true)}
             />
@@ -270,6 +304,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
             <Input
               label={'Bidan'}
               value={selectMidwife.name}
+              placeholder={'Pilih'}
               editable={false}
               onPress={() => {
                 if (dataMidwife && dataMidwife.length) setVisibleMidwife(true);
@@ -354,7 +389,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
             </SpaceBeetwen>
 
             <Gap height={12} />
-            <Text style={styles.label}>{'Riwayat Tempat Bersalin'}</Text>
+            <Text style={styles.label}>{'Tempat Bersalin'}</Text>
             <SpaceBeetwen>
               {constants.SELECT_HISTORY_PLACE_BIRTH.map(item => (
                 <RadioButton
@@ -392,44 +427,21 @@ const AddServicesAntenatal = ({navigation, route}) => {
             <SpaceBeetwen>
               <Input
                 style={styles.flex}
-                label={'Total Nikah Suami'}
-                value={form.husbandsTotalMarriage}
+                label={'Total Nikah Istri'}
+                value={form.wifesTotalMarriage}
                 keyboardType={'numeric'}
-                onChangeText={value => setForm('husbandsTotalMarriage', value)}
+                onChangeText={value => setForm('wifesTotalMarriage', value)}
               />
 
               <Gap width={16} />
 
               <Input
                 style={styles.flex}
-                label={'Total Nikah Istri'}
-                value={form.wifesTotalMarriage}
+                label={'Total Nikah Suami'}
+                value={form.husbandsTotalMarriage}
                 keyboardType={'numeric'}
-                onChangeText={value => setForm('wifesTotalMarriage', value)}
+                onChangeText={value => setForm('husbandsTotalMarriage', value)}
               />
-            </SpaceBeetwen>
-
-            <Gap height={12} />
-            <Text style={styles.label}>{'Keterangan'}</Text>
-            <SpaceBeetwen>
-              {selectInformation.map(item => (
-                <RadioButton
-                  key={item.id}
-                  style={styles.flex}
-                  type={'rounded'}
-                  label={item.name}
-                  isActive={item.select}
-                  onPress={() => {
-                    const position = selectInformation.findIndex(
-                      obj => obj.id == item.id,
-                    );
-                    selectInformation[position].select =
-                      !selectInformation[position].select;
-                    setIsView(!isView);
-                    setSelectInformation(selectInformation);
-                  }}
-                />
-              ))}
             </SpaceBeetwen>
 
             <Gap height={20} />

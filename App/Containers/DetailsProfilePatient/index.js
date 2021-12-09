@@ -89,7 +89,6 @@ const DetailsProfilePatient = ({navigation, route}) => {
           address: form.address,
           _method: 'put',
         },
-        showLog: true,
       });
       dispatch({type: 'SET_LOADING', value: false});
     } catch (error) {

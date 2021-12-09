@@ -10,6 +10,30 @@ export const formatTreatment = data => {
   });
 };
 
+export const formatSelect = (data, isAddOther) => {
+  const newData = data.map(item => {
+    const newItem = {
+      id: item.id,
+      name: item.name,
+      select: false,
+    };
+
+    return newItem;
+  });
+
+  if (isAddOther) {
+    const newItem = {
+      id: 999,
+      name: 'Lainnya',
+      select: false,
+    };
+
+    newData.push(newItem);
+  }
+
+  return newData;
+};
+
 export const formatSelectedId = data => {
   let newData = [];
   data.map(item => {

@@ -75,8 +75,6 @@ const AddServicesHomecare = ({navigation, route}) => {
         },
       });
 
-      console.log('cek res', res);
-
       dispatch({type: 'SET_LOADING', value: false});
       setLoading(false);
       if (res && res.length) {
@@ -163,7 +161,6 @@ const AddServicesHomecare = ({navigation, route}) => {
           treatments: _selectTreatment,
           is_new: true,
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
