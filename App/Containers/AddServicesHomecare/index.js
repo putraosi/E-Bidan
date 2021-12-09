@@ -34,15 +34,12 @@ const defalutSelectMidwife = {
 
 const AddServicesHomecare = ({navigation, route}) => {
   const [form, setForm] = useForm({
-    motherName: '',
     childName: '',
     childAge: '',
-    address: '',
     executionTime: new Date(),
     executionDate: new Date(),
     placeExecution: 'Klinik Bidan Amel',
     midwife: '',
-    phoneNumber: '',
     price: '0',
   });
 
@@ -77,6 +74,8 @@ const AddServicesHomecare = ({navigation, route}) => {
           now: moments(date).format('YYYY-MM-DD'),
         },
       });
+
+      console.log('cek res', res);
 
       dispatch({type: 'SET_LOADING', value: false});
       setLoading(false);
@@ -130,13 +129,10 @@ const AddServicesHomecare = ({navigation, route}) => {
   };
 
   const validation = () => {
-    if (!form.motherName) return ToastAlert('Silahkan isi Nama Ibu Anda');
     if (!form.childName) return ToastAlert('Silahkan isi Nama Anak Anda');
     if (!form.childAge) return ToastAlert('Silahkan isi Usia Anak Anda');
-    if (!form.address) return ToastAlert('Silahkan isi Alamat Anda');
     if (selectMidwife.name == 'Pilih')
       return ToastAlert('Silahkan pilih bidan anda');
-    if (!form.phoneNumber) return ToastAlert('Silahkan isi No. Whatsapp Anda');
     if (Object.values(selectTreatment).every(item => item.select === false))
       return ToastAlert('Silahkan pilih treatment Anda');
 
@@ -148,24 +144,26 @@ const AddServicesHomecare = ({navigation, route}) => {
     const _selectTreatment = formatSelectedId(selectTreatment);
     const implementation_place =
       form.placeExecution == 'Klinik Bidan Amel' ? 'bidan' : 'rumah';
+    const implementation_date = `${moments(form.executionDate).format(
+      'YYYY-MM-DD',
+    )} ${moments(form.executionTime).format('HH:mm:ss')}`;
 
     try {
       const res = await Api.post({
         url: 'admin/home-cares',
         body: {
           service_category_id: route.params.id,
-          pasien_id: dataUser.id,
-          bidan_id: selectMidwife.id,
-          name_mother: form.motherName,
           name_son: form.childName,
           age_son: parseInt(form.childAge),
-          address: form.address,
-          implementation_date: moments(form.executionDate).format('YYYY-MM-DD'),
+          implementation_date,
           implementation_place,
-          phone: form.phoneNumber,
           cost: parseInt(form.price),
+          pasien_id: dataUser.id,
+          bidan_id: selectMidwife.id,
           treatments: _selectTreatment,
+          is_new: true,
         },
+        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
@@ -192,13 +190,6 @@ const AddServicesHomecare = ({navigation, route}) => {
 
             <Gap height={12} />
             <Input
-              label={'Nama Ibu'}
-              value={form.motherName}
-              onChangeText={value => setForm('motherName', value)}
-            />
-
-            <Gap height={12} />
-            <Input
               label={'Nama Anak'}
               value={form.childName}
               onChangeText={value => setForm('childName', value)}
@@ -210,14 +201,6 @@ const AddServicesHomecare = ({navigation, route}) => {
               value={form.childAge}
               keyboardType={'numeric'}
               onChangeText={value => setForm('childAge', value)}
-            />
-
-            <Gap height={12} />
-            <Input
-              label={'Alamat'}
-              value={form.address}
-              multiline
-              onChangeText={value => setForm('address', value)}
             />
 
             <Gap height={12} />
@@ -269,14 +252,6 @@ const AddServicesHomecare = ({navigation, route}) => {
                     )} tidak ada jadwal praktek.\n\nSilahkan pilih tanggal yang lain.`,
                   });
               }}
-            />
-
-            <Gap height={12} />
-            <Input
-              label={'No. Whatsapp'}
-              value={form.phoneNumber}
-              keyboardType={'numeric'}
-              onChangeText={value => setForm('phoneNumber', value)}
             />
 
             <Gap height={12} />

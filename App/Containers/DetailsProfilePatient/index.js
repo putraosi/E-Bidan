@@ -39,8 +39,6 @@ import {colors, fonts} from '../../Themes';
 const DetailsProfilePatient = ({navigation, route}) => {
   const data = route.params.data;
 
-  console.log('cek data', data);
-
   const [form, setForm] = useForm({
     photo: data.photo,
     name: data.name,

@@ -51,6 +51,7 @@ const SignIn = ({navigation}) => {
           username: form.email,
           password: form.password,
         },
+        showLog: true,
       });
 
       if (res) {

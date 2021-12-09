@@ -135,4 +135,13 @@ export const constants = {
     {id: 3, name: 'AB'},
     {id: 4, name: 'O'},
   ],
+
+  SELECT_RELLIGION: [
+    {id: 1, name: 'Islam'},
+    {id: 2, name: 'Protestan'},
+    {id: 3, name: 'Katolik'},
+    {id: 4, name: 'Hindu'},
+    {id: 5, name: 'Buddha'},
+    {id: 6, name: 'Khonghucu'},
+  ],
 };

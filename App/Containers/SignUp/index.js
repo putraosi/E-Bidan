@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   ImageBackground,
@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
-import {Button, Container, Gap, Input, Row} from '../../Components';
+import {Button, Container, Gap, Input, Modals, Row} from '../../Components';
 import {constants, SampleAlert, ToastAlert, useForm} from '../../Helpers';
 import {ILHeader, ILLogo} from '../../Images';
 import {Api} from '../../Services';
@@ -19,6 +19,9 @@ const SignUp = ({navigation}) => {
   const [form, setForm] = useForm({
     name: '',
     email: '',
+    religionWife: '',
+    professionWife: '',
+    educationWife: '',
     noHandphone: '',
     password: '',
     repeatPassword: '',
@@ -27,6 +30,7 @@ const SignUp = ({navigation}) => {
     _password: true,
     _repeatPassword: true,
   });
+  const [visibleReligion, setVisibleReligion] = useState(false);
   const dispatch = useDispatch();
 
   const validation = () => {
@@ -46,6 +50,12 @@ const SignUp = ({navigation}) => {
       form.noHandphone.charAt(1) != 8
     ) {
       return ToastAlert('Silahkan masukan nomor handphone valid Anda');
+    } else if (!form.religionWife.trim()) {
+      return ToastAlert('Silahkan pilih agama Anda');
+    } else if (!form.professionWife.trim()) {
+      return ToastAlert('Silahkan masukan pekerjaan Anda');
+    } else if (!form.educationWife.trim()) {
+      return ToastAlert('Silahkan masukan pendidikan terkahir Anda');
     } else if (!form.password.trim()) {
       return ToastAlert('Silahkan masukan kata sandi');
     } else if (form.password.length < 8) {
@@ -67,8 +77,10 @@ const SignUp = ({navigation}) => {
           name: form.name,
           email: form.email,
           phone: form.noHandphone,
+          religion_wife: form.religionWife,
+          profession_wife: form.professionWife,
+          education_wife: form.educationWife,
           password: form.password,
-          password_confirmation: form.password,
         },
       });
 
@@ -98,7 +110,6 @@ const SignUp = ({navigation}) => {
             value={form.name}
             onChangeText={value => setForm('name', value)}
           />
-
           <Gap height={12} />
           <Input
             label={'Alamat E-Mail'}
@@ -106,13 +117,34 @@ const SignUp = ({navigation}) => {
             onChangeText={value => setForm('email', value)}
             keyboardType={'email-address'}
           />
-
           <Gap height={12} />
           <Input
             label={'No Handphone'}
             value={form.noHandphone}
             onChangeText={value => setForm('noHandphone', value)}
             keyboardType={'phone-pad'}
+          />
+          <Gap height={12} />
+          <Input
+            label={'Agama'}
+            value={form.religionWife}
+            placeholder={'Pilih'}
+            editable={false}
+            onPress={() => setVisibleReligion(true)}
+          />
+
+          <Gap height={12} />
+          <Input
+            label={'Pekerjaan'}
+            value={form.professionWife}
+            onChangeText={value => setForm('professionWife', value)}
+          />
+
+          <Gap height={12} />
+          <Input
+            label={'Pendidikan Terakhir'}
+            value={form.educationWife}
+            onChangeText={value => setForm('educationWife', value)}
           />
 
           <Gap height={12} />
@@ -126,7 +158,6 @@ const SignUp = ({navigation}) => {
               setSecureTextEntry('_password', !secureTextEntry._password)
             }
           />
-
           <Gap height={12} />
           <Input
             type={'password'}
@@ -141,7 +172,6 @@ const SignUp = ({navigation}) => {
               )
             }
           />
-
           <Gap height={16} />
           <Button label={'Registrasi'} onPress={validation} />
           <Row style={styles.wrapperHaveAccount}>
@@ -152,6 +182,18 @@ const SignUp = ({navigation}) => {
           </Row>
         </View>
       </ScrollView>
+
+      <Modals
+        type={'spinner'}
+        title={'Pilih Agama'}
+        visible={visibleReligion}
+        data={constants.SELECT_RELLIGION}
+        onDismiss={() => setVisibleReligion(false)}
+        onSelect={value => {
+          setVisibleReligion(false);
+          setForm('religionWife', value.name);
+        }}
+      />
     </Container>
   );
 };
