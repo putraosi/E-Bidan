@@ -58,8 +58,8 @@ export const constants = {
   ],
 
   SELECT_TYPE_DESCRIPTION: [
-    {id: 1, name: 'Hygea'},
-    {id: 2, name: 'Umum'},
+    {id: 1, name: 'Baru'},
+    {id: 2, name: 'Lama'},
   ],
 
   SELECT_TYPE_CHILDBIRTH: [
@@ -143,5 +143,11 @@ export const constants = {
     {id: 4, name: 'Hindu'},
     {id: 5, name: 'Buddha'},
     {id: 6, name: 'Khonghucu'},
+  ],
+
+  SELECT_BIRTH_TYPE: [
+    {id: 1, name: 'Spontan'},
+    {id: 2, name: 'Sesar'},
+    {id: 3, name: 'Tindakan'},
   ],
 };

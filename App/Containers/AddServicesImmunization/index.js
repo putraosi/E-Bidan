@@ -27,7 +27,7 @@ import styles from './styles';
 
 const defalutSelectMidwife = {
   id: 0,
-  name: 'Pilih',
+  name: '',
 };
 
 const AddServicesImmunization = ({navigation, route}) => {
@@ -35,19 +35,17 @@ const AddServicesImmunization = ({navigation, route}) => {
     name: '',
     gender: 'Laki-Laki',
     birthday: new Date(),
-    motherName: '',
-    fatherName: '',
     birthPlace: {
       id: 0,
       name: '',
     },
     birthPlaceName: '',
-    address: '',
-    phoneNumber: '',
     birthWeight: '',
     immunizationTypeName: '',
     visitDate: new Date(),
+    visitTime: new Date(),
     typeDescription: '',
+    birthType: '',
   });
 
   const [loading, setLoading] = useState(true);
@@ -55,8 +53,10 @@ const AddServicesImmunization = ({navigation, route}) => {
   const [loadingMidwife, setLoadingMidwife] = useState(true);
   const [dataMidwife, setDataMidwife] = useState([]);
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
+
   const [visibleDatePickerVisitDate, setVisibleDatePickerVisitDate] =
     useState(false);
+  const [visibleTimePicker, setVisibleTimePicker] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
   const [selectTypeImmunization, setSelectTypeImmunization] = useState(
     constants.SELECT_TYPE_IMMUNIZATION,
@@ -148,22 +148,11 @@ const AddServicesImmunization = ({navigation, route}) => {
 
   const validation = () => {
     if (!form.name) return ToastAlert('Silahkan isi nama Anda');
-    if (!form.motherName) return ToastAlert('Silahkan isi nama ibu Anda');
-    if (!form.fatherName) return ToastAlert('Silahkan isi nama ayah Anda');
     if (
       !form.birthPlace.name ||
       (form.birthPlace.name == 'Lainnya' && !form.birthPlaceName)
     )
       return ToastAlert('Silahkan pilih atau isi tempat lahir Anda');
-    if (!form.address) return ToastAlert('Silahkan isi alamat Anda');
-    if (
-      form.phoneNumber.length < 9 ||
-      form.phoneNumber.length > 14 ||
-      form.phoneNumber.charAt(0) != 0 ||
-      form.phoneNumber.charAt(1) != 8
-    ) {
-      return ToastAlert('Silahkan masukan nomor no. whatsapp valid Anda');
-    }
     if (!form.birthWeight)
       return ToastAlert('Silahkan isi berat lahir bayi Anda');
     if (
@@ -179,8 +168,9 @@ const AddServicesImmunization = ({navigation, route}) => {
       return ToastAlert('Silahkan isi jenis imunisasi Anda');
     }
 
-    if (selectMidwife.name == 'Pilih')
-      return ToastAlert('Silahkan pilih bidan Anda');
+    if (!selectMidwife.name) return ToastAlert('Silahkan pilih bidan Anda');
+    if (!form.birthType)
+      return ToastAlert('Silahkan pilih jenis persalinan Anda');
 
     onSubmit();
   };
@@ -195,40 +185,58 @@ const AddServicesImmunization = ({navigation, route}) => {
     const immunizationId = formatSelectedId(selectTypeImmunization);
     const _birthPlaceName =
       form.birthPlace.name == 'Lainnya' ? form.birthPlaceName : '';
-    const _immunizationTypeName = selectTypeImmunization[position].select
+    const immunization_type_name = selectTypeImmunization[position].select
       ? form.immunizationTypeName
       : '';
+    const visit_date = `${moments(form.visitDate).format(
+      'YYYY-MM-DD',
+    )} ${moments(form.visitTime).format('HH:mm:ss')}`;
+
+    const body = {
+      name: form.name,
+      gender: form.gender.toLowerCase(),
+      birth_date: moments(form.birthday).format('YYYY-MM-DD'),
+      birth_place_id: parseInt(form.birthPlace.id),
+      birth_weight: form.birthWeight,
+      visit_date,
+      pasien_id: route.params.userId,
+      bidan_id: selectMidwife.id,
+      service_category_id: route.params.id,
+      immunization_types: immunizationId,
+      birth_place_name: _birthPlaceName,
+      immunization_type_name,
+      maternity_type: form.birthType,
+      is_new: true,
+    };
 
     try {
-      const res = await Api.post({
+      await Api.post({
         url: 'admin/immunizations',
         body: {
-          service_category_id: route.params.id,
-          pasien_id: route.params.userId,
-          bidan_id: selectMidwife.id,
           name: form.name,
           gender: form.gender.toLowerCase(),
           birth_date: moments(form.birthday).format('YYYY-MM-DD'),
-          birth_place_id: form.birthPlace.id,
-          phone_wa: form.phoneNumber,
+          birth_place_id: parseInt(form.birthPlace.id),
           birth_weight: form.birthWeight,
-          visit_date: moments(form.visitDate).format('YYYY-MM-DD'),
-          remarks: form.typeDescription,
+          visit_date,
+          pasien_id: route.params.userId,
+          bidan_id: selectMidwife.id,
+          service_category_id: route.params.id,
           immunization_types: immunizationId,
           birth_place_name: _birthPlaceName,
-          immunization_type_name: _immunizationTypeName,
+          immunization_type_name,
+          maternity_type: form.birthType.toLowerCase(),
+          is_new: true,
         },
+
+        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
-      if (res) {
-        setVisibleSuccess(true);
-      } else {
-        ToastAlert('Silahkan coba beberapa saat lagi');
-      }
+      setVisibleSuccess(true);
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      ToastAlert('Silahkan coba beberapa saat lagi');
+      SampleAlert({message: error.message});
     }
   };
 
@@ -272,20 +280,6 @@ const AddServicesImmunization = ({navigation, route}) => {
             />
 
             <Gap height={12} />
-            <Input
-              label={'Nama Ibu'}
-              value={form.motherName}
-              onChangeText={value => setForm('motherName', value)}
-            />
-
-            <Gap height={12} />
-            <Input
-              label={'Nama Ayah'}
-              value={form.fatherName}
-              onChangeText={value => setForm('fatherName', value)}
-            />
-
-            <Gap height={12} />
             <Text style={styles.label}>{'Tempat Lahir'}</Text>
             <FlatList
               data={selectBirthPlace}
@@ -302,22 +296,6 @@ const AddServicesImmunization = ({navigation, route}) => {
               )}
               scrollEnabled={false}
               numColumns={2}
-            />
-
-            <Gap height={8} />
-            <Input
-              label={'Alamat'}
-              value={form.address}
-              multiline
-              onChangeText={value => setForm('address', value)}
-            />
-
-            <Gap height={12} />
-            <Input
-              label={'No. Whatsapp'}
-              value={form.phoneNumber}
-              keyboardType={'numeric'}
-              onChangeText={value => setForm('phoneNumber', value)}
             />
 
             <Gap height={12} />
@@ -366,8 +344,17 @@ const AddServicesImmunization = ({navigation, route}) => {
 
             <Gap height={12} />
             <Input
+              label={'Waktu Kunjungan'}
+              value={moments(form.visitTime).format('HH:mm')}
+              editable={false}
+              onPress={() => setVisibleTimePicker(true)}
+            />
+
+            <Gap height={12} />
+            <Input
               label={'Bidan'}
               value={selectMidwife.name}
+              placeholder={'Pilih'}
               editable={false}
               onPress={() => {
                 if (dataMidwife && dataMidwife.length) setVisibleMidwife(true);
@@ -391,6 +378,20 @@ const AddServicesImmunization = ({navigation, route}) => {
                   label={item.name}
                   isActive={item.name == form.typeDescription}
                   onPress={() => setForm('typeDescription', item.name)}
+                />
+              ))}
+            </SpaceBeetwen>
+
+            <Gap height={12} />
+            <Text style={styles.label}>{'Jenis Persalinan/Cara Lahir'}</Text>
+            <SpaceBeetwen>
+              {constants.SELECT_BIRTH_TYPE.map(item => (
+                <RadioButton
+                  key={item.id}
+                  style={styles.flex}
+                  label={item.name}
+                  isActive={item.name == form.birthType}
+                  onPress={() => setForm('birthType', item.name)}
                 />
               ))}
             </SpaceBeetwen>
@@ -427,6 +428,20 @@ const AddServicesImmunization = ({navigation, route}) => {
             dispatch({type: 'SET_LOADING', value: true});
             getMidwife(currentDate);
             setForm('visitDate', currentDate);
+          }}
+        />
+      )}
+
+      {visibleTimePicker && (
+        <DatePicker
+          testID="dateTimePicker"
+          value={form.visitTime}
+          mode={'time'}
+          is24Hour={true}
+          onChange={(event, selectedDate) => {
+            const currentDate = selectedDate || form.visitTime;
+            setVisibleTimePicker(false);
+            setForm('visitTime', currentDate);
           }}
         />
       )}

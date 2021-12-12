@@ -78,17 +78,24 @@ const DetailsProfilePatient = ({navigation, route}) => {
   const onUpdate = async () => {
     setVisibleEdit(false);
 
+    const photo = {
+      uri: selectPhoto.uri.replace('file://', ''),
+      name: selectPhoto.fileName,
+      type: selectPhoto.type,
+    };
+
     dispatch({type: 'SET_LOADING', value: true});
     try {
       const res = await Api.post({
         url: `admin/pasiens/${data.id}`,
         body: {
-          photo: form.photo ? form.photo : null,
+          photo: photo,
           name: form.name,
           spouse: form.spouse,
           address: form.address,
           _method: 'put',
         },
+        showLog: true,
       });
       dispatch({type: 'SET_LOADING', value: false});
     } catch (error) {

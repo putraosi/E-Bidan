@@ -3,8 +3,9 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "npx react-native run-android; clear",
-    "ios": "npx react-native run-ios; clear",
+    "a": "npx react-native run-android",
+    "android": "npx react-native run-android",
+    "ios": "npx react-native run-ios;",
     "start": "clear; npx react-native start --reset-cache",
     "link": "npx react-native link",
     "lint": "eslint .",

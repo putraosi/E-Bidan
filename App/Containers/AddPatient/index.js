@@ -68,10 +68,11 @@ const AddPatient = ({navigation}) => {
         url: 'admin/pasiens',
         body: {
           name: form.name,
+          email: form.email,
+
           gender: form.gender.toLowerCase(),
           birth_place: form.birth_place,
           birth_date: moments(form.birth_date).format("YYYY-MM-DD"),
-          email: form.email,
           phone: form.noHandphone,
           address: form.address,
           spouse: form.spouse,
