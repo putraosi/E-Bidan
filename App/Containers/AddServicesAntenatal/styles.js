@@ -1,5 +1,5 @@
-import {StyleSheet} from 'react-native';
-import {colors, fonts} from '../../Themes';
+import { StyleSheet } from 'react-native';
+import { colors, fonts } from '../../Themes';
 
 export default StyleSheet.create({
   flex: {flex: 1},

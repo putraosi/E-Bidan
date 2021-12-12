@@ -20,4 +20,9 @@ export default StyleSheet.create({
     justifyContent: 'space-between',
     flexDirection: 'row',
   },
+
+  radioButton: {
+    flex: 1,
+    marginBottom: 4,
+  },
 });

@@ -1,6 +1,6 @@
 import DatePicker from '@react-native-community/datetimepicker';
 import React, {useEffect, useState} from 'react';
-import {ScrollView, View} from 'react-native';
+import {FlatList, ScrollView, Text, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {
   Button,
@@ -11,15 +11,23 @@ import {
   Loading,
   ModalAlert,
   Modals,
+  RadioButton,
 } from '../../Components';
-import {getData, SampleAlert, ToastAlert, useForm} from '../../Helpers';
+import {
+  formatSelectedId,
+  formatTreatment,
+  getData,
+  SampleAlert,
+  ToastAlert,
+  useForm,
+} from '../../Helpers';
 import {moments} from '../../Libs';
 import {Api} from '../../Services';
 import styles from './styles';
 
 const defalutSelectMidwife = {
   id: 0,
-  name: 'Pilih',
+  name: '',
 };
 
 const AddServicesOther = ({navigation, route}) => {
@@ -27,10 +35,7 @@ const AddServicesOther = ({navigation, route}) => {
     date: new Date(),
     name: '',
     age: '',
-    motherName: '',
-    fatherName: '',
-    address: '',
-    phoneNumber: '',
+    visitTime: new Date(),
   });
 
   const [loading, setLoading] = useState(true);
@@ -41,7 +46,9 @@ const AddServicesOther = ({navigation, route}) => {
   const [dataUser, setDataUser] = useState(null);
   const [dataMidwife, setDataMidwife] = useState([]);
   const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
+  const [visibleTimePicker, setVisibleTimePicker] = useState(false);
   const [selectTreatment, setSelectTreatment] = useState(null);
+  const [isView, setIsView] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -79,16 +86,19 @@ const AddServicesOther = ({navigation, route}) => {
   const getTreatments = async () => {
     try {
       const res = await Api.get({
-        url: 'admin/other-services',
+        url: 'admin/other-category-services',
+        showLog: true,
       });
 
-      // if (res) {
-      //   const newData = formatTreatment(res);
-      //   setSelectTreatment(newData);
-      //   setLoadingTreatment(false);
-      // } else {
-      //   navigation.goBack();
-      // }
+      console.log('cek res', res);
+
+      if (res) {
+        const newData = formatTreatment(res);
+        setSelectTreatment(newData);
+        setLoadingTreatment(false);
+      } else {
+        navigation.goBack();
+      }
     } catch (error) {
       navigation.goBack();
     }
@@ -97,17 +107,9 @@ const AddServicesOther = ({navigation, route}) => {
   const validation = () => {
     if (!form.name) return ToastAlert('Silahkan isi nama anda');
     if (!form.age) return ToastAlert('Silahkan isi usia anda');
-    if (!form.motherName) return ToastAlert('Silahkan isi nama ibu anda');
-    if (!form.fatherName) return ToastAlert('Silahkan isi nama ayah anda');
-    if (!form.address) return ToastAlert('Silahkan isi alamat anda');
-    if (
-      form.phoneNumber.length < 9 ||
-      form.phoneNumber.length > 14 ||
-      form.phoneNumber.charAt(0) != 0 ||
-      form.phoneNumber.charAt(1) != 8
-    ) {
-      return ToastAlert('Silahkan masukan nomor no. whatsapp valid Anda');
-    }
+    if (!selectMidwife.name) return ToastAlert('Silahkan pilih bidan Anda');
+    if (Object.values(selectTreatment).every(item => item.select === false))
+      return ToastAlert('Silahkan pilih treatment Anda');
 
     onSubmit();
   };
@@ -115,39 +117,38 @@ const AddServicesOther = ({navigation, route}) => {
   const onSubmit = async () => {
     dispatch({type: 'SET_LOADING', value: true});
 
+    const visit_date = `${moments(form.date).format('YYYY-MM-DD')} ${moments(
+      form.visitTime,
+    ).format('HH:mm:ss')}`;
+    const other_category_service_ids = formatSelectedId(selectTreatment);
+
     try {
-      const res = await Api.post({
+      await Api.post({
         url: 'admin/other-services',
         body: {
           service_category_id: route.params.id,
-          pasien_id: dataUser.id,
-          bidan_id: selectMidwife.id,
           name: form.name,
-          age: form.age,
-          name_mother: form.motherName,
-          spouse: form.fatherName,
-          address: form.address,
-          phone_wa: form.phoneNumber,
-          visit_date: form.date,
+          age: parseInt(form.age),
+          other_category_service_ids,
+          bidan_id: selectMidwife.id,
+          pasien_id: dataUser.id,
+          visit_date,
         },
+        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
-      if (res) {
-        setVisibleSuccess(true);
-      } else {
-        ToastAlert('Silahkan coba beberapa saat lagi');
-      }
+      setVisibleSuccess(true);
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      ToastAlert('Silahkan coba beberapa saat lagi');
+      SampleAlert({message: error.message});
     }
   };
 
   return (
     <Container>
       <Header title={'Pesanan Baru'} onDismiss={() => navigation.goBack()} />
-      {loading ? (
+      {loading || loadingTreatment ? (
         <Loading />
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -171,36 +172,6 @@ const AddServicesOther = ({navigation, route}) => {
 
             <Gap height={12} />
             <Input
-              label={'Nama Ibu'}
-              value={form.motherName}
-              onChangeText={value => setForm('motherName', value)}
-            />
-
-            <Gap height={12} />
-            <Input
-              label={'Nama Ayah'}
-              value={form.fatherName}
-              onChangeText={value => setForm('fatherName', value)}
-            />
-
-            <Gap height={12} />
-            <Input
-              label={'Alamat'}
-              value={form.address}
-              multiline
-              onChangeText={value => setForm('address', value)}
-            />
-
-            <Gap height={12} />
-            <Input
-              label={'No. Whatsapp'}
-              value={form.phoneNumber}
-              keyboardType={'numeric'}
-              onChangeText={value => setForm('phoneNumber', value)}
-            />
-
-            <Gap height={12} />
-            <Input
               label={'Tanggal Kunjungan'}
               value={moments(form.date).format('DD MMMM YYYY')}
               editable={false}
@@ -211,6 +182,7 @@ const AddServicesOther = ({navigation, route}) => {
             <Input
               label={'Bidan'}
               value={selectMidwife.name}
+              placeholder={'Bidan'}
               editable={false}
               onPress={() => {
                 if (dataMidwife && dataMidwife.length) setVisibleMidwife(true);
@@ -222,6 +194,41 @@ const AddServicesOther = ({navigation, route}) => {
                     )} tidak ada jadwal praktek.\n\nSilahkan pilih tanggal yang lain.`,
                   });
               }}
+            />
+
+            <Gap height={12} />
+            <Input
+              label={'Waktu Kunjungan'}
+              value={moments(form.visitTime).format('HH:mm')}
+              editable={false}
+              onPress={() => setVisibleTimePicker(true)}
+            />
+
+            <Gap height={12} />
+            <Text style={styles.label}>{'Treatment'}</Text>
+            <FlatList
+              data={selectTreatment}
+              renderItem={({item}) => (
+                <RadioButton
+                  style={styles.radioButton}
+                  key={item.id}
+                  type={'rounded'}
+                  label={item.name}
+                  isActive={item.select}
+                  onPress={() => {
+                    const position = selectTreatment.findIndex(
+                      obj => obj.id == item.id,
+                    );
+                    selectTreatment[position].select =
+                      !selectTreatment[position].select;
+
+                    setIsView(!isView);
+                    setSelectTreatment(selectTreatment);
+                  }}
+                />
+              )}
+              numColumns={2}
+              scrollEnabled={false}
             />
 
             <Gap height={20} />
@@ -246,6 +253,20 @@ const AddServicesOther = ({navigation, route}) => {
         />
       )}
 
+      {visibleTimePicker && (
+        <DatePicker
+          testID="dateTimePicker"
+          value={form.visitTime}
+          mode={'time'}
+          is24Hour={true}
+          onChange={(event, selectedDate) => {
+            const currentDate = selectedDate || form.visitTime;
+            setVisibleTimePicker(false);
+            setForm('visitTime', currentDate);
+          }}
+        />
+      )}
+
       <Modals
         type={'spinner'}
         title={'Pilih Bidan'}
@@ -264,6 +285,8 @@ const AddServicesOther = ({navigation, route}) => {
         onDismiss={() => navigation.goBack()}
         onPress={() => navigation.goBack()}
       />
+
+      {isView && <View />}
     </Container>
   );
 };
