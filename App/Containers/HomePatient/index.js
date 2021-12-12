@@ -1,5 +1,5 @@
-import { useIsFocused } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
+import {useIsFocused} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
@@ -7,7 +7,7 @@ import {
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import {
   Button,
@@ -18,12 +18,12 @@ import {
   ItemOrderSchedule,
   Loading,
   Modals,
-  SpaceBeetwen
+  SpaceBeetwen,
 } from '../../Components';
-import { getData, ToastAlert } from '../../Helpers';
-import { ILNullPhoto } from '../../Images';
-import { Api } from '../../Services';
-import { colors, fonts } from '../../Themes';
+import {getData, ToastAlert} from '../../Helpers';
+import {ILNullPhoto} from '../../Images';
+import {Api} from '../../Services';
+import {colors, fonts} from '../../Themes';
 
 const HomePatient = ({navigation}) => {
   const [loading, setLoading] = useState(true);
@@ -86,14 +86,20 @@ const HomePatient = ({navigation}) => {
   const onShowService = select => {
     setVisibelServices(false);
 
-    let screen = 'AddServicesHomecare';
-    if (select.name === 'Antenatal (Pemeriksaan Kehamilan)')
+    let screen = '';
+    if (select.name == 'Homecare') {
+      screen = 'AddServicesHomecare';
+    } else if (select.name === 'Antenatal (Pemeriksaan Kehamilan)')
       screen = 'AddServicesAntenatal';
     else if (select.name === 'Imunisasi') screen = 'AddServicesImmunization';
     else if (select.name === 'INC') screen = 'AddServicesInc';
     else if (select.name === 'Pelayanan Rujukan')
       screen = 'AddServicesReferral';
     else if (select.name === 'Lainnya') screen = 'AddServicesOther';
+    else if (select.name == 'Senam Hamil')
+      screen = 'AddServicesPregnancyExercise';
+
+    if (!screen) return ToastAlert();
 
     navigation.navigate(screen, {id: select.id, userId: dataUser.id});
   };
@@ -109,7 +115,9 @@ const HomePatient = ({navigation}) => {
         <Loading />
       ) : (
         <>
-          <ScrollView showsVerticalScrollIndicator={false} nestedScrollEnabled={true}>
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            nestedScrollEnabled={true}>
             {loadingUser ? (
               <Loading />
             ) : (

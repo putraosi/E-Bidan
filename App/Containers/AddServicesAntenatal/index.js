@@ -1,7 +1,7 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, { useEffect, useState } from 'react';
-import { FlatList, ScrollView, Text, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {FlatList, ScrollView, Text, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {
   Button,
   Container,
@@ -12,7 +12,7 @@ import {
   ModalAlert,
   Modals,
   RadioButton,
-  SpaceBeetwen
+  SpaceBeetwen,
 } from '../../Components';
 import {
   constants,
@@ -21,10 +21,10 @@ import {
   formatSelectedId,
   SampleAlert,
   ToastAlert,
-  useForm
+  useForm,
 } from '../../Helpers';
-import { moments } from '../../Libs';
-import { Api } from '../../Services';
+import {moments} from '../../Libs';
+import {Api} from '../../Services';
 import styles from './styles';
 
 const defalutSelectMidwife = {
@@ -121,7 +121,8 @@ const AddServicesAntenatal = ({navigation, route}) => {
     const diff = Math.abs(moments(_visitDate).diff(_hpht, 'days'));
     let desc = '';
 
-    if (diff % 7 == 0) desc = `${diff / 7} Minggu`;
+    if (diff == 0) desc = '-';
+    else if (diff % 7 == 0) desc = `${diff / 7} Minggu`;
     else if (diff / 7 >= 1)
       desc = `${(diff / 7).toFixed(0)} Minggu ${diff % 7} Hari`;
     else desc = `${diff} Hari`;

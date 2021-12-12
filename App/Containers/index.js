@@ -22,6 +22,7 @@ import PreviewPhoto from './PreviewPhoto';
 import SingIn from './SignIn';
 import SignUp from './SignUp';
 import Splash from './Splash';
+import AddServicesPregnancyExercise from './AddServicesPregnancyExercise'
 
 export {
   GetStarted,
@@ -48,4 +49,5 @@ export {
   AddServicesImmunization,
   AddServicesInc,
   AddServicesOther,
+  AddServicesPregnancyExercise
 };
