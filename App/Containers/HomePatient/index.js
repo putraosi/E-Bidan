@@ -157,10 +157,7 @@ const HomePatient = ({navigation}) => {
                   keyExtractor={item => item.id}
                   data={dataOrderSchedule}
                   renderItem={({item}) => (
-                    <ItemOrderSchedule
-                      data={item}
-                      onPress={() => ToastAlert()}
-                    />
+                    <ItemOrderSchedule navigation={navigation} data={item} />
                   )}
                   ListEmptyComponent={() => (
                     <EmptyList desc="Belum terdapat jadwal booking." />

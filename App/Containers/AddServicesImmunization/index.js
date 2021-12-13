@@ -228,8 +228,6 @@ const AddServicesImmunization = ({navigation, route}) => {
           maternity_type: form.birthType.toLowerCase(),
           is_new: true,
         },
-
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});

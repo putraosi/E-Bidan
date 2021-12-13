@@ -171,7 +171,7 @@ const AddServicesHomecare = ({navigation, route}) => {
       }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      ToastAlert('Silahkan coba beberapa saat lagi');
+      SampleAlert({message: error.message});
     }
   };
 

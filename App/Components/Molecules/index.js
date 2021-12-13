@@ -8,6 +8,7 @@ import ItemSample from './ItemSample';
 import ModalAlert from './ModalAlert';
 import Modals from './Modals';
 import ModalSelect from './ModalSelect';
+import ItemList from './ItemList'
 
 export {
   ItemOrderSchedule,
@@ -15,6 +16,7 @@ export {
   IncomingOrderItems,
   ItemOldPatient,
   ItemSample,
+  ItemList,
   Modals,
   ModalAlert,
   ModalSelect,

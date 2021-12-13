@@ -15,13 +15,16 @@ import {
   DetailsProfileMidwife,
   DetailsProfilePatient,
   GetStarted,
+  HomecareSerivceDetails,
   HomeMidwife,
   HomePatient,
+  ImmunizationSerivceDetails,
   IncomingOrder,
   IncomingOrderDetails,
   OrderDetailPatient,
   OrderHistoryPatient,
   OrderSchedule,
+  OtherSerivceDetails,
   PreviewPhoto,
   SignUp,
   SingIn,
@@ -132,6 +135,24 @@ const Router = () => {
       <Stack.Screen
         name="AddServicesPregnancyExercise"
         component={AddServicesPregnancyExercise}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="HomecareSerivceDetails"
+        component={HomecareSerivceDetails}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="OtherSerivceDetails"
+        component={OtherSerivceDetails}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="ImmunizationSerivceDetails"
+        component={ImmunizationSerivceDetails}
         options={{headerShown: false}}
       />
 

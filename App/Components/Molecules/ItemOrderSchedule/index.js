@@ -1,26 +1,44 @@
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Gap, Notice, Row, SpaceBeetwen} from '../../../Components';
+import {
+  getBookingType,
+  selectPageByService,
+  ToastAlert,
+} from '../../../Helpers';
 import {IcRightArrow} from '../../../Images/icon';
 import {ILPorife} from '../../../Images/illustration';
+import {moments} from '../../../Libs';
 import {colors, fonts} from '../../../Themes';
-import {Gap, Notice, Row, SpaceBeetwen} from '../../Atoms';
-import {moments} from '../../../Libs'
 
-// DUMMY
-const ItemOrderSchedule = ({data, onPress}) => {
+const ItemOrderSchedule = ({navigation, data}) => {
+  const type = getBookingType(data.bookingable_type);
+
+  const onShowDetails = () => {
+    const screen = selectPageByService(data.bookingable_type);
+
+    if (!screen) return ToastAlert();
+
+    navigation.navigate(screen, {
+      data: data,
+    });
+  };
+
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={styles.container} onPress={onShowDetails}>
       <SpaceBeetwen>
         <Image style={styles.image} source={ILPorife} />
         <View style={styles.containerAccount}>
-          <Text style={styles.name}>{'Bd. Syantika Apriliani'}</Text> 
-          <Text style={styles.type}>{'Imunisasi'}</Text>
+          <Text style={styles.name}>{data.bidan.name}</Text>
+          <Text style={styles.type}>{type}</Text>
           <Gap height={2} />
           <Notice category={data.request_status.name} />
         </View>
         <Row>
           <View style={styles.wrapperDateTime}>
-            <Text style={styles.date}>{moments(data.booking_date).format('DD MMM YYYY')}</Text>
+            <Text style={styles.date}>
+              {moments(data.booking_date).format('DD MMM YYYY')}
+            </Text>
           </View>
           <Image style={styles.arrow} source={IcRightArrow} />
         </Row>

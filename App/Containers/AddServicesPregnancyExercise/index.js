@@ -87,10 +87,7 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
     try {
       const res = await Api.get({
         url: 'admin/other-category-services',
-        showLog: true,
       });
-
-      console.log('cek res', res);
 
       if (res) {
         const newData = formatTreatment(res);
@@ -134,7 +131,6 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
           pasien_id: dataUser.id,
           visit_date,
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});

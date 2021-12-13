@@ -1,14 +1,14 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   Container,
@@ -17,24 +17,24 @@ import {
   Input,
   Modals,
   ModalSelect,
-  SpaceBeetwen,
+  SpaceBeetwen
 } from '../../Components';
 import {
   constants,
   resetPage,
   SampleAlert,
   ToastAlert,
-  useForm,
+  useForm
 } from '../../Helpers';
-import {IcEditCircle, IcMenu, ILNullPhoto} from '../../Images';
+import { IcEditCircle, IcMenu, ILNullPhoto } from '../../Images';
 import {
   checkPermissionCamera,
   checkPermissionGallery,
   openCamera,
-  openGallery,
+  openGallery
 } from '../../Libs';
-import {Api} from '../../Services';
-import {colors, fonts} from '../../Themes';
+import { Api } from '../../Services';
+import { colors, fonts } from '../../Themes';
 
 const DetailsProfilePatient = ({navigation, route}) => {
   const data = route.params.data;
@@ -95,7 +95,6 @@ const DetailsProfilePatient = ({navigation, route}) => {
           address: form.address,
           _method: 'put',
         },
-        showLog: true,
       });
       dispatch({type: 'SET_LOADING', value: false});
     } catch (error) {
