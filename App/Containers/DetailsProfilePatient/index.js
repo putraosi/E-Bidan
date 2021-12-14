@@ -91,6 +91,7 @@ const DetailsProfilePatient = ({navigation, route}) => {
           address: form.address,
           _method: 'put',
         },
+        showLog: true,
       });
       dispatch({type: 'SET_LOADING', value: false});
     } catch (error) {
@@ -271,12 +272,13 @@ const styles = StyleSheet.create({
     right: 0,
     borderWidth: 2,
     borderColor: colors.primary,
-    borderRadius: 24 / 2,
+    borderRadius: 34 / 2,
+    backgroundColor: colors.primary,
   },
 
   edit: {
-    width: 24,
-    height: 24,
+    width: 30,
+    height: 30,
   },
 
   name: {

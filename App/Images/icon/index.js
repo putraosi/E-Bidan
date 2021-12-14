@@ -1,4 +1,5 @@
 import IcAdd from './add.png';
+import IcCamera from './icon-camera.png';
 import IcDate from './icon-date.png';
 import IcDownGreen from './icon-down-green.png';
 import IcEditCircle from './icon-edit-circle.png';
@@ -30,4 +31,5 @@ export {
   IcUnchecked,
   IcRadioActive,
   IcRadioInactive,
+  IcCamera,
 };

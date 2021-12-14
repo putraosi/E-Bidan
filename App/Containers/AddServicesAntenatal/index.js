@@ -39,7 +39,6 @@ const AddServicesAntenatal = ({navigation, route}) => {
     visitDate: new Date(),
     visitTime: new Date(),
     hpht: new Date(),
-    hpl: new Date(),
     menstrualDisorders: '',
     remark: 'K1',
     otherDiseaseHistory: '',
@@ -188,7 +187,9 @@ const AddServicesAntenatal = ({navigation, route}) => {
           bidan_id: selectMidwife.id,
           labor_history,
           date_last_haid: moments(form.hpht).format('YYYY-MM-DD'),
-          date_estimate_birth: moments(form.hpl).format('YYYY-MM-DD'),
+          date_estimate_birth: moments(form.hpht)
+            .add(40, 'weeks')
+            .format('YYYY-MM-DD'),
           is_new: true,
           menstrual_disorders: form.menstrualDisorders,
           maternity_plan,
@@ -318,7 +319,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
             <Gap height={12} />
             <Input
               label={'Hari Perkiraan Lahir (HPL)'}
-              value={moments(form.hpl).format('DD MMMM YYYY')}
+              value={moments(form.hpht).add(40, 'weeks').format('DD MMMM YYYY')}
               disable
             />
 
