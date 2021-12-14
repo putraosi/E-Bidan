@@ -16,10 +16,13 @@ export const selectPageByService = data => {
   const type = data.replace('App\\Models\\', '');
   
   if (type == 'OtherService') return 'OtherSerivceDetails';
+  
+  if (type == 'Antenatal') return 'AntenatalSerivceDetails';
 
   if (type == 'Immunization') return 'ImmunizationSerivceDetails';
 
   if (type == 'HomeCareService') return 'HomecareSerivceDetails';
+
 
   return null;
 };

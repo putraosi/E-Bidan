@@ -59,3 +59,18 @@ export const formatSelectedGrouped = data => {
 
   return newData;
 };
+
+export const formatSplit = data => {
+  let newData = [];
+  const split = data.split(',');
+
+  split.map((item, index) => {
+    const newItem = {
+      id: index + 1,
+      name: item,
+    };
+    newData.push(newItem);
+  });
+
+  return newData;
+};

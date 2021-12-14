@@ -36,7 +36,6 @@ const AddServicesAntenatal = ({navigation, route}) => {
   const [form, setForm] = useForm({
     pregnancy: '',
     abortion: '',
-    pregnancyAge: '',
     visitDate: new Date(),
     visitTime: new Date(),
     hpht: new Date(),
@@ -139,10 +138,6 @@ const AddServicesAntenatal = ({navigation, route}) => {
       return ToastAlert('Silahkan pilih kehamilan ke berapa Anda');
     if (!form.abortion)
       return ToastAlert('Silahkan pilih keguguran ke berapa Anda');
-    if (!form.pregnancyAge)
-      return ToastAlert(
-        'Silahkan isi perkiraan usia kehamilan saat kunjungan Anda',
-      );
     if (!selectMidwife.name) return ToastAlert('Silahkan pilih bidan Anda');
     if (selectDiseaseHistory[position].select && !form.otherDiseaseHistory) {
       return ToastAlert('Silahkan isi riwayat penyakit Anda');
@@ -187,7 +182,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
           service_category_id: route.params.id,
           pregnancy: parseInt(form.pregnancy),
           abortus: parseInt(abortus),
-          gestational_age: form.pregnancyAge,
+          gestational_age: gestationalAge,
           visit_date,
           pasien_id: route.params.userId,
           bidan_id: selectMidwife.id,
@@ -276,13 +271,6 @@ const AddServicesAntenatal = ({navigation, route}) => {
               placeholder={'Pilih'}
               editable={false}
               onPress={() => setVisibleAbortion(true)}
-            />
-
-            <Gap height={12} />
-            <Input
-              label={'Perkiraan Usia Kehamilan Saat Kunjungan'}
-              value={form.pregnancyAge}
-              onChangeText={value => setForm('pregnancyAge', value)}
             />
 
             <Gap height={12} />

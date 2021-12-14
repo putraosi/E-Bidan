@@ -8,6 +8,7 @@ import AddServicesInc from './AddServicesInc';
 import AddServicesOther from './AddServicesOther';
 import AddServicesPregnancyExercise from './AddServicesPregnancyExercise';
 import AddServicesReferral from './AddServicesReferral';
+import AntenatalSerivceDetails from './AntenatalSerivceDetails';
 import Confirmation from './Confirmation';
 import DetailsProfileMidwife from './DetailsProfileMidwife';
 import DetailsProfilePatient from './DetailsProfilePatient';
@@ -56,4 +57,5 @@ export {
   HomecareSerivceDetails,
   OtherSerivceDetails,
   ImmunizationSerivceDetails,
+  AntenatalSerivceDetails,
 };

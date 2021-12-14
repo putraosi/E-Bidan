@@ -11,6 +11,7 @@ import {
   AddServicesOther,
   AddServicesPregnancyExercise,
   AddServicesReferral,
+  AntenatalSerivceDetails,
   Confirmation,
   DetailsProfileMidwife,
   DetailsProfilePatient,
@@ -153,6 +154,12 @@ const Router = () => {
       <Stack.Screen
         name="ImmunizationSerivceDetails"
         component={ImmunizationSerivceDetails}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="AntenatalSerivceDetails"
+        component={AntenatalSerivceDetails}
         options={{headerShown: false}}
       />
 

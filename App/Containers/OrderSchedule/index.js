@@ -1,28 +1,52 @@
-import React from 'react';
-import {FlatList, StyleSheet} from 'react-native';
-import {Container, Header, ItemOrderSchedule} from '../../Components';
+import React, {useEffect, useState} from 'react';
+import {FlatList, StyleSheet, View} from 'react-native';
+import {Container, EmptyList, Header, ItemOrderSchedule, Loading} from '../../Components';
+import {Api} from '../../Services';
 
 const OrderSchedule = ({navigation}) => {
-  const dataOrderSchedule = [
-    {id: 1, category: 'pending'},
-    {id: 2, category: 'progress'},
-    {id: 3, category: 'pending'},
-    {id: 4, category: 'reject'},
-    {id: 5, category: 'progress'},
-    {id: 6, category: 'pending'},
-    {id: 7, category: 'pending'},
-    {id: 8, category: 'progress'},
-    {id: 9, category: 'pending'},
-  ];
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState(null);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      const res = await Api.get({
+        url: 'admin/bookings',
+        params: {
+          type: 'pasien',
+        },
+      });
+
+      setData(res);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
   return (
     <Container>
-      <Header title={'Jadwal Pesanan'} onDismiss={() => navigation.goBack()} />
-      <FlatList
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-        data={dataOrderSchedule}
-        renderItem={({item}) => <ItemOrderSchedule key={item.id} data={item} onPress={() => navigation.navigate('OrderDetailPatient')} />}
-      />
+      <Header title={'Jadwal Booking'} onDismiss={() => navigation.goBack()} />
+      {loading ? (
+        <Loading />
+      ) : (
+        <View style={styles.content}>
+          <FlatList
+          showsVerticalScrollIndicator={false}
+          keyExtractor={item => item.id}
+          data={data}
+          renderItem={({item}) => (
+            <ItemOrderSchedule navigation={navigation} data={item} />
+          )}
+          ListEmptyComponent={() => (
+            <EmptyList desc="Belum terdapat jadwal booking." />
+          )}
+        />
+        </View>
+      )}
     </Container>
   );
 };
@@ -31,6 +55,6 @@ export default OrderSchedule;
 
 const styles = StyleSheet.create({
   content: {
-    padding: 14,
+    padding: 16,
   },
 });
