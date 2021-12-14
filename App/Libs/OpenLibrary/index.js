@@ -6,6 +6,7 @@ export const openCamera = () => {
     maxWidth: 1200,
     maxHeight: 1200,
     quality: 0.85,
+    includeBase64: true,
   });
 };
 
@@ -15,5 +16,6 @@ export const openGallery = () => {
     maxHeight: 1200,
     maxWidth: 1200,
     quality: 0.85,
+    includeBase64: true,
   });
 };

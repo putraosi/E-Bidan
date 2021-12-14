@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import {
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View
+  View,
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import { useDispatch } from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {
   Button,
   Container,
@@ -17,24 +17,24 @@ import {
   Input,
   Modals,
   ModalSelect,
-  SpaceBeetwen
+  SpaceBeetwen,
 } from '../../Components';
 import {
   constants,
   resetPage,
   SampleAlert,
   ToastAlert,
-  useForm
+  useForm,
 } from '../../Helpers';
-import { IcEditCircle, IcMenu, ILNullPhoto } from '../../Images';
+import {IcEditCircle, IcMenu, ILNullPhoto} from '../../Images';
 import {
   checkPermissionCamera,
   checkPermissionGallery,
   openCamera,
-  openGallery
+  openGallery,
 } from '../../Libs';
-import { Api } from '../../Services';
-import { colors, fonts } from '../../Themes';
+import {Api} from '../../Services';
+import {colors, fonts} from '../../Themes';
 
 const DetailsProfilePatient = ({navigation, route}) => {
   const data = route.params.data;
@@ -77,16 +77,12 @@ const DetailsProfilePatient = ({navigation, route}) => {
 
   const onUpdate = async () => {
     setVisibleEdit(false);
-
-    const photo = {
-      uri: selectPhoto.uri.replace('file://', ''),
-      name: selectPhoto.fileName,
-      type: selectPhoto.type,
-    };
-
     dispatch({type: 'SET_LOADING', value: true});
+
+    const photo = `data:${selectPhoto.type};base64, ${selectPhoto.base64}`;
+
     try {
-      const res = await Api.post({
+      await Api.post({
         url: `admin/pasiens/${data.id}`,
         body: {
           photo: photo,
@@ -232,7 +228,7 @@ const DetailsProfilePatient = ({navigation, route}) => {
         onPress={async value => {
           setVisibleSelectPhoto(false);
           if (value == 'Gallery') {
-            const granted = checkPermissionGallery();
+            const granted = await checkPermissionGallery();
             if (granted) {
               const callback = await openGallery();
               const item = callback.assets[0];
@@ -240,7 +236,7 @@ const DetailsProfilePatient = ({navigation, route}) => {
               setForm('photo', item.uri);
             }
           } else {
-            const granted = checkPermissionCamera();
+            const granted = await checkPermissionCamera();
             if (granted) {
               const callback = await openCamera();
               const item = callback.assets[0];

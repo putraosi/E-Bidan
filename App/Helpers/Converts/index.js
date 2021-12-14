@@ -6,6 +6,8 @@ export const getBookingType = data => {
   if (type == 'Antenatal') return 'Antenatal';
 
   if (type == 'Immunization') return 'Immunisasi';
+
+  if (type == 'HomeCareService') return 'Homecare';
   
   return '';
 };
@@ -16,6 +18,8 @@ export const selectPageByService = data => {
   if (type == 'OtherService') return 'OtherSerivceDetails';
 
   if (type == 'Immunization') return 'ImmunizationSerivceDetails';
+
+  if (type == 'HomeCareService') return 'HomecareSerivceDetails';
 
   return null;
 };

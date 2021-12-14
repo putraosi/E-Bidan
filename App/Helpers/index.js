@@ -5,3 +5,4 @@ export * from './Format';
 export * from './LocalStorage';
 export * from './MoveScreen';
 export * from './UseForm';
+export * from './Rupiah'

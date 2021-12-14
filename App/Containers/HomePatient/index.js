@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
+  LogBox,
   ScrollView,
   StyleSheet,
   Text,
@@ -38,6 +39,8 @@ const HomePatient = ({navigation}) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
+    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
+
     getData('user').then(res => {
       setDataUser(res);
       setLoadingUser(false);
