@@ -8,6 +8,7 @@ import AddServicesInc from './AddServicesInc';
 import AddServicesOther from './AddServicesOther';
 import AddServicesPregnancyExercise from './AddServicesPregnancyExercise';
 import AddServicesReferral from './AddServicesReferral';
+import AddServicesUltrasonografi from './AddServicesUltrasonografi';
 import AntenatalSerivceDetails from './AntenatalSerivceDetails';
 import Confirmation from './Confirmation';
 import DetailsProfileMidwife from './DetailsProfileMidwife';
@@ -23,10 +24,13 @@ import OrderDetailPatient from './OrderDetailPatient';
 import OrderHistoryPatient from './OrderHistoryPatient';
 import OrderSchedule from './OrderSchedule';
 import OtherSerivceDetails from './OtherSerivceDetails';
+import PregnancyExerciseSerivceDetails from './PregnancyExerciseSerivceDetails';
 import PreviewPhoto from './PreviewPhoto';
 import SingIn from './SignIn';
 import SignUp from './SignUp';
 import Splash from './Splash';
+import UltrasonografiSerivceDetails from './UltrasonografiSerivceDetails';
+import AddServicesKB from './AddServicesKB'
 
 export {
   GetStarted,
@@ -54,8 +58,12 @@ export {
   AddServicesInc,
   AddServicesOther,
   AddServicesPregnancyExercise,
+  AddServicesUltrasonografi,
+  AddServicesKB,
   HomecareSerivceDetails,
   OtherSerivceDetails,
   ImmunizationSerivceDetails,
   AntenatalSerivceDetails,
+  PregnancyExerciseSerivceDetails,
+  UltrasonografiSerivceDetails,
 };

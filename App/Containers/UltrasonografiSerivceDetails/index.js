@@ -1,20 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
-import {
-  Button,
-  Container,
-  Gap,
-  Header,
-  Input,
-  ItemList,
-  Loading,
-} from '../../Components';
-import {formatSplit, ToastAlert} from '../../Helpers';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import {Button, Container, Gap, Header, Input, Loading} from '../../Components';
+import {rupiah, ToastAlert} from '../../Helpers';
 import {moments} from '../../Libs';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
-const AntenatalSerivceDetails = ({navigation, route}) => {
+const UltrasonografiSerivceDetails = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState('');
 
@@ -35,14 +27,10 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
     }
   };
 
-  const dataLaborHistory = loading
-    ? []
-    : formatSplit(data.bookingable.labor_history);
-
   return (
     <Container>
       <Header
-        title={`Detail Pesan\nAntenatal (Pemeriksaan Kehamilan)`}
+        title={`Detail Pesan\nSenam Hamil`}
         onDismiss={() => navigation.goBack()}
       />
       {loading ? (
@@ -51,8 +39,8 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
         <ScrollView showsVerticalScrollIndicator={false}>
           <View style={styles.content}>
             <Input
-              label={'Kehamilan Ke'}
-              value={data.bookingable.pregnancy.toString()}
+              label={'Total Anak'}
+              value={data.bookingable.child.toString()}
               editable={false}
             />
 
@@ -61,7 +49,7 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
               label={'Keguguran'}
               value={
                 data.bookingable.abortus
-                  ? data.bookingable.abortus.toString
+                  ? data.bookingable.abortus.toString()
                   : 'Tidak Pernah'
               }
               editable={false}
@@ -85,19 +73,15 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
 
             <Input
               style={styles.input}
-              label={'Hari Pertaman Haid Terakhir (HPHT)'}
-              value={moments(data.bookingable.date_last_haid).format(
-                'DD MMMM YYYY',
-              )}
+              label={'Hari Pertama Haid Terakhir (HPHT)'}
+              value={data.bookingable.date_last_haid}
               editable={false}
             />
 
             <Input
               style={styles.input}
               label={'Hari Perkiraan Lahir (HPL)'}
-              value={moments(data.bookingable.date_estimate_birth).format(
-                'DD MMMMM YYYY',
-              )}
+              value={data.bookingable.date_estimate_birth}
               editable={false}
             />
 
@@ -108,62 +92,21 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
               editable={false}
             />
 
-            <Text style={styles.label}>{'Riwayat Penyakit'}</Text>
-            <FlatList
-              data={data.bookingable.disease_histories}
-              renderItem={({item}) => (
-                <ItemList style={styles.list} key={item.id} name={item.name} />
-              )}
-              numColumns={2}
-              scrollEnabled={false}
-            />
-
-            <Text style={styles.label}>{'Riwayat Persalinan'}</Text>
-            <FlatList
-              data={dataLaborHistory}
-              renderItem={({item}) => (
-                <ItemList style={styles.list} key={item.id} name={item.name} />
-              )}
-              numColumns={2}
-              scrollEnabled={false}
-            />
-
             <Input
               style={styles.input}
-              label={'Gangguan Menstruasi'}
-              value={data.bookingable.menstrual_disorders}
+              label={'Jenis USG'}
+              value={data.bookingable.ultrasonografi_types[0].name}
               editable={false}
             />
 
             <Input
               style={styles.input}
-              label={'Tempat Persalinan'}
-              value={data.bookingable.maternity_plan}
+              label={'Baiya'}
+              value={`Rp${rupiah(data.bookingable.cost)}`}
               editable={false}
             />
 
-            <Input
-              style={styles.input}
-              label={'Golongan Darah'}
-              value={data.bookingable.blood_group}
-              editable={false}
-            />
-
-            <Input
-              style={styles.input}
-              label={'Total Nikah Istri'}
-              value={data.bookingable.marital_status_wife.toString()}
-              editable={false}
-            />
-
-            <Input
-              style={styles.input}
-              label={'Total Nikah Suami'}
-              value={data.bookingable.marital_status_husband.toString()}
-              editable={false}
-            />
-
-            <Gap height={16} />
+            <Gap height={20} />
             <Button label={'Ubah'} onPress={() => ToastAlert()} />
           </View>
         </ScrollView>
@@ -172,17 +115,13 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
   );
 };
 
-export default AntenatalSerivceDetails;
+export default UltrasonografiSerivceDetails;
 
 const styles = StyleSheet.create({
   flex: {flex: 1},
 
   content: {
     padding: 16,
-  },
-
-  input: {
-    marginTop: 12,
   },
 
   label: {
@@ -196,5 +135,15 @@ const styles = StyleSheet.create({
   list: {
     flex: 1,
     marginBottom: 4,
+  },
+
+  input: {
+    marginTop: 12,
+  },
+
+  photo: {
+    width: 60,
+    height: 60,
+    borderRadius: 4,
   },
 });

@@ -8,9 +8,11 @@ import {
   AddServicesHomecare,
   AddServicesImmunization,
   AddServicesInc,
+  AddServicesKB,
   AddServicesOther,
   AddServicesPregnancyExercise,
   AddServicesReferral,
+  AddServicesUltrasonografi,
   AntenatalSerivceDetails,
   Confirmation,
   DetailsProfileMidwife,
@@ -26,10 +28,12 @@ import {
   OrderHistoryPatient,
   OrderSchedule,
   OtherSerivceDetails,
+  PregnancyExerciseSerivceDetails,
   PreviewPhoto,
   SignUp,
   SingIn,
   Splash,
+  UltrasonografiSerivceDetails,
 } from '../../Containers';
 
 const Stack = createNativeStackNavigator();
@@ -140,6 +144,18 @@ const Router = () => {
       />
 
       <Stack.Screen
+        name="AddServicesUltrasonografi"
+        component={AddServicesUltrasonografi}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="AddServicesKB"
+        component={AddServicesKB}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
         name="HomecareSerivceDetails"
         component={HomecareSerivceDetails}
         options={{headerShown: false}}
@@ -160,6 +176,18 @@ const Router = () => {
       <Stack.Screen
         name="AntenatalSerivceDetails"
         component={AntenatalSerivceDetails}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="PregnancyExerciseSerivceDetails"
+        component={PregnancyExerciseSerivceDetails}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="UltrasonografiSerivceDetails"
+        component={UltrasonografiSerivceDetails}
         options={{headerShown: false}}
       />
 

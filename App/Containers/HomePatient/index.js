@@ -101,6 +101,10 @@ const HomePatient = ({navigation}) => {
     else if (select.name === 'Lainnya') screen = 'AddServicesOther';
     else if (select.name == 'Senam Hamil')
       screen = 'AddServicesPregnancyExercise';
+    else if (select.name == 'USG')
+      screen = 'AddServicesUltrasonografi';
+    else if (select.name == 'Keluarga Berencana (KB)')
+      screen = 'AddServicesKB';
 
     if (!screen) return ToastAlert();
 
@@ -136,9 +140,9 @@ const HomePatient = ({navigation}) => {
                 </View>
               </TouchableOpacity>
             )}
-            <View style={styles.slider}>
+            {/* <View style={styles.slider}>
               <Text>{'Coming Soon'}</Text>
-            </View>
+            </View> */}
 
             <View style={styles.containerOrder}>
               <SpaceBeetwen>

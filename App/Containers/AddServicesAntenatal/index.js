@@ -108,10 +108,8 @@ const AddServicesAntenatal = ({navigation, route}) => {
         setSelectDiseaseHistory(formated);
         setLoadingDiseaseHistory(false);
       } else setLoadingDiseaseHistory(false);
-
-      setLoadingDiseaseHistory(false);
     } catch (error) {
-      setLoadingDiseaseHistory(false);
+      navigation.goBack();
     }
   };
 
@@ -284,14 +282,6 @@ const AddServicesAntenatal = ({navigation, route}) => {
 
             <Gap height={12} />
             <Input
-              label={'Waktu Kunjungan'}
-              value={moments(form.visitTime).format('HH:mm')}
-              editable={false}
-              onPress={() => setVisibleTimePicker(true)}
-            />
-
-            <Gap height={12} />
-            <Input
               label={'Bidan'}
               value={selectMidwife.name}
               placeholder={'Pilih'}
@@ -306,6 +296,14 @@ const AddServicesAntenatal = ({navigation, route}) => {
                     )} tidak ada jadwal praktek.\n\nSilahkan pilih tanggal yang lain.`,
                   });
               }}
+            />
+
+            <Gap height={12} />
+            <Input
+              label={'Waktu Kunjungan'}
+              value={moments(form.visitTime).format('HH:mm')}
+              editable={false}
+              onPress={() => setVisibleTimePicker(true)}
             />
 
             <Gap height={12} />

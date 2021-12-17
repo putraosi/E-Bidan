@@ -138,7 +138,6 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
           service_category_id: route.params.id,
           date_last_haid: moments(form.hpht).format('YYYY-MM-DD'),
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});

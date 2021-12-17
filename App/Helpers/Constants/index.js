@@ -150,4 +150,24 @@ export const constants = {
     {id: 2, name: 'Sesar'},
     {id: 3, name: 'Tindakan'},
   ],
+
+  SELECT_STATUS_KB: [
+    {id: 1, name: 'Baru'},
+    {id: 2, name: 'Ulangan'},
+    {id: 3, name: 'Anti Cara'},
+    {id: 4, name: 'Paksa Bersalin'},
+  ],
+
+  SELECT_TYPE_KB: [
+    {id: 1, name: 'Pil'},
+    {id: 2, name: 'Implant'},
+    {id: 3, name: 'IUD'},
+    {id: 4, name: 'Suntik 1 bulan'},
+    {id: 5, name: 'Suntik 3 bulan'},
+  ],
+
+  SELECT_YES_OR_NO: [
+    {id: 1, name: 'Iya', value: true},
+    {id: 2, name: 'Tidak', value: false},
+  ],
 };

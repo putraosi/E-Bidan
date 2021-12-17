@@ -15,6 +15,7 @@ import {
   Gap,
   Header,
   Input,
+  ModalAlert,
   Modals,
   ModalSelect,
   SpaceBeetwen,
@@ -23,6 +24,7 @@ import {
   constants,
   resetPage,
   SampleAlert,
+  storeData,
   ToastAlert,
   useForm,
 } from '../../Helpers';
@@ -51,6 +53,7 @@ const DetailsProfilePatient = ({navigation, route}) => {
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [visibleSelect, setVisibleSelect] = useState(false);
   const [visibleSelectPhoto, setVisibleSelectPhoto] = useState(false);
+  const [visibleSuccess, setVisibleSuccess] = useState(false);
   const [selectPhoto, setSelectPhoto] = useState(null);
   const [isChange, setIsChange] = useState(false);
   const dispatch = useDispatch();
@@ -79,21 +82,25 @@ const DetailsProfilePatient = ({navigation, route}) => {
     setVisibleEdit(false);
     dispatch({type: 'SET_LOADING', value: true});
 
-    const photo = `data:${selectPhoto.type};base64, ${selectPhoto.base64}`;
+    const photo = selectPhoto
+      ? `data:${selectPhoto.type};base64, ${selectPhoto.base64}`
+      : form.photo;
 
     try {
-      await Api.post({
+      const res = await Api.post({
         url: `admin/pasiens/${data.id}`,
         body: {
-          photo: photo,
           name: form.name,
+          photo: photo,
           spouse: form.spouse,
           address: form.address,
           _method: 'put',
         },
         showLog: true,
       });
+      storeData('user', res.data);
       dispatch({type: 'SET_LOADING', value: false});
+      setVisibleSuccess(true);
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
       SampleAlert({message: error.message});
@@ -246,6 +253,13 @@ const DetailsProfilePatient = ({navigation, route}) => {
             }
           }
         }}
+      />
+
+      <ModalAlert
+        visible={visibleSuccess}
+        desc={'Selamat anda telah berhasil\nmendaftar di layanan kami'}
+        onDismiss={() => navigation.goBack()}
+        onPress={() => navigation.goBack()}
       />
     </Container>
   );

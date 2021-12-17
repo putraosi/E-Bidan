@@ -22,7 +22,7 @@ const PreviewPhoto = ({navigation, route}) => {
           <TouchableOpacity
             style={styles.containerEdit}
             onPress={() => ToastAlert()}>
-            <Image style={styles.edit} source={IcEditCircle} />
+            {/* <Image style={styles.edit} source={IcEditCircle} /> */}
           </TouchableOpacity>
         </View>
       </View>
