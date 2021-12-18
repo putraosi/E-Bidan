@@ -100,7 +100,6 @@ const AddServicesKB = ({navigation, route}) => {
     try {
       const res = await Api.get({
         url: 'self/disease-history-families',
-        showLog: true,
       });
 
       if (res) {
@@ -162,7 +161,6 @@ const AddServicesKB = ({navigation, route}) => {
           visit_date,
           disease_history_family_name,
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
@@ -202,7 +200,6 @@ const AddServicesKB = ({navigation, route}) => {
           visit_date,
           disease_history_family_name,
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});

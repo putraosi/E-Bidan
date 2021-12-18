@@ -97,7 +97,6 @@ const AddServicesUltrasonografi = ({navigation, route}) => {
     try {
       const res = await Api.get({
         url: 'admin/ultrasonografi-types',
-        showLog: true,
       });
 
       setDataType(res);
@@ -145,7 +144,6 @@ const AddServicesUltrasonografi = ({navigation, route}) => {
             .add(40, 'weeks')
             .format('YYYY-MM-DD'),
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
