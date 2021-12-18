@@ -100,10 +100,8 @@ const HomePatient = ({navigation}) => {
     else if (select.name === 'Lainnya') screen = 'AddServicesOther';
     else if (select.name == 'Senam Hamil')
       screen = 'AddServicesPregnancyExercise';
-    else if (select.name == 'USG')
-      screen = 'AddServicesUltrasonografi';
-    else if (select.name == 'Keluarga Berencana (KB)')
-      screen = 'AddServicesKB';
+    else if (select.name == 'USG') screen = 'AddServicesUltrasonografi';
+    else if (select.name == 'Keluarga Berencana (KB)') screen = 'AddServicesKB';
 
     if (!screen) return ToastAlert();
 
@@ -121,9 +119,7 @@ const HomePatient = ({navigation}) => {
         <Loading />
       ) : (
         <>
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            nestedScrollEnabled={true}>
+          <ScrollView showsVerticalScrollIndicator={false}>
             {loadingUser ? (
               <Loading />
             ) : (
@@ -135,7 +131,7 @@ const HomePatient = ({navigation}) => {
                 <Image style={styles.image} source={photo} />
                 <View style={styles.wrapperAccount}>
                   <Text style={styles.name}>{dataUser.name}</Text>
-                  <Text style={styles.type}>{"Pasien"}</Text>
+                  <Text style={styles.type}>{'Pasien'}</Text>
                 </View>
               </TouchableOpacity>
             )}
@@ -157,6 +153,7 @@ const HomePatient = ({navigation}) => {
               ) : (
                 <FlatList
                   showsVerticalScrollIndicator={false}
+                  scrollEnabled={false}
                   keyExtractor={item => item.id}
                   data={dataOrderSchedule}
                   renderItem={({item}) => (
@@ -185,6 +182,7 @@ const HomePatient = ({navigation}) => {
               ) : (
                 <FlatList
                   showsVerticalScrollIndicator={false}
+                  scrollEnabled={false}
                   keyExtractor={item => item.id}
                   data={dataOrderHistory}
                   renderItem={({item}) => (

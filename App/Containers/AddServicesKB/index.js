@@ -1,6 +1,6 @@
 import DatePicker from '@react-native-community/datetimepicker';
 import React, {useEffect, useState} from 'react';
-import {FlatList, ScrollView, Text, View} from 'react-native';
+import {FlatList, LogBox, ScrollView, Text, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {
   Button,

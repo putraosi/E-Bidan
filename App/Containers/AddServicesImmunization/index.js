@@ -206,7 +206,7 @@ const AddServicesImmunization = ({navigation, route}) => {
       birth_place_name: _birthPlaceName,
       immunization_type_name,
       maternity_type: form.birthType,
-      is_new: true,
+      is_new: false,
     };
 
     try {
@@ -226,7 +226,7 @@ const AddServicesImmunization = ({navigation, route}) => {
           birth_place_name: _birthPlaceName,
           immunization_type_name,
           maternity_type: form.birthType.toLowerCase(),
-          is_new: true,
+          is_new: false,
         },
       });
 

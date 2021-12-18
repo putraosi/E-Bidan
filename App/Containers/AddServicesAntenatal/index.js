@@ -188,7 +188,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
           date_estimate_birth: moments(form.hpht)
             .add(40, 'weeks')
             .format('YYYY-MM-DD'),
-          is_new: true,
+          is_new: false,
           menstrual_disorders: form.menstrualDisorders,
           maternity_plan,
           blood_group: form.bloodGroup,

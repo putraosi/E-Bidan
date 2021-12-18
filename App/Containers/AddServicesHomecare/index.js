@@ -159,7 +159,7 @@ const AddServicesHomecare = ({navigation, route}) => {
           pasien_id: dataUser.id,
           bidan_id: selectMidwife.id,
           treatments: _selectTreatment,
-          is_new: true,
+          is_new: false,
         },
       });
 
