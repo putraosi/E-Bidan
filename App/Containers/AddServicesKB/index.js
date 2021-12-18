@@ -99,7 +99,7 @@ const AddServicesKB = ({navigation, route}) => {
   const getDiseasehistory = async () => {
     try {
       const res = await Api.get({
-        url: 'admin/disease-history-families',
+        url: 'self/disease-history-families',
         showLog: true,
       });
 

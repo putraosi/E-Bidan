@@ -162,11 +162,11 @@ const styles = StyleSheet.create({
 
   containerEdit: {
     position: 'absolute',
-    top: -15,
-    right: 16,
-    borderWidth: 1,
+    bottom: 0,
+    right: 0,
+    borderWidth: 2,
     borderColor: colors.primary,
-    borderRadius: 24 / 2,
+    borderRadius: 34 / 2,
     backgroundColor: colors.primary,
   },
 

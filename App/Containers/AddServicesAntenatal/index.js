@@ -100,7 +100,8 @@ const AddServicesAntenatal = ({navigation, route}) => {
   const getDiseasehistory = async () => {
     try {
       const res = await Api.get({
-        url: 'admin/disease_histories',
+        url: 'self/disease_histories',
+        showLog: true,
       });
 
       if (res) {

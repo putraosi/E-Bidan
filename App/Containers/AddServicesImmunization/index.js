@@ -99,7 +99,7 @@ const AddServicesImmunization = ({navigation, route}) => {
   const getTypeImmunization = async () => {
     try {
       const res = await Api.get({
-        url: 'admin/immunization-types',
+        url: 'self/immunization-types',
       });
 
       if (res) {
