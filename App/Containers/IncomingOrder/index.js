@@ -1,35 +1,51 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {FlatList, StyleSheet} from 'react-native';
-import {Container, Header, IncomingOrderItems} from '../../Components';
-import { ToastAlert } from '../../Helpers';
+import {Container, Header, IncomingOrderItems, Loading} from '../../Components';
+import {Api} from '../../Services';
 
 const IncomingOrder = ({navigation}) => {
-  const dataIncomingOrder = [
-    {id: 1, category: 'pending'},
-    {id: 2, category: 'progress'},
-    {id: 3, category: 'pending'},
-    {id: 4, category: 'reject'},
-    {id: 5, category: 'progress'},
-    {id: 6, category: 'pending'},
-    {id: 7, category: 'pending'},
-    {id: 8, category: 'progress'},
-    {id: 9, category: 'pending'},
-  ];
+  const [loading, setLoading] = useState(true);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      const res = await Api.get({
+        url: 'admin/bookings',
+        params: {
+          type: 'bidan',
+        },
+      });
+
+      setData(res);
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
+  };
+
   return (
     <Container>
-      <Header title={'Pesanan Masuk'} onDismiss={() => navigation.goBack()} />
-      <FlatList
-        style={styles.content}
-        showsVerticalScrollIndicator={false}
-        data={dataIncomingOrder}
-        renderItem={({item}) => (
-          <IncomingOrderItems
-            key={item.id}
-            data={item}
-            onPress={() => navigation.navigate('IncomingOrderDetails')}
-          />
-        )}
-      />
+      <Header title={'Daftar Pesanan Masuk'} onDismiss={() => navigation.goBack()} />
+      {loading ? (
+        <Loading />
+      ) : (
+        <FlatList
+          style={styles.content}
+          showsVerticalScrollIndicator={false}
+          data={data}
+          renderItem={({item}) => (
+            <IncomingOrderItems
+              key={item.id}
+              navigation={navigation}
+              data={item}
+            />
+          )}
+        />
+      )}
     </Container>
   );
 };

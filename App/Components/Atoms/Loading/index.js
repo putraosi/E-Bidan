@@ -4,11 +4,19 @@ import {colors, fonts} from '../../../Themes';
 import LoadingModal from './LoadingModal';
 
 const Loading = ({type}) => {
+  let backgroundColor = colors.white;
+  let loadingColor = colors.primary;
+
   if (type == 'modal') return <LoadingModal />;
 
+  if (type == 'secondary') {
+    backgroundColor = colors.transparent;
+    loadingColor = colors.white;
+  }
+
   return (
-    <View style={styles.container}>
-      <ActivityIndicator size={'large'} color={colors.primary} />
+    <View style={styles.container(backgroundColor)}>
+      <ActivityIndicator size={'large'} color={loadingColor} />
       <Text style={styles.label}>{'Loading...'}</Text>
     </View>
   );
@@ -17,13 +25,13 @@ const Loading = ({type}) => {
 export default Loading;
 
 const styles = StyleSheet.create({
-  container: {
+  container: backgroundColor => ({
     flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: colors.white,
+    backgroundColor,
     padding: 16,
-  },
+  }),
 
   label: {
     fontSize: 14,

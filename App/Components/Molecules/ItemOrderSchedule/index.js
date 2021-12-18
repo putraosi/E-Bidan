@@ -24,8 +24,6 @@ const ItemOrderSchedule = ({navigation, data}) => {
     });
   };
 
-  console.log('cek data', data);
-
   const photo = data.bidan.photo ? {uri: data.bidan.photo} : ILNullPhoto;
 
   return (

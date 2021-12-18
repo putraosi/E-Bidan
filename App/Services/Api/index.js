@@ -39,10 +39,6 @@ export const Api = {
 
       if (showLog) console.log('API RES', res.data);
 
-      // if (res.data.errors) {
-      //   throw res.data.errors[0];
-      // }
-
       return res.data.data;
     } catch (e) {
       if (showLog) console.log('API ERROR', {e});
@@ -73,6 +69,33 @@ export const Api = {
       return res.data.data;
     } catch (error) {
       if (showLog) console.log('API ERROR', {error});
+      throw error;
+    }
+  },
+
+  put: async ({url, body, showLog}) => {
+    const data = JSON.stringify(body);
+
+    if (showLog) {
+      console.log('URL', url);
+      console.log('BODY', body);
+    }
+
+    try {
+      const res = await api.put(url, data);
+
+      if (showLog) console.log('API RES', res.data);
+
+      return res.data.data;
+    } catch (e) {
+      if (showLog) console.log('API ERROR', {e});
+
+      const value = {e};
+      const error = {
+        code: value.e.response.status,
+        message: value.e.response.data.errors[0],
+      };
+
       throw error;
     }
   },

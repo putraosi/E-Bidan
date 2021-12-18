@@ -53,6 +53,5 @@ const styles = StyleSheet.create({
     color,
     fontFamily: fonts.primary.bold,
     textAlign: 'right',
-    textTransform: 'capitalize',
   }),
 });

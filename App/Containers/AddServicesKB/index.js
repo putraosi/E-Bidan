@@ -18,7 +18,6 @@ import {
   constants,
   formatSelect,
   formatSelectedId,
-  getData,
   SampleAlert,
   ToastAlert,
   useForm,
@@ -33,43 +32,38 @@ const defalutSelectMidwife = {
 };
 
 const AddServicesKB = ({navigation, route}) => {
+  const oldData = route.params.data;
   const [form, setForm] = useForm({
-    child: '',
-    age: '',
-    status: '',
-    method: '',
-    breastfeed: false,
-    otherDiseaseHistory: '',
-    lastDateMenstruation: new Date(),
-    visitDate: new Date(),
-    visitTime: new Date(),
+    child: oldData ? oldData.bookingable.total_child.toString() : '',
+    age: oldData ? oldData.bookingable.yongest_child_age.toString() : '',
+    status: oldData ? oldData.bookingable.status_use : '',
+    method: oldData ? oldData.bookingable.method_use : '',
+    breastfeed: oldData ? oldData.bookingable.is_breast_feed == 1 : '',
+    otherDiseaseHistory: '', // NOT DONE
+    lastDateMenstruation: oldData
+      ? new Date(oldData.bookingable.date_last_haid)
+      : new Date(),
+    visitDate: oldData ? new Date(oldData.bookingable.visit_date) : new Date(),
+    visitTime: oldData ? new Date(oldData.bookingable.visit_date) : new Date(),
   });
 
   const [loading, setLoading] = useState(true);
   const [loadingDiseaseHistory, setLoadingDiseaseHistory] = useState(true);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
-  const [visibleDatePickerHPHT, setVisibleDatePickerHPHT] = useState(false);
+  const [visibleSuccessEdit, setVisibleSuccessEdit] = useState(false);
   const [visibleLastDateMenstruation, setVisibleLastDateMenstruation] =
     useState(false);
   const [visibleVisitDate, setVisibleVisitDate] = useState(false);
   const [visibleVisitTime, setVisibleVisitTime] = useState(false);
-  const [dataUser, setDataUser] = useState(null);
   const [dataMidwife, setDataMidwife] = useState([]);
-  const [dataType, setDataType] = useState([]);
   const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
   const [selectDiseaseHistory, setSelectDiseaseHistory] = useState([]);
   const [isView, setIsView] = useState(false);
-  const [gestationalAge, setGestationalAge] = useState('');
-  const [price, setPrice] = useState('');
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getData('user').then(res => {
-      setDataUser(res);
-    });
-
-    getMidwife(new Date());
+    getMidwife(oldData ? new Date(oldData.bookingable.visit_date) : new Date());
     getDiseasehistory();
   }, []);
 
@@ -86,7 +80,13 @@ const AddServicesKB = ({navigation, route}) => {
       setLoading(false);
       if (res && res.length) {
         setDataMidwife(res[0].bidans);
-        setSelectMidwife(defalutSelectMidwife);
+
+        if (route.params.data)
+          setSelectMidwife({
+            id: route.params.data.bidan.id,
+            name: route.params.data.bidan.name,
+          });
+        else setSelectMidwife(defalutSelectMidwife);
       } else {
         setDataMidwife([]);
       }
@@ -127,12 +127,13 @@ const AddServicesKB = ({navigation, route}) => {
     }
     if (!selectMidwife.name) return ToastAlert('Silahkan pilih bidan Anda');
 
-    onSubmit();
+    if (route.params.isEdit) onEdit();
+    else onSubmit();
   };
 
   const onSubmit = async () => {
     dispatch({type: 'SET_LOADING', value: true});
-    
+
     const visit_date = `${moments(form.visitDate).format(
       'YYYY-MM-DD',
     )} ${moments(form.visitTime).format('HH:mm:ss')}`;
@@ -143,7 +144,7 @@ const AddServicesKB = ({navigation, route}) => {
       disease_history_family_name = '';
 
     try {
-      const res = await Api.post({
+      await Api.post({
         url: 'admin/family-plannings',
         body: {
           service_category_id: route.params.id,
@@ -166,6 +167,46 @@ const AddServicesKB = ({navigation, route}) => {
 
       dispatch({type: 'SET_LOADING', value: false});
       setVisibleSuccess(true);
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      SampleAlert(error.message);
+    }
+  };
+
+  const onEdit = async () => {
+    dispatch({type: 'SET_LOADING', value: true});
+
+    const visit_date = `${moments(form.visitDate).format(
+      'YYYY-MM-DD',
+    )} ${moments(form.visitTime).format('HH:mm:ss')}`;
+    let disease_history_family_name = form.otherDiseaseHistory;
+    const disease_history_family_ids = formatSelectedId(selectDiseaseHistory);
+
+    if (disease_history_family_ids.length == 0)
+      disease_history_family_name = '';
+
+    try {
+      await Api.put({
+        url: `admin/family-plannings/${route.params.data.id}`,
+        body: {
+          disease_history_family_ids,
+          date_last_haid: moments(form.lastDateMenstruation).format(
+            'YYYY-MM-DD',
+          ),
+          total_child: parseInt(form.child),
+          status_use: form.status,
+          yongest_child_age: parseInt(form.age),
+          method_use: form.method,
+          is_breast_feed: form.breastfeed,
+          bidan_id: selectMidwife.id,
+          visit_date,
+          disease_history_family_name,
+        },
+        showLog: true,
+      });
+
+      dispatch({type: 'SET_LOADING', value: false});
+      setVisibleSuccessEdit(true);
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
       SampleAlert(error.message);
@@ -337,6 +378,13 @@ const AddServicesKB = ({navigation, route}) => {
       <ModalAlert
         visible={visibleSuccess}
         desc={'Selamat anda telah berhasil\nmendaftar di layanan kami'}
+        onDismiss={() => navigation.goBack()}
+        onPress={() => navigation.goBack()}
+      />
+
+      <ModalAlert
+        visible={visibleSuccessEdit}
+        desc={'Selamat anda telah berhasil\nemngubah di layanan kami'}
         onDismiss={() => navigation.goBack()}
         onPress={() => navigation.goBack()}
       />

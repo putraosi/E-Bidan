@@ -33,7 +33,7 @@ export const selectPageByService = data => {
 
   if (type == 'Ultrasonografi') return 'UltrasonografiSerivceDetails';
 
-  if (type == 'FamilyPlanning') return '';
+  if (type == 'FamilyPlanning') return 'KBSerivceDetails';
 
   return null;
 };

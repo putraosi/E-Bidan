@@ -24,6 +24,7 @@ import {
   ImmunizationSerivceDetails,
   IncomingOrder,
   IncomingOrderDetails,
+  KBSerivceDetails,
   OrderDetailPatient,
   OrderHistoryPatient,
   OrderSchedule,
@@ -188,6 +189,12 @@ const Router = () => {
       <Stack.Screen
         name="UltrasonografiSerivceDetails"
         component={UltrasonografiSerivceDetails}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="KBSerivceDetails"
+        component={KBSerivceDetails}
         options={{headerShown: false}}
       />
 

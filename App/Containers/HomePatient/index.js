@@ -51,7 +51,6 @@ const HomePatient = ({navigation}) => {
 
   useEffect(() => {
     if (isFocused) {
-      console.log('focused');
       getBooking();
     }
   }, [isFocused]);
@@ -136,13 +135,10 @@ const HomePatient = ({navigation}) => {
                 <Image style={styles.image} source={photo} />
                 <View style={styles.wrapperAccount}>
                   <Text style={styles.name}>{dataUser.name}</Text>
-                  <Text style={styles.email}>{dataUser.email}</Text>
+                  <Text style={styles.type}>{"Pasien"}</Text>
                 </View>
               </TouchableOpacity>
             )}
-            {/* <View style={styles.slider}>
-              <Text>{'Coming Soon'}</Text>
-            </View> */}
 
             <View style={styles.containerOrder}>
               <SpaceBeetwen>
@@ -254,18 +250,10 @@ const styles = StyleSheet.create({
     textTransform: 'capitalize',
   },
 
-  email: {
+  type: {
     fontSize: 12,
     color: colors.text.primary,
     fontFamily: fonts.primary.regular,
-  },
-
-  slider: {
-    width: '100%',
-    height: 176,
-    backgroundColor: 'cyan',
-    alignItems: 'center',
-    justifyContent: 'center',
   },
 
   containerOrder: {

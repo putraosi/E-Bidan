@@ -1,25 +1,37 @@
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {IcRightArrow} from '../../../Images/icon';
-import {ILPorife} from '../../../Images/illustration';
+import {getBookingType, selectPageByService, ToastAlert} from '../../../Helpers';
+import {IcRightArrow, ILNullPhoto} from '../../../Images';
+import { moments } from '../../../Libs';
 import {colors, fonts} from '../../../Themes';
-import {Gap, Notice, Row, SpaceBeetwen} from '../../Atoms';
+import {Gap, Row, SpaceBeetwen} from '../../Atoms';
 
-const IncomingOrderItems = ({data, onPress}) => {
+const IncomingOrderItems = ({navigation, data}) => {
+
+  const photo = data.pasien.photo ? {uri: data.pasien.photo} : ILNullPhoto;
+  const type = getBookingType(data.bookingable_type);
+
+  const onShowDetails = () => {
+    return ToastAlert();
+    const screen = selectPageByService(data.bookingable_type);
+
+    if (!screen) return ToastAlert();
+
+    navigation.navigate(screen, {
+      data: data,
+    });
+  };
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={styles.container} onPress={onShowDetails}>
       <SpaceBeetwen>
-        <Image style={styles.image} source={ILPorife} />
+        <Image style={styles.image} source={photo} />
         <View style={styles.containerAccount}>
-          <Text style={styles.name}>{'Bd. Syantika Apriliani'}</Text>
-          <Text style={styles.type}>{'Imunisasi'}</Text>
+          <Text style={styles.name}>{data.pasien.name}</Text>
+          <Text style={styles.type}>{type}</Text>
           <Gap height={2} />
         </View>
         <Row>
-          <View style={styles.wrapperDateTime}>
-            <Text style={styles.date}>{'30 Agustus 2021'}</Text>
-            <Text style={styles.time}>{'10.00 - 13.00'}</Text>
-          </View>
+          <Text style={styles.date}>{moments(data.bookingable.visit_date).format("DD MMMM YYYY")}</Text>
           <Image style={styles.arrow} source={IcRightArrow} />
         </Row>
       </SpaceBeetwen>
@@ -73,21 +85,11 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.regular,
   },
 
-  wrapperDateTime: {
-    alignItems: 'center',
-    marginRight: 8,
-  },
-
   date: {
-    fontSize: 10,
+    fontSize: 14,
     color: colors.black,
     fontFamily: fonts.primary.regular,
-  },
-
-  time: {
-    fontSize: 12,
-    color: colors.black,
-    fontFamily: fonts.primary.regular,
+    marginRight: 4,
   },
 
   arrow: {

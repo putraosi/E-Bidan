@@ -5,6 +5,7 @@ import AddServicesAntenatal from './AddServicesAntenatal';
 import AddServicesHomecare from './AddServicesHomecare';
 import AddServicesImmunization from './AddServicesImmunization';
 import AddServicesInc from './AddServicesInc';
+import AddServicesKB from './AddServicesKB';
 import AddServicesOther from './AddServicesOther';
 import AddServicesPregnancyExercise from './AddServicesPregnancyExercise';
 import AddServicesReferral from './AddServicesReferral';
@@ -20,6 +21,7 @@ import HomePatient from './HomePatient';
 import ImmunizationSerivceDetails from './ImmunizationSerivceDetails';
 import IncomingOrder from './IncomingOrder';
 import IncomingOrderDetails from './IncomingOrderDetails';
+import KBSerivceDetails from './KBSerivceDetails';
 import OrderDetailPatient from './OrderDetailPatient';
 import OrderHistoryPatient from './OrderHistoryPatient';
 import OrderSchedule from './OrderSchedule';
@@ -30,7 +32,6 @@ import SingIn from './SignIn';
 import SignUp from './SignUp';
 import Splash from './Splash';
 import UltrasonografiSerivceDetails from './UltrasonografiSerivceDetails';
-import AddServicesKB from './AddServicesKB'
 
 export {
   GetStarted,
@@ -66,4 +67,5 @@ export {
   AntenatalSerivceDetails,
   PregnancyExerciseSerivceDetails,
   UltrasonografiSerivceDetails,
+  KBSerivceDetails,
 };

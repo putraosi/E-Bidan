@@ -1,3 +1,4 @@
+import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
   FlatList,
@@ -19,14 +20,15 @@ import {
 } from '../../Components';
 import {getData, ToastAlert} from '../../Helpers';
 import {IcAdd, ILNullPhoto} from '../../Images';
+import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const HomeMidwife = ({navigation}) => {
-  const [loading, setLoading] = useState(false);
   const [loadingUser, setLoadingUser] = useState(true);
+  const [loadingIncomingOrder, setLoadingIncomingOrder] = useState(true);
   const [dataUser, setDataUser] = useState(null);
-
-  const dataIncomingOrder = [];
+  const [dataIncomingOrder, setDataIncomingOrder] = useState([]);
+  const isFocused = useIsFocused();
 
   const dataOldPatient = [];
 
@@ -36,6 +38,29 @@ const HomeMidwife = ({navigation}) => {
       setLoadingUser(false);
     });
   }, []);
+
+  useEffect(() => {
+    if (isFocused) {
+      getBooking();
+    }
+  }, [isFocused]);
+
+  const getBooking = async () => {
+    try {
+      const res = await Api.get({
+        url: 'admin/bookings',
+        params: {
+          type: 'bidan',
+          per_page: 3,
+        },
+      });
+
+      setDataIncomingOrder(res);
+      setLoadingIncomingOrder(false);
+    } catch (error) {
+      setLoadingIncomingOrder(false);
+    }
+  };
 
   const photo =
     dataUser && dataUser.bidan && dataUser.bidan.photo
@@ -56,7 +81,7 @@ const HomeMidwife = ({navigation}) => {
             }>
             <Image style={styles.photo} source={photo} />
             <Text style={styles.name}>{dataUser.name}</Text>
-            <Text style={styles.type}>{dataUser.roles}</Text>
+            <Text style={styles.type}>{'Bidan'}</Text>
           </TouchableOpacity>
         )}
         <Gap height={16} />
@@ -74,30 +99,36 @@ const HomeMidwife = ({navigation}) => {
         <Text style={styles.subTitle}>{'Pesanan Masuk'} </Text>
 
         <View style={styles.wrapper}>
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            keyExtractor={item => item.id}
-            data={dataIncomingOrder}
-            renderItem={({item}) => (
-              <IncomingOrderItems
-                key={item.id}
-                data={item}
-                onPress={() => ToastAlert()}
+          {loadingIncomingOrder ? (
+            <Loading type={'secondary'} />
+          ) : (
+            <>
+              <FlatList
+                showsVerticalScrollIndicator={false}
+                keyExtractor={item => item.id}
+                data={dataIncomingOrder}
+                renderItem={({item}) => (
+                  <IncomingOrderItems
+                    key={item.id}
+                    navigation={navigation}
+                    data={item}
+                  />
+                )}
+                ListEmptyComponent={() => (
+                  <EmptyList
+                    type={'secondary'}
+                    desc="Belum terdapat pesanan masuk."
+                  />
+                )}
               />
-            )}
-            ListEmptyComponent={() => (
-              <EmptyList
-                type={'secondary'}
-                desc="Belum terdapat pesanan masuk."
-              />
-            )}
-          />
-          {dataIncomingOrder.length > 0 && (
-            <Text
-              style={styles.next}
-              onPress={() => navigation.navigate('IncomingOrder')}>
-              {'Selengkapnya'}
-            </Text>
+              {dataIncomingOrder.length > 0 && (
+                <Text
+                  style={styles.next}
+                  onPress={() => navigation.navigate('IncomingOrder')}>
+                  {'Selengkapnya'}
+                </Text>
+              )}
+            </>
           )}
         </View>
 
