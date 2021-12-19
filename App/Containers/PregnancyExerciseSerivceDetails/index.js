@@ -141,4 +141,11 @@ const styles = StyleSheet.create({
     height: 60,
     borderRadius: 4,
   },
+
+  desc: {
+    fontSize: 12,
+    color: colors.text.secondary,
+    fontFamily: fonts.primary.regular,
+    marginTop: 12,
+  },
 });

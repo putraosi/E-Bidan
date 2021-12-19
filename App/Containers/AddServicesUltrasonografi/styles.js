@@ -14,7 +14,7 @@ export default StyleSheet.create({
     color: colors.black,
     fontFamily: fonts.primary.regular,
     marginBottom: 6,
-    marginTop: 12
+    marginTop: 12,
   },
 
   containerTreatment: {
@@ -28,6 +28,13 @@ export default StyleSheet.create({
   },
 
   input: {
+    marginTop: 12,
+  },
+
+  desc: {
+    fontSize: 12,
+    color: colors.text.secondary,
+    fontFamily: fonts.primary.regular,
     marginTop: 12,
   },
 });

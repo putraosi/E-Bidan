@@ -1,6 +1,6 @@
 import DatePicker from '@react-native-community/datetimepicker';
 import React, {useEffect, useState} from 'react';
-import {FlatList, LogBox, ScrollView, Text, View} from 'react-native';
+import {FlatList, ScrollView, Text, View} from 'react-native';
 import {useDispatch} from 'react-redux';
 import {
   Button,
@@ -42,7 +42,7 @@ const AddServicesKB = ({navigation, route}) => {
     otherDiseaseHistory: '', // NOT DONE
     lastDateMenstruation: oldData
       ? new Date(oldData.bookingable.date_last_haid)
-      : new Date(),
+      : '',
     visitDate: oldData ? new Date(oldData.bookingable.visit_date) : new Date(),
     visitTime: oldData ? new Date(oldData.bookingable.visit_date) : new Date(),
   });
@@ -59,6 +59,7 @@ const AddServicesKB = ({navigation, route}) => {
   const [dataMidwife, setDataMidwife] = useState([]);
   const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
   const [selectDiseaseHistory, setSelectDiseaseHistory] = useState([]);
+  const [price, setPrice] = useState('');
   const [isView, setIsView] = useState(false);
   const dispatch = useDispatch();
 
@@ -102,6 +103,8 @@ const AddServicesKB = ({navigation, route}) => {
         url: 'self/disease-history-families',
       });
 
+      console.log('cek res', res);
+
       if (res) {
         const formated = formatSelect(res, true);
         setSelectDiseaseHistory(formated);
@@ -119,7 +122,7 @@ const AddServicesKB = ({navigation, route}) => {
 
     if (!form.child) return ToastAlert('Silahkan isi jumlah anak  Anda');
     if (!form.age) return ToastAlert('Silahkan isi umur anak terkecil Anda');
-    if (!form.method) return ToastAlert('Silahkan pilih jenis KB Anda');
+    if (!form.method) return ToastAlert('Silahkan pilih cara KB Anda');
     if (!form.status) return ToastAlert('Silahkan pilih status pengguna Anda');
     if (selectDiseaseHistory[position].select && !form.otherDiseaseHistory) {
       return ToastAlert('Silahkan isi riwayat penyakit Anda');
@@ -138,6 +141,9 @@ const AddServicesKB = ({navigation, route}) => {
     )} ${moments(form.visitTime).format('HH:mm:ss')}`;
     let disease_history_family_name = form.otherDiseaseHistory;
     const disease_history_family_ids = formatSelectedId(selectDiseaseHistory);
+    const date_last_haid = form.lastDateMenstruation
+      ? moments(form.lastDateMenstruation).format('YYYY-MM-DD')
+      : '';
 
     if (disease_history_family_ids.length == 0)
       disease_history_family_name = '';
@@ -148,9 +154,7 @@ const AddServicesKB = ({navigation, route}) => {
         body: {
           service_category_id: route.params.id,
           disease_history_family_ids,
-          date_last_haid: moments(form.lastDateMenstruation).format(
-            'YYYY-MM-DD',
-          ),
+          date_last_haid,
           total_child: parseInt(form.child),
           status_use: form.status,
           yongest_child_age: parseInt(form.age),
@@ -236,11 +240,10 @@ const AddServicesKB = ({navigation, route}) => {
               style={styles.input}
               label={'Umur Anak Terkecil'}
               value={form.age}
-              keyboardType={'numeric'}
               onChangeText={value => setForm('age', value)}
             />
 
-            <Text style={styles.label}>{'Jenis KB'}</Text>
+            <Text style={styles.label}>{'Cara KB'}</Text>
             <FlatList
               data={constants.SELECT_TYPE_KB}
               renderItem={({item}) => (
@@ -256,7 +259,14 @@ const AddServicesKB = ({navigation, route}) => {
               numColumns={2}
             />
 
-            <Text style={styles.labelSecond}>{'Status Pengguna'}</Text>
+            <Input
+              style={styles.inputSecond}
+              label={'Biaya'}
+              value={price}
+              disable
+            />
+
+            <Text style={styles.label}>{'Status Pengguna'}</Text>
             <FlatList
               data={constants.SELECT_STATUS_KB}
               renderItem={({item}) => (
@@ -275,7 +285,12 @@ const AddServicesKB = ({navigation, route}) => {
             <Input
               style={styles.inputSecond}
               label={'Tanggal Terakhir Haid'}
-              value={moments(form.lastDateMenstruation).format('DD MMMM YYYY')}
+              value={
+                form.husbandProfession
+                  ? moments(form.lastDateMenstruation).format('DD MMMM YYYY')
+                  : ''
+              }
+              placeholder={'Pilih'}
               editable={false}
               onPress={() => setVisibleLastDateMenstruation(true)}
             />
@@ -389,7 +404,9 @@ const AddServicesKB = ({navigation, route}) => {
       {visibleLastDateMenstruation && (
         <DatePicker
           testID="dateTimePicker"
-          value={form.lastDateMenstruation}
+          value={
+            form.husbandProfession ? form.lastDateMenstruation : new Date()
+          }
           mode={'date'}
           maximumDate={new Date()}
           onChange={(event, selectedDate) => {

@@ -1,6 +1,8 @@
 import {moments} from '../../Libs';
 
 export const hplCalculation = (visitDate, hpht) => {
+  if (!visitDate || !hpht) return '';
+
   const diff = Math.abs(moments(visitDate).diff(hpht, 'days'));
   let desc = '';
 
