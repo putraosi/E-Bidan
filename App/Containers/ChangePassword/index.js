@@ -50,7 +50,6 @@ const ChangePassword = ({navigation}) => {
           confirmation_password: form.repeatPassword,
           user_id: user.id,
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', valu: false});

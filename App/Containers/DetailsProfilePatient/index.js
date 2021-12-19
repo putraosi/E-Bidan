@@ -1,12 +1,6 @@
+import DatePicker from '@react-native-community/datetimepicker';
 import React, {useState} from 'react';
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {useDispatch} from 'react-redux';
 import {
@@ -21,6 +15,7 @@ import {
   SpaceBeetwen,
 } from '../../Components';
 import {
+  ageCalculation,
   constants,
   resetPage,
   SampleAlert,
@@ -37,7 +32,7 @@ import {
   openGallery,
 } from '../../Libs';
 import {Api} from '../../Services';
-import {colors, fonts} from '../../Themes';
+import styles from './styles';
 
 const DetailsProfilePatient = ({navigation, route}) => {
   const data = route.params.data;
@@ -45,16 +40,30 @@ const DetailsProfilePatient = ({navigation, route}) => {
   const [form, setForm] = useForm({
     photo: data.photo,
     name: data.name,
+    birthDate: '',
+    nik: '',
     email: data.email,
     phoneNumber: data.phone,
+    religion: '',
+    lastEducation: '',
+    profession: '',
     address: data.address,
-    spouse: data.spouse,
+    husbandName: '',
+    husbandReligion: '',
+    husbandBirthDate: '',
+    husbandLastEducation: '',
+    husbandProfession: '',
+    husbandPhoneNumber: '',
   });
   const [visibleLogout, setVisibleLogout] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
   const [visibleSelect, setVisibleSelect] = useState(false);
   const [visibleSelectPhoto, setVisibleSelectPhoto] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
+  const [visibleBirthDate, setVisibleBirthDate] = useState(false);
+  const [visibleHusbandBirthDate, setVisibleHusbandBirthDate] = useState(false);
+  const [visibleReligion, setVisibleReligion] = useState(false);
+  const [visibleHusbandReligion, setVisibleHusbandReligion] = useState(false);
   const [selectPhoto, setSelectPhoto] = useState(null);
   const [isChange, setIsChange] = useState(false);
   const dispatch = useDispatch();
@@ -119,12 +128,14 @@ const DetailsProfilePatient = ({navigation, route}) => {
 
   return (
     <Container>
+      <Header
+        onDismiss={() => navigation.goBack()}
+        label={'Detail Profil'}
+        iconRight={IcMenu}
+        onPress={() => setVisibleSelect(true)}
+      />
+
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Header
-          onDismiss={() => navigation.goBack()}
-          iconRight={IcMenu}
-          onPress={() => setVisibleSelect(true)}
-        />
         <View style={styles.containerHeader}>
           <TouchableOpacity onPress={() => ToastAlert()}>
             <Image style={styles.image} source={photo} />
@@ -136,9 +147,13 @@ const DetailsProfilePatient = ({navigation, route}) => {
               </TouchableOpacity>
             )}
           </TouchableOpacity>
+
+          <Text style={styles.mode}>{'Pasien'}</Text>
         </View>
 
         <View style={styles.content}>
+          <Input label={'NIK'} value={form.nik} editable={editable} />
+
           <Input
             style={styles.input}
             label={'Nama'}
@@ -147,24 +162,55 @@ const DetailsProfilePatient = ({navigation, route}) => {
             onChangeText={value => setForm('name', value)}
           />
 
-          <Gap height={12} />
           <Input
             style={styles.input}
             label={'Tanggal Lahir'}
-            value={moments(new Date()).format('DD MMMM YYYY')}
+            value={
+              form.birthDate
+                ? moments(form.birthDate).format('DD MMMM YYYY')
+                : ''
+            }
+            placeholder={'Pilih'}
+            editable={false}
+            onPress={() => {
+              if (editable) setVisibleBirthDate(true);
+            }}
+          />
+
+          <Input
+            style={styles.input}
+            label={'Umur'}
+            value={form.birthDate ? ageCalculation(form.birthDate) : ''}
             editable={false}
           />
 
-          <Gap height={12} />
           <Input
             style={styles.input}
-            label={'Nama Suami'}
-            value={form.spouse}
-            editable={editable}
-            onChangeText={value => setForm('spouse', value)}
+            label={'Agama'}
+            value={form.religion}
+            placeholder={'Pilih'}
+            editable={false}
+            onPress={() => {
+              if (editable) setVisibleReligion(true);
+            }}
           />
 
-          <Gap height={12} />
+          <Input
+            style={styles.input}
+            label={'No. Hanphone'}
+            value={form.phoneNumber}
+            editable={editable}
+            onChangeText={value => setForm('phoneNumber', value)}
+          />
+
+          <Input
+            style={styles.input}
+            label={'Email'}
+            value={form.email}
+            editable={editable}
+            onChangeText={value => setForm('email', value)}
+          />
+
           <Input
             style={styles.input}
             label={'Alamat'}
@@ -173,32 +219,93 @@ const DetailsProfilePatient = ({navigation, route}) => {
             onChangeText={value => setForm('address', value)}
           />
 
-          <Gap height={12} />
-          <Input label={'Email'} value={form.email} disable />
-
-          <Gap height={12} />
-          <Input label={'No. Hanphone'} value={form.phoneNumber} disable />
-
-          <Gap height={12} />
           <Input
             style={styles.input}
-            label={'Pendidikan Terkahir Suami'}
-            value={''}
+            label={'Pendidikan Terakhir'}
+            value={form.lastEducation}
+            editable={editable}
+            onChangeText={value => setForm('lastEducation', value)}
+          />
+
+          <Input
+            style={styles.input}
+            label={'Pekerjaan'}
+            value={form.profession}
+            editable={editable}
+            onChangeText={value => setForm('profession', value)}
+          />
+
+          <Input
+            style={styles.input}
+            label={'Nama Suami'}
+            value={form.husbandName}
+            editable={editable}
+            onChangeText={value => setForm('husbandName', value)}
+          />
+
+          <Input
+            style={styles.input}
+            label={'Tanggal Lahir Suami'}
+            value={
+              form.husbandBirthDate
+                ? moments(form.husbandBirthDate).format('DD MMMM YYYY')
+                : ''
+            }
+            placeholder={'Pilih'}
+            editable={false}
+            onPress={() => {
+              if (editable) setVisibleHusbandBirthDate(true);
+            }}
+          />
+
+          <Input
+            style={styles.input}
+            label={'Umur Suami'}
+            value={
+              form.husbandBirthDate ? ageCalculation(form.husbandBirthDate) : ''
+            }
             editable={false}
           />
 
-          <Gap height={12} />
           <Input
             style={styles.input}
-            label={'Pendidikan Terkahir Istri'}
-            value={''}
+            label={'Agama Suami'}
+            value={form.husbandReligion}
+            placeholder={'Pilih'}
             editable={false}
+            onPress={() => {
+              if (editable) setVisibleHusbandReligion(true);
+            }}
+          />
+
+          <Input
+            style={styles.input}
+            label={'No. Hanphone Suami'}
+            value={form.husbandPhoneNumber}
+            editable={editable}
+            onChangeText={value => setForm('husbandPhoneNumber', value)}
+          />
+
+          <Input
+            style={styles.input}
+            label={'Pendidikan Terakhir Suami'}
+            value={form.husbandLastEducation}
+            editable={editable}
+            onChangeText={value => setForm('husbandLastEducation', value)}
+          />
+
+          <Input
+            style={styles.input}
+            label={'Pekerjaan Suami'}
+            value={form.husbandProfession}
+            editable={editable}
+            onChangeText={value => setForm('husbandProfession', value)}
           />
 
           <Gap height={20} />
           <SpaceBeetwen>
             <Button
-              styleButton={styles.button}
+              style={styles.button}
               label={labelButtonFirst}
               onPress={onPressFirst}
             />
@@ -206,7 +313,7 @@ const DetailsProfilePatient = ({navigation, route}) => {
               <>
                 <Gap width={16} />
                 <Button
-                  styleButton={styles.button}
+                  style={styles.button}
                   type={'white'}
                   label={'Batal'}
                   onPress={() => setIsChange(false)}
@@ -249,7 +356,7 @@ const DetailsProfilePatient = ({navigation, route}) => {
           if (value == 'Keluar') {
             setVisibleLogout(true);
           } else {
-            navigation.navigate('ChangePassword')
+            navigation.navigate('ChangePassword');
           }
         }}
       />
@@ -286,69 +393,62 @@ const DetailsProfilePatient = ({navigation, route}) => {
         onDismiss={() => navigation.goBack()}
         onPress={() => navigation.goBack()}
       />
+
+      {visibleBirthDate && (
+        <DatePicker
+          testID="dateTimePicker"
+          value={form.birthDate ? new Date(form.birthDate) : new Date()}
+          mode={'date'}
+          maximumDate={new Date()}
+          onChange={(event, selectedDate) => {
+            const currentDate = selectedDate || form.birthDate;
+            setVisibleBirthDate(false);
+            setForm('birthDate', currentDate);
+          }}
+        />
+      )}
+
+      {visibleHusbandBirthDate && (
+        <DatePicker
+          testID="dateTimePicker"
+          value={
+            form.husbandBirthDate ? new Date(form.husbandBirthDate) : new Date()
+          }
+          mode={'date'}
+          maximumDate={new Date()}
+          onChange={(event, selectedDate) => {
+            const currentDate = selectedDate || form.husbandBirthDate;
+            setVisibleHusbandBirthDate(false);
+            setForm('husbandBirthDate', currentDate);
+          }}
+        />
+      )}
+
+      <Modals
+        type={'spinner'}
+        title={'Pilih Agama'}
+        visible={visibleReligion}
+        data={constants.SELECT_RELLIGION}
+        onDismiss={() => setVisibleReligion(false)}
+        onSelect={value => {
+          setVisibleReligion(false);
+          setForm('religion', value.name);
+        }}
+      />
+
+      <Modals
+        type={'spinner'}
+        title={'Pilih Agama'}
+        visible={visibleHusbandReligion}
+        data={constants.SELECT_RELLIGION}
+        onDismiss={() => setVisibleHusbandReligion(false)}
+        onSelect={value => {
+          setVisibleHusbandReligion(false);
+          setForm('husbandReligion', value.name);
+        }}
+      />
     </Container>
   );
 };
 
 export default DetailsProfilePatient;
-
-const styles = StyleSheet.create({
-  containerHeader: {
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    paddingBottom: 16,
-  },
-
-  image: {
-    width: 120,
-    height: 120,
-    borderRadius: 120 / 2,
-  },
-
-  containerEdit: {
-    position: 'absolute',
-    bottom: 0,
-    right: 0,
-    borderWidth: 2,
-    borderColor: colors.primary,
-    borderRadius: 34 / 2,
-    backgroundColor: colors.primary,
-  },
-
-  edit: {
-    width: 30,
-    height: 30,
-  },
-
-  name: {
-    fontSize: 18,
-    color: colors.white,
-    fontFamily: fonts.primary.regular,
-  },
-
-  email: {
-    fontSize: 14,
-    color: colors.text.primary,
-    fontFamily: fonts.primary.regular,
-  },
-
-  version: {
-    fontSize: 12,
-    color: colors.text.secondary,
-    fontFamily: fonts.primary.regular,
-    textAlign: 'center',
-    marginTop: 16,
-  },
-
-  content: {
-    padding: 16,
-  },
-
-  input: {
-    flex: 1,
-  },
-
-  button: {
-    flex: 1,
-  },
-});

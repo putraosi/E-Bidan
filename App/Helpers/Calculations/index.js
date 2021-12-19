@@ -12,3 +12,9 @@ export const hplCalculation = (visitDate, hpht) => {
 
   return desc;
 };
+
+export const ageCalculation = date => {
+  const diff = Math.abs(moments(date).diff(moments(), 'years'));
+
+  return `${diff} Tahun`;
+};

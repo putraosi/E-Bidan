@@ -29,8 +29,6 @@ import {colors, fonts} from '../../Themes';
 const DetailsProfileMidwife = ({navigation, route}) => {
   const data = route.params.data;
 
-  console.log('cek data', data);
-
   const [form, setForm] = useForm({
     photo: data.photo,
     name: data.name,
@@ -87,7 +85,7 @@ const DetailsProfileMidwife = ({navigation, route}) => {
         iconRight={IcMenu}
         onPress={() => setVisibleSelect(true)}
       />
-      
+
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.containerHeader}>
           <TouchableOpacity onPress={() => ToastAlert()}>
