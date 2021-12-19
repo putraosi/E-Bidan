@@ -14,6 +14,7 @@ export default StyleSheet.create({
     color: colors.black,
     fontFamily: fonts.primary.regular,
     marginBottom: 6,
+    marginTop: 12,
   },
 
   containerTreatment: {
@@ -24,5 +25,9 @@ export default StyleSheet.create({
   radioButton: {
     flex: 1,
     marginBottom: 4,
+  },
+
+  input: {
+    marginTop: 12,
   },
 });

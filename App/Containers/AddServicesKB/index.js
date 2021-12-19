@@ -103,7 +103,6 @@ const AddServicesKB = ({navigation, route}) => {
         url: 'self/disease-history-families',
       });
 
-      console.log('cek res', res);
 
       if (res) {
         const formated = formatSelect(res, true);

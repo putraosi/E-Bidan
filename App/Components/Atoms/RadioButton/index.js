@@ -36,7 +36,7 @@ const RadioButton = ({
       </TouchableOpacity>
 
       {isActive && (label == 'Lainnya' || label == 'Faskes Lain') && (
-        <Input value={other} onChangeText={onChangeText} />
+        <Input style={styles.input} value={other} onChangeText={onChangeText} />
       )}
     </View>
   );
@@ -65,5 +65,9 @@ const styles = StyleSheet.create({
     color: colors.text.primary,
     fontFamily: fonts.primary.regular,
     marginLeft: 8,
+  },
+
+  input: {
+    marginLeft: 28,
   },
 });

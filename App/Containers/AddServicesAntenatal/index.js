@@ -432,6 +432,9 @@ const AddServicesAntenatal = ({navigation, route}) => {
               />
             </SpaceBeetwen>
 
+
+            <Text style={styles.desc}>{'*Coming Soon!'}</Text>
+
             <Gap height={20} />
             <Button label={'Submit'} onPress={validation} />
           </View>

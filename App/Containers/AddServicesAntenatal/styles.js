@@ -1,5 +1,5 @@
-import { StyleSheet } from 'react-native';
-import { colors, fonts } from '../../Themes';
+import {StyleSheet} from 'react-native';
+import {colors, fonts} from '../../Themes';
 
 export default StyleSheet.create({
   flex: {flex: 1},
@@ -24,5 +24,12 @@ export default StyleSheet.create({
   radioButton: {
     flex: 1,
     marginBottom: 4,
+  },
+
+  desc: {
+    fontSize: 12,
+    color: colors.text.secondary,
+    fontFamily: fonts.primary.regular,
+    marginTop: 12,
   },
 });

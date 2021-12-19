@@ -215,11 +215,7 @@ const AddServicesUltrasonografi = ({navigation, route}) => {
             <Gap height={8} />
             <Input label={'Biaya'} value={`Rp${rupiah(price)}`} disable />
 
-            <Text style={styles.desc}>
-              {
-                '*Coming Soon!'
-              }
-            </Text>
+            <Text style={styles.desc}>{'*Coming Soon!'}</Text>
 
             <Gap height={20} />
             <Button label={'Submit'} onPress={validation} />

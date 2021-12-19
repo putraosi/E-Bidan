@@ -1,7 +1,7 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, {useEffect, useState} from 'react';
-import {FlatList, ScrollView, Text, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { FlatList, ScrollView, Text, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   Container,
@@ -12,17 +12,19 @@ import {
   ModalAlert,
   Modals,
   RadioButton,
-  SpaceBeetwen,
+  SpaceBeetwen
 } from '../../Components';
 import {
   constants,
+  formatSelect,
   formatSelectedId,
+  rupiah,
   SampleAlert,
   ToastAlert,
-  useForm,
+  useForm
 } from '../../Helpers';
-import {moments} from '../../Libs';
-import {Api} from '../../Services';
+import { moments } from '../../Libs';
+import { Api } from '../../Services';
 import styles from './styles';
 
 const defalutSelectMidwife = {
@@ -64,6 +66,7 @@ const AddServicesImmunization = ({navigation, route}) => {
   const [selectBirthPlace, setSelectBirthPlace] = useState([]);
   const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
+  const [price, setPrice] = useState(0);
   const [isView, setIsView] = useState(false);
   const dispatch = useDispatch();
 
@@ -103,19 +106,9 @@ const AddServicesImmunization = ({navigation, route}) => {
       });
 
       if (res) {
-        let newData = res;
-        newData.push({
-          id: 999,
-          name: 'Lainnya',
-        });
+        const formated = formatSelect(res, true);
 
-        newData = newData.map(item => {
-          let newItem = item;
-          newItem.select = false;
-          return newItem;
-        });
-
-        setSelectTypeImmunization(newData);
+        setSelectTypeImmunization(formated);
         setLoadingTypeImmunization(false);
       } else {
         navigation.goBack();
@@ -333,7 +326,10 @@ const AddServicesImmunization = ({navigation, route}) => {
             />
 
             <Gap height={8} />
+            <Input label={'Biaya'} value={`Rp${rupiah(price)}`} disable />
+
             <Input
+              style={styles.input}
               label={'Tanggal Kunjungan'}
               value={moments(form.visitDate).format('DD MMMM YYYY')}
               editable={false}
@@ -393,6 +389,8 @@ const AddServicesImmunization = ({navigation, route}) => {
                 />
               ))}
             </SpaceBeetwen>
+
+            <Text style={styles.desc}>{'*Coming Soon!'}</Text>
 
             <Gap height={20} />
             <Button label={'Submit'} onPress={validation} />

@@ -25,4 +25,15 @@ export default StyleSheet.create({
     flex: 1,
     marginBottom: 4,
   },
+
+  input:{
+    marginTop: 12
+  },
+
+  desc: {
+    fontSize: 12,
+    color: colors.text.secondary,
+    fontFamily: fonts.primary.regular,
+    marginTop: 12,
+  },
 });

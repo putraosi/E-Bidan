@@ -14,9 +14,11 @@ import {
   RadioButton,
 } from '../../Components';
 import {
+  ageCalculation,
   formatSelectedId,
   formatTreatment,
   getData,
+  rupiah,
   SampleAlert,
   ToastAlert,
   useForm,
@@ -34,12 +36,14 @@ const AddServicesOther = ({navigation, route}) => {
   const [form, setForm] = useForm({
     date: new Date(),
     name: '',
+    birthDate: '',
     age: '',
     visitTime: new Date(),
   });
 
   const [loading, setLoading] = useState(true);
   const [loadingTreatment, setLoadingTreatment] = useState(true);
+  const [visibelBirthDate, setVisibelBirthDate] = useState(false);
   const [visibleDate, setVisibleDate] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
@@ -48,6 +52,7 @@ const AddServicesOther = ({navigation, route}) => {
   const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
   const [visibleTimePicker, setVisibleTimePicker] = useState(false);
   const [selectTreatment, setSelectTreatment] = useState(null);
+  const [price, setPrice] = useState(0);
   const [isView, setIsView] = useState(false);
   const dispatch = useDispatch();
 
@@ -158,24 +163,36 @@ const AddServicesOther = ({navigation, route}) => {
               onChangeText={value => setForm('name', value)}
             />
 
-            <Gap height={12} />
             <Input
-              label={'Usia'}
-              value={form.age}
-              keyboardType={'numeric'}
-              onChangeText={value => setForm('age', value)}
+              style={styles.input}
+              label={'Tanggal Lahir'}
+              value={
+                form.birthDate
+                  ? moments(form.birthDate).format('DD MMMM YYYY')
+                  : ''
+              }
+              placeholder={'Pilih'}
+              editable={false}
+              onPress={() => setVisibelBirthDate(true)}
             />
 
-            <Gap height={12} />
             <Input
+              style={styles.input}
+              label={'Umur'}
+              value={form.birthDate ? ageCalculation(form.birthDate) : ''}
+              editable={false}
+            />
+
+            <Input
+              style={styles.input}
               label={'Tanggal Kunjungan'}
               value={moments(form.date).format('DD MMMM YYYY')}
               editable={false}
               onPress={() => setVisibleDate(true)}
             />
 
-            <Gap height={12} />
             <Input
+              style={styles.input}
               label={'Bidan'}
               value={selectMidwife.name}
               placeholder={'Bidan'}
@@ -192,15 +209,14 @@ const AddServicesOther = ({navigation, route}) => {
               }}
             />
 
-            <Gap height={12} />
             <Input
+              style={styles.input}
               label={'Waktu Kunjungan'}
               value={moments(form.visitTime).format('HH:mm')}
               editable={false}
               onPress={() => setVisibleTimePicker(true)}
             />
 
-            <Gap height={12} />
             <Text style={styles.label}>{'Treatment'}</Text>
             <FlatList
               data={selectTreatment}
@@ -226,6 +242,9 @@ const AddServicesOther = ({navigation, route}) => {
               numColumns={2}
               scrollEnabled={false}
             />
+
+            <Gap height={8} />
+            <Input label={'Biaya'} value={`Rp${rupiah(price)}`} disable />
 
             <Gap height={20} />
             <Button label={'Submit'} onPress={validation} />
@@ -281,6 +300,20 @@ const AddServicesOther = ({navigation, route}) => {
         onDismiss={() => navigation.goBack()}
         onPress={() => navigation.goBack()}
       />
+
+      {visibelBirthDate && (
+        <DatePicker
+          testID="dateTimePicker"
+          value={form.birthDate ? form.birthDate : new Date()}
+          mode={'date'}
+          maximumDate={new Date()}
+          onChange={(event, selectedDate) => {
+            const currentDate = selectedDate || form.birthDate;
+            setVisibelBirthDate(false);
+            setForm('birthDate', currentDate);
+          }}
+        />
+      )}
 
       {isView && <View />}
     </Container>
