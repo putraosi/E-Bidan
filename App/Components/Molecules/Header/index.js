@@ -1,7 +1,7 @@
 import React from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {IcLeft} from '../../../Images';
-import {colors, fonts} from '../../../Themes';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { IcLeft } from '../../../Images';
+import { colors, fonts } from '../../../Themes';
 
 const Header = ({type, title, iconRight, onPress, onDismiss}) => {
   const showTitle = title ? true : false;
@@ -52,6 +52,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color,
     fontFamily: fonts.primary.bold,
-    textAlign: 'right',
+    textAlign: 'center',
   }),
 });

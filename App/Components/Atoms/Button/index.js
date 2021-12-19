@@ -4,7 +4,7 @@ import {colors, fonts} from '../../../Themes';
 import ButtonCircle from './ButtonCircle';
 import ButtonModal from './ButtonModal';
 
-const Button = ({ type, label, onPress, styleButton}) => {
+const Button = ({style, type, label, onPress}) => {
   if (type == 'circle') return <ButtonCircle onPress={onPress} />;
   if (type && type.includes('modal'))
     return <ButtonModal type={type} label={label} onPress={onPress} />;
@@ -17,7 +17,7 @@ const Button = ({ type, label, onPress, styleButton}) => {
     backgroundColor = colors.button.white.backgroundColor;
     color = colors.button.white.color;
     borderColor = colors.button.white.borderColor;
-  }else if (type == 'red') {
+  } else if (type == 'red') {
     backgroundColor = colors.button.danger.backgroundColor;
     color = colors.button.danger.color;
     borderColor = colors.button.danger.borderColor;
@@ -25,7 +25,7 @@ const Button = ({ type, label, onPress, styleButton}) => {
 
   return (
     <TouchableOpacity
-      style={[styles.container(backgroundColor, borderColor), styleButton]}
+      style={[styles.container(backgroundColor, borderColor), style]}
       onPress={onPress}>
       <Text style={styles.label(color)}>{label}</Text>
     </TouchableOpacity>

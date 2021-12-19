@@ -415,7 +415,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
             <SpaceBeetwen>
               <Input
                 style={styles.flex}
-                label={'Total Nikah Istri'}
+                label={'Pernikahan Ke (Istri)'}
                 value={form.wifesTotalMarriage}
                 keyboardType={'numeric'}
                 onChangeText={value => setForm('wifesTotalMarriage', value)}
@@ -425,7 +425,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
 
               <Input
                 style={styles.flex}
-                label={'Total Nikah Suami'}
+                label={'Pernikahan Ke (Suami)'}
                 value={form.husbandsTotalMarriage}
                 keyboardType={'numeric'}
                 onChangeText={value => setForm('husbandsTotalMarriage', value)}

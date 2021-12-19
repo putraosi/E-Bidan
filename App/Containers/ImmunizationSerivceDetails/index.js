@@ -115,6 +115,8 @@ const ImmunizationSerivceDetails = ({navigation, route}) => {
               editable={false}
             />
 
+            <Text>{'Hubungi Kami'}</Text>
+
             <Gap height={16} />
             <Button label={'Ubah'} onPress={() => ToastAlert()} />
           </View>

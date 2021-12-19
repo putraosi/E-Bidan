@@ -278,14 +278,6 @@ const AddServicesHomecare = ({navigation, route}) => {
               scrollEnabled={false}
             />
 
-            {showDesc && (
-              <Text style={styles.desc}>
-                {
-                  '*Untuk transport diluar biaya treatment setara tarif ojek online (PP)'
-                }
-              </Text>
-            )}
-
             <Gap height={12} />
             <Input
               label={'Biaya Treatment'}
@@ -293,6 +285,14 @@ const AddServicesHomecare = ({navigation, route}) => {
               disable
               onChangeText={value => setForm('price', value)}
             />
+
+            {showDesc && (
+              <Text style={styles.desc}>
+                {
+                  '*Untuk transport diluar biaya treatment setara tarif ojek online (PP)'
+                }
+              </Text>
+            )}
 
             <Gap height={20} />
             <Button label={'Submit'} onPress={validation} />

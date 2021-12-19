@@ -11,6 +11,7 @@ import AddServicesPregnancyExercise from './AddServicesPregnancyExercise';
 import AddServicesReferral from './AddServicesReferral';
 import AddServicesUltrasonografi from './AddServicesUltrasonografi';
 import AntenatalSerivceDetails from './AntenatalSerivceDetails';
+import ChangePassword from './ChangePassword';
 import Confirmation from './Confirmation';
 import DetailsProfileMidwife from './DetailsProfileMidwife';
 import DetailsProfilePatient from './DetailsProfilePatient';
@@ -68,4 +69,5 @@ export {
   PregnancyExerciseSerivceDetails,
   UltrasonografiSerivceDetails,
   KBSerivceDetails,
+  ChangePassword,
 };

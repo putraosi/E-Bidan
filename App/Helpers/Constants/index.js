@@ -134,6 +134,7 @@ export const constants = {
     {id: 2, name: 'B'},
     {id: 3, name: 'AB'},
     {id: 4, name: 'O'},
+    {id: 5, name: 'Tidak Tahu'},
   ],
 
   SELECT_RELLIGION: [

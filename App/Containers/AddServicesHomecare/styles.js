@@ -30,5 +30,6 @@ export default StyleSheet.create({
     fontSize: 12,
     color: colors.text.secondary,
     fontFamily: fonts.primary.regular,
+    marginTop: 12,
   },
 });

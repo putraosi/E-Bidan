@@ -32,6 +32,7 @@ import {IcEditCircle, IcMenu, ILNullPhoto} from '../../Images';
 import {
   checkPermissionCamera,
   checkPermissionGallery,
+  moments,
   openCamera,
   openGallery,
 } from '../../Libs';
@@ -149,7 +150,15 @@ const DetailsProfilePatient = ({navigation, route}) => {
           <Gap height={12} />
           <Input
             style={styles.input}
-            label={'Nama Pasangan'}
+            label={'Tanggal Lahir'}
+            value={moments(new Date()).format('DD MMMM YYYY')}
+            editable={false}
+          />
+
+          <Gap height={12} />
+          <Input
+            style={styles.input}
+            label={'Nama Suami'}
             value={form.spouse}
             editable={editable}
             onChangeText={value => setForm('spouse', value)}
@@ -169,6 +178,23 @@ const DetailsProfilePatient = ({navigation, route}) => {
 
           <Gap height={12} />
           <Input label={'No. Hanphone'} value={form.phoneNumber} disable />
+
+          <Gap height={12} />
+          <Input
+            style={styles.input}
+            label={'Pendidikan Terkahir Suami'}
+            value={''}
+            editable={false}
+          />
+
+          <Gap height={12} />
+          <Input
+            style={styles.input}
+            label={'Pendidikan Terkahir Istri'}
+            value={''}
+            editable={false}
+          />
+
           <Gap height={20} />
           <SpaceBeetwen>
             <Button
@@ -223,7 +249,7 @@ const DetailsProfilePatient = ({navigation, route}) => {
           if (value == 'Keluar') {
             setVisibleLogout(true);
           } else {
-            ToastAlert();
+            navigation.navigate('ChangePassword')
           }
         }}
       />

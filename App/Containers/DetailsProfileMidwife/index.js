@@ -1,30 +1,51 @@
+import DatePicker from '@react-native-community/datetimepicker';
 import React, {useState} from 'react';
 import {
   Image,
   ScrollView,
   StyleSheet,
+  Text,
   TouchableOpacity,
   View,
-  Text
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
 import {useDispatch} from 'react-redux';
-import {Button, Container, Gap, Header, Input, Modals, ModalSelect, SpaceBeetwen} from '../../Components';
+import {
+  Button,
+  Container,
+  Gap,
+  Header,
+  Input,
+  Modals,
+  ModalSelect,
+  SpaceBeetwen,
+} from '../../Components';
 import {constants, resetPage, ToastAlert, useForm} from '../../Helpers';
 import {IcEditCircle, IcMenu, ILNullPhoto} from '../../Images';
+import {moments} from '../../Libs';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const DetailsProfileMidwife = ({navigation, route}) => {
   const data = route.params.data;
 
+  console.log('cek data', data);
+
   const [form, setForm] = useForm({
+    photo: data.photo,
     name: data.name,
+    title: data.gelar,
+    gender: data.gender,
+    birthPlace: data.birth_place,
+    birthDate: data.birth_date,
     email: data.email,
     phoneNumber: data.phone,
+    description: data.description,
   });
   const [visibleLogout, setVisibleLogout] = useState(false);
   const [visibleSelect, setVisibleSelect] = useState(false);
+  const [visibleGender, setVisibleGender] = useState(false);
+  const [visibleBirthDate, setVisibleBirthDate] = useState(false);
   const [isChange, setIsChange] = useState(false);
   const dispatch = useDispatch();
 
@@ -50,7 +71,7 @@ const DetailsProfileMidwife = ({navigation, route}) => {
 
   let labelButtonFirst = 'Ubah';
   let onPressFirst = () => setIsChange(true);
-  const photo = data.photo ? {uri: data.photo} : ILNullPhoto;
+  const photo = form.photo ? {uri: form.photo} : ILNullPhoto;
   const editable = isChange ? true : false;
 
   if (isChange) {
@@ -60,12 +81,14 @@ const DetailsProfileMidwife = ({navigation, route}) => {
 
   return (
     <Container>
+      <Header
+        onDismiss={() => navigation.goBack()}
+        title={'Detail Profil'}
+        iconRight={IcMenu}
+        onPress={() => setVisibleSelect(true)}
+      />
+      
       <ScrollView showsVerticalScrollIndicator={false}>
-        <Header
-          onDismiss={() => navigation.goBack()}
-          iconRight={IcMenu}
-          onPress={() => setVisibleSelect(true)}
-        />
         <View style={styles.containerHeader}>
           <TouchableOpacity onPress={() => ToastAlert()}>
             <Image style={styles.image} source={photo} />
@@ -77,26 +100,84 @@ const DetailsProfileMidwife = ({navigation, route}) => {
               </TouchableOpacity>
             )}
           </TouchableOpacity>
+
+          <Text style={styles.mode}>{'Bidan'}</Text>
         </View>
 
         <View style={styles.content}>
           <Input
-            style={styles.input}
             label={'Nama'}
             value={form.name}
             editable={editable}
             onChangeText={value => setForm('name', value)}
           />
 
-          <Gap height={12} />
-          <Input label={'Email'} value={form.email} disable />
+          <Input
+            style={styles.input}
+            label={'Gelar'}
+            value={form.title}
+            editable={editable}
+            onChangeText={value => setForm('title', value)}
+          />
 
-          <Gap height={12} />
-          <Input label={'No. Hanphone'} value={form.phoneNumber} disable />
+          <Input
+            style={styles.input}
+            label={'Jenis Kelamin'}
+            value={form.gender}
+            placeholder={'Pilih'}
+            editable={false}
+            onPress={() => {
+              if (editable) {
+                setVisibleGender(true);
+              }
+            }}
+          />
+
+          <Input
+            style={styles.input}
+            label={'Tempat Lahir'}
+            value={form.birthPlace}
+            editable={editable}
+            onChangeText={value => setForm('birthPlace', value)}
+          />
+
+          <Input
+            style={styles.input}
+            label={'Tanggal Lahir'}
+            value={
+              form.birthDate
+                ? moments(form.birthDate).format('DD MMMM YYYY')
+                : ''
+            }
+            placeholder={'Pilih'}
+            editable={false}
+            onPress={() => {
+              if (editable) {
+                setVisibleBirthDate(true);
+              }
+            }}
+          />
+
+          <Input style={styles.input} label={'Email'} value={form.email} />
+
+          <Input
+            style={styles.input}
+            label={'No. Hanphone'}
+            value={form.phoneNumber}
+          />
+
+          <Input
+            style={styles.input}
+            label={'Deskripsi'}
+            value={form.description}
+            editable={editable}
+            onChangeText={value => setForm('description', value)}
+          />
+
           <Gap height={20} />
           <SpaceBeetwen>
             <Button
-              styleButton={styles.button}
+              style={styles.button}
               label={labelButtonFirst}
               onPress={onPressFirst}
             />
@@ -104,7 +185,7 @@ const DetailsProfileMidwife = ({navigation, route}) => {
               <>
                 <Gap width={16} />
                 <Button
-                  styleButton={styles.button}
+                  style={styles.button}
                   type={'white'}
                   label={'Batal'}
                   onPress={() => setIsChange(false)}
@@ -137,10 +218,34 @@ const DetailsProfileMidwife = ({navigation, route}) => {
           if (value == 'Keluar') {
             setVisibleLogout(true);
           } else {
-            ToastAlert();
+            navigation.navigate('ChangePassword');
           }
         }}
       />
+
+      <ModalSelect
+        visible={visibleGender}
+        data={constants.SELECT_GENDER}
+        onDismiss={() => setVisibleGender(false)}
+        onPress={value => {
+          setVisibleGender(false);
+          setForm('gender', value);
+        }}
+      />
+
+      {visibleBirthDate && (
+        <DatePicker
+          testID="dateTimePicker"
+          value={form.birthDate ? new Date(form.birthDate) : new Date()}
+          mode={'date'}
+          maximumDate={new Date()}
+          onChange={(event, selectedDate) => {
+            const currentDate = selectedDate || form.birthDate;
+            setVisibleBirthDate(false);
+            setForm('birthDate', currentDate);
+          }}
+        />
+      )}
     </Container>
   );
 };
@@ -158,6 +263,14 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 120 / 2,
+  },
+
+  mode: {
+    fontSize: 14,
+    color: colors.white,
+    fontFamily: fonts.primary.regular,
+    marginTop: 12,
+    textAlign: 'center',
   },
 
   containerEdit: {
@@ -200,7 +313,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    flex: 1,
+    marginTop: 12,
   },
 
   button: {

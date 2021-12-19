@@ -19,10 +19,11 @@ import {
   ItemOrderSchedule,
   Loading,
   Modals,
+  Row,
   SpaceBeetwen,
 } from '../../Components';
 import {getData, ToastAlert} from '../../Helpers';
-import {ILNullPhoto} from '../../Images';
+import {IcNotification, ILNullPhoto} from '../../Images';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
@@ -128,11 +129,20 @@ const HomePatient = ({navigation}) => {
                 onPress={() =>
                   navigation.navigate('DetailsProfilePatient', {data: dataUser})
                 }>
-                <Image style={styles.image} source={photo} />
-                <View style={styles.wrapperAccount}>
-                  <Text style={styles.name}>{dataUser.name}</Text>
-                  <Text style={styles.type}>{'Pasien'}</Text>
-                </View>
+                <Row>
+                  <Image style={styles.image} source={photo} />
+                  <View style={styles.wrapperAccount}>
+                    <Text style={styles.name}>{dataUser.name}</Text>
+                    <Text style={styles.type}>{'Pasien'}</Text>
+                  </View>
+                </Row>
+
+                <TouchableOpacity onPress={() => ToastAlert()}>
+                  <Image
+                    style={styles.imageNotification}
+                    source={IcNotification}
+                  />
+                </TouchableOpacity>
               </TouchableOpacity>
             )}
 
@@ -226,6 +236,7 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     alignItems: 'center',
     flexDirection: 'row',
+    justifyContent: 'space-between',
     padding: 16,
   },
 
@@ -235,6 +246,11 @@ const styles = StyleSheet.create({
     borderRadius: 60 / 2,
     borderWidth: 1,
     borderColor: colors.white,
+  },
+
+  imageNotification: {
+    width: 24,
+    height: 24,
   },
 
   wrapperAccount: {
@@ -250,7 +266,7 @@ const styles = StyleSheet.create({
 
   type: {
     fontSize: 12,
-    color: colors.text.primary,
+    color: colors.white,
     fontFamily: fonts.primary.regular,
   },
 

@@ -14,6 +14,7 @@ import {
   AddServicesReferral,
   AddServicesUltrasonografi,
   AntenatalSerivceDetails,
+  ChangePassword,
   Confirmation,
   DetailsProfileMidwife,
   DetailsProfilePatient,
@@ -195,6 +196,12 @@ const Router = () => {
       <Stack.Screen
         name="KBSerivceDetails"
         component={KBSerivceDetails}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="ChangePassword"
+        component={ChangePassword}
         options={{headerShown: false}}
       />
 

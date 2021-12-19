@@ -14,8 +14,10 @@ import IcShowPassword from './icon-show-password.png';
 import IcChecked from './icon_checked.png';
 import IcUnchecked from './icon_unchecked.png';
 import IcRightArrow from './right-arrow.png';
+import IcNotification from './icon-notification.png'
 
 export {
+  IcNotification,
   IcDate,
   IcMenu,
   IcAdd,
