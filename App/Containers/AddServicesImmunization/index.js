@@ -291,7 +291,7 @@ const AddServicesImmunization = ({navigation, route}) => {
 
             <Gap height={12} />
             <Input
-              label={'Berat Lahir'}
+              label={'Berat Lahir (Kg)'}
               value={form.birthWeight}
               keyboardType={'numeric'}
               onChangeText={value => setForm('birthWeight', value)}
@@ -338,14 +338,6 @@ const AddServicesImmunization = ({navigation, route}) => {
 
             <Gap height={12} />
             <Input
-              label={'Waktu Kunjungan'}
-              value={moments(form.visitTime).format('HH:mm')}
-              editable={false}
-              onPress={() => setVisibleTimePicker(true)}
-            />
-
-            <Gap height={12} />
-            <Input
               label={'Bidan'}
               value={selectMidwife.name}
               placeholder={'Pilih'}
@@ -360,6 +352,14 @@ const AddServicesImmunization = ({navigation, route}) => {
                     )} tidak ada jadwal praktek.\n\nSilahkan pilih tanggal yang lain.`,
                   });
               }}
+            />
+
+            <Gap height={12} />
+            <Input
+              label={'Waktu Kunjungan'}
+              value={moments(form.visitTime).format('HH:mm')}
+              editable={false}
+              onPress={() => setVisibleTimePicker(true)}
             />
 
             <Gap height={12} />

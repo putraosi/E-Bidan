@@ -37,3 +37,23 @@ export const selectPageByService = data => {
 
   return null;
 };
+
+export const selectPageByServiceMidwife = data => {
+  const type = data.replace('App\\Models\\', '');
+
+  if (type == 'OtherService') return '';
+
+  if (type == 'Antenatal') return 'AntenatalSerivceDetailsMidwife';
+
+  if (type == 'Immunization') return 'ImmunizationSerivceDetailsMidwife';
+
+  if (type == 'HomeCareService') return '';
+
+  if (type == 'PregnancyExercise') return '';
+
+  if (type == 'Ultrasonografi') return '';
+
+  if (type == 'FamilyPlanning') return '';
+
+  return null;
+};

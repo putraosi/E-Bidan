@@ -14,6 +14,7 @@ import {
   AddServicesReferral,
   AddServicesUltrasonografi,
   AntenatalSerivceDetails,
+  AntenatalSerivceDetailsMidwife,
   ChangePassword,
   Confirmation,
   DetailsProfileMidwife,
@@ -23,9 +24,12 @@ import {
   HomeMidwife,
   HomePatient,
   ImmunizationSerivceDetails,
+  ImmunizationSerivceDetailsMidwife,
   IncomingOrder,
   IncomingOrderDetails,
   KBSerivceDetails,
+  Notification,
+  NotificationPatient,
   OrderDetailPatient,
   OrderHistoryPatient,
   OrderSchedule,
@@ -176,8 +180,20 @@ const Router = () => {
       />
 
       <Stack.Screen
+        name="ImmunizationSerivceDetailsMidwife"
+        component={ImmunizationSerivceDetailsMidwife}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
         name="AntenatalSerivceDetails"
         component={AntenatalSerivceDetails}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="AntenatalSerivceDetailsMidwife"
+        component={AntenatalSerivceDetailsMidwife}
         options={{headerShown: false}}
       />
 
@@ -202,6 +218,12 @@ const Router = () => {
       <Stack.Screen
         name="ChangePassword"
         component={ChangePassword}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="NotificationPatient"
+        component={NotificationPatient}
         options={{headerShown: false}}
       />
 

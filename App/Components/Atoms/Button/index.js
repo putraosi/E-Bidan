@@ -17,7 +17,7 @@ const Button = ({style, type, label, onPress}) => {
     backgroundColor = colors.button.white.backgroundColor;
     color = colors.button.white.color;
     borderColor = colors.button.white.borderColor;
-  } else if (type == 'red') {
+  } else if (type == 'red' || type == 'reject') {
     backgroundColor = colors.button.danger.backgroundColor;
     color = colors.button.danger.color;
     borderColor = colors.button.danger.borderColor;

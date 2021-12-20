@@ -11,6 +11,7 @@ import AddServicesPregnancyExercise from './AddServicesPregnancyExercise';
 import AddServicesReferral from './AddServicesReferral';
 import AddServicesUltrasonografi from './AddServicesUltrasonografi';
 import AntenatalSerivceDetails from './AntenatalSerivceDetails';
+import AntenatalSerivceDetailsMidwife from './AntenatalSerivceDetailsMidwife';
 import ChangePassword from './ChangePassword';
 import Confirmation from './Confirmation';
 import DetailsProfileMidwife from './DetailsProfileMidwife';
@@ -33,6 +34,8 @@ import SingIn from './SignIn';
 import SignUp from './SignUp';
 import Splash from './Splash';
 import UltrasonografiSerivceDetails from './UltrasonografiSerivceDetails';
+import NotificationPatient from './NotificationPatient'
+import ImmunizationSerivceDetailsMidwife from './ImmunizationSerivceDetailsMidwife'
 
 export {
   GetStarted,
@@ -65,9 +68,12 @@ export {
   HomecareSerivceDetails,
   OtherSerivceDetails,
   ImmunizationSerivceDetails,
+  ImmunizationSerivceDetailsMidwife,
   AntenatalSerivceDetails,
+  AntenatalSerivceDetailsMidwife,
   PregnancyExerciseSerivceDetails,
   UltrasonografiSerivceDetails,
   KBSerivceDetails,
   ChangePassword,
+  NotificationPatient
 };

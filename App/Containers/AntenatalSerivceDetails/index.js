@@ -42,7 +42,7 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
   return (
     <Container>
       <Header
-        title={`Detail Pesan\nAntenatal (Pemeriksaan Kehamilan)`}
+        title={`Detail Pesanan\nAntenatal (Pemeriksaan Kehamilan)`}
         onDismiss={() => navigation.goBack()}
       />
       {loading ? (

@@ -103,7 +103,6 @@ const AddServicesKB = ({navigation, route}) => {
         url: 'self/disease-history-families',
       });
 
-
       if (res) {
         const formated = formatSelect(res, true);
         setSelectDiseaseHistory(formated);
@@ -143,6 +142,7 @@ const AddServicesKB = ({navigation, route}) => {
     const date_last_haid = form.lastDateMenstruation
       ? moments(form.lastDateMenstruation).format('YYYY-MM-DD')
       : '';
+    const is_breast_feed = form.breastfeed ? true : false;
 
     if (disease_history_family_ids.length == 0)
       disease_history_family_name = '';
@@ -158,7 +158,7 @@ const AddServicesKB = ({navigation, route}) => {
           status_use: form.status,
           yongest_child_age: parseInt(form.age),
           method_use: form.method,
-          is_breast_feed: form.breastfeed,
+          is_breast_feed,
           bidan_id: selectMidwife.id,
           pasien_id: route.params.userId,
           visit_date,
@@ -285,7 +285,7 @@ const AddServicesKB = ({navigation, route}) => {
               style={styles.inputSecond}
               label={'Tanggal Terakhir Haid'}
               value={
-                form.husbandProfession
+                form.lastDateMenstruation
                   ? moments(form.lastDateMenstruation).format('DD MMMM YYYY')
                   : ''
               }
@@ -404,7 +404,7 @@ const AddServicesKB = ({navigation, route}) => {
         <DatePicker
           testID="dateTimePicker"
           value={
-            form.husbandProfession ? form.lastDateMenstruation : new Date()
+            form.lastDateMenstruation ? form.lastDateMenstruation : new Date()
           }
           mode={'date'}
           maximumDate={new Date()}

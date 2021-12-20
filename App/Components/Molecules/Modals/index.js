@@ -1,7 +1,7 @@
-import React from 'react';
-import { Modal, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Button, Gap, SpaceBeetwen } from '../..';
-import { colors, fonts } from '../../../Themes';
+import React, {useState} from 'react';
+import {Modal, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Button, Gap, Input, SpaceBeetwen} from '../..';
+import {colors, fonts} from '../../../Themes';
 import DigitCodeModal from './DigitCodeModal';
 import ForgotPasswordModal from './ForgotPasswordModal';
 import ResetPasswordModal from './ResetPasswordModal';
@@ -11,6 +11,7 @@ const Modals = ({
   type,
   visible,
   title,
+  isReason,
   labelPress,
   labelCancel,
   desc,
@@ -20,6 +21,8 @@ const Modals = ({
   onSelect,
   data,
 }) => {
+  const [reason, setReason] = useState('');
+
   if (type == 'forgot-password')
     return (
       <ForgotPasswordModal
@@ -54,6 +57,7 @@ const Modals = ({
 
   const showTitle = title ? true : false;
   const showDesc = desc ? true : false;
+  const showReason = isReason ? true : false;
   const showButtonPress = labelPress ? true : false;
   const showButtonCancel = labelCancel ? true : false;
 
@@ -72,10 +76,25 @@ const Modals = ({
           onPress={() => null}>
           {showTitle && <Text style={styles.title}>{title}</Text>}
           {showDesc && <Text style={styles.desc}>{desc}</Text>}
+          {showReason && (
+            <Input
+              style={styles.input}
+              value={reason}
+              multiline={true}
+              onChangeText={value => setReason(value)}
+            />
+          )}
           <Gap height={20} />
           <SpaceBeetwen style={styles.wrapperButton}>
             {showButtonPress && (
-              <Button type={'modal'} label={labelPress} onPress={onPress} />
+              <Button
+                type={'modal'}
+                label={labelPress}
+                onPress={() => {
+                  onPress(reason);
+                  setReason('');
+                }}
+              />
             )}
             {showButtonPress && showButtonCancel && <Gap width={8} />}
             {showButtonCancel && (
@@ -113,6 +132,7 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: colors.text.primary,
     fontFamily: fonts.primary.bold,
+    textAlign: 'center',
   },
 
   desc: {
@@ -124,5 +144,9 @@ const styles = StyleSheet.create({
 
   wrapperButton: {
     alignSelf: 'center',
+  },
+
+  input: {
+    marginTop: 10,
   },
 });

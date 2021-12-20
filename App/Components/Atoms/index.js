@@ -11,6 +11,7 @@ import Row from './Row';
 import Separator from './Separator';
 import SpaceBeetwen from './SpaceBeetwen';
 import Spinner from './Spinner';
+import Status from './Status';
 
 export {
   Loading,
@@ -21,6 +22,7 @@ export {
   Row,
   SpaceBeetwen,
   Notice,
+  Status,
   Spinner,
   Separator,
   CenterView,

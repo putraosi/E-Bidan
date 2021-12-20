@@ -1,7 +1,8 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { IcLeft } from '../../../Images';
-import { colors, fonts } from '../../../Themes';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Gap} from '../..';
+import {IcLeft} from '../../../Images';
+import {colors, fonts} from '../../../Themes';
 
 const Header = ({type, title, iconRight, onPress, onDismiss}) => {
   const showTitle = title ? true : false;
@@ -19,10 +20,12 @@ const Header = ({type, title, iconRight, onPress, onDismiss}) => {
         <Image style={styles.image(color)} source={IcLeft} />
       </TouchableOpacity>
       {showTitle && <Text style={styles.title(color)}>{title}</Text>}
-      {iconRight && (
+      {iconRight ? (
         <TouchableOpacity onPress={onPress}>
           <Image style={styles.image} source={iconRight} />
         </TouchableOpacity>
+      ) : (
+        <Gap width={24} />
       )}
     </View>
   );

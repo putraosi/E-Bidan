@@ -38,7 +38,7 @@ const ImmunizationSerivceDetails = ({navigation, route}) => {
   return (
     <Container>
       <Header
-        title={`Detail Pesan\nImmunisasi`}
+        title={`Detail Pesanan\nImmunisasi`}
         onDismiss={() => navigation.goBack()}
       />
       {loading ? (

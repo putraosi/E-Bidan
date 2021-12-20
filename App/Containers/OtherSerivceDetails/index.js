@@ -38,7 +38,7 @@ const OtherSerivceDetails = ({navigation, route}) => {
   return (
     <Container>
       <Header
-        title={`Detail Pesan\nLainnya`}
+        title={`Detail Pesanan\nLainnya`}
         onDismiss={() => navigation.goBack()}
       />
       {loading ? (

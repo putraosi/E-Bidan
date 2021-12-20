@@ -59,7 +59,7 @@ const KBSerivceDetails = ({navigation, route}) => {
   return (
     <Container>
       <Header
-        title={`Detail Pesan\nKeluarga Berencana (KB)`}
+        title={`Detail Pesanan\nKeluarga Berencana (KB)`}
         onDismiss={() => navigation.goBack()}
       />
       {loading ? (

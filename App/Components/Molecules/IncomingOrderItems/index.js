@@ -1,19 +1,21 @@
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
-import {getBookingType, selectPageByService, ToastAlert} from '../../../Helpers';
+import {Gap, Notice, Row, SpaceBeetwen} from '../..';
+import {
+  getBookingType,
+  selectPageByServiceMidwife,
+  ToastAlert,
+} from '../../../Helpers';
 import {IcRightArrow, ILNullPhoto} from '../../../Images';
-import { moments } from '../../../Libs';
+import {moments} from '../../../Libs';
 import {colors, fonts} from '../../../Themes';
-import {Gap, Row, SpaceBeetwen} from '../../Atoms';
 
 const IncomingOrderItems = ({navigation, data}) => {
-
   const photo = data.pasien.photo ? {uri: data.pasien.photo} : ILNullPhoto;
   const type = getBookingType(data.bookingable_type);
 
   const onShowDetails = () => {
-    return ToastAlert();
-    const screen = selectPageByService(data.bookingable_type);
+    const screen = selectPageByServiceMidwife(data.bookingable_type);
 
     if (!screen) return ToastAlert();
 
@@ -21,6 +23,7 @@ const IncomingOrderItems = ({navigation, data}) => {
       data: data,
     });
   };
+
   return (
     <TouchableOpacity style={styles.container} onPress={onShowDetails}>
       <SpaceBeetwen>
@@ -29,9 +32,12 @@ const IncomingOrderItems = ({navigation, data}) => {
           <Text style={styles.name}>{data.pasien.name}</Text>
           <Text style={styles.type}>{type}</Text>
           <Gap height={2} />
+          <Notice category={data.request_status.name} />
         </View>
         <Row>
-          <Text style={styles.date}>{moments(data.bookingable.visit_date).format("DD MMMM YYYY")}</Text>
+          <Text style={styles.date}>
+            {moments(data.bookingable.visit_date).format('DD MMMM YYYY')}
+          </Text>
           <Image style={styles.arrow} source={IcRightArrow} />
         </Row>
       </SpaceBeetwen>
@@ -61,16 +67,14 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: 30,
-    height: 30,
-    borderRadius: 30 / 2,
-    marginRight: 8,
-    borderWidth: 1,
-    borderColor: colors.primary,
+    width: 60,
+    height: 60,
+    borderRadius: 60 / 2,
   },
 
   containerAccount: {
     flex: 1,
+    marginLeft: 8,
   },
 
   name: {
@@ -86,7 +90,7 @@ const styles = StyleSheet.create({
   },
 
   date: {
-    fontSize: 14,
+    fontSize: 16,
     color: colors.black,
     fontFamily: fonts.primary.regular,
     marginRight: 4,

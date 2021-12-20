@@ -137,7 +137,7 @@ const HomePatient = ({navigation}) => {
                   </View>
                 </Row>
 
-                <TouchableOpacity onPress={() => ToastAlert()}>
+                <TouchableOpacity onPress={() => navigation.navigate('NotificationPatient')}>
                   <Image
                     style={styles.imageNotification}
                     source={IcNotification}

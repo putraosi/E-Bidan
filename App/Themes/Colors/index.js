@@ -1,5 +1,6 @@
 const mainColors = {
   blue1: '#43BBFF',
+  blue2: '#007bff',
   yellow1: '#FFC909',
   red1: '#B80505',
   green1: '#93DEE2',
@@ -15,9 +16,12 @@ const mainColors = {
   whiteTranparent1: 'rgba(255, 255, 255, 0.5)',
   whiteTranparent2: 'rgba(255, 255, 255, 0.3)',
   blueTranparent1: 'rgba(67, 187, 255, 0.85)',
+  blueTranparent2: 'rgba(0, 123, 255, 0.50)',
   blackTransparent1: 'rgba(0, 0, 0, 0.5)',
   grayTransparent1: 'rgba(196, 196, 196, 0.2)',
   grayTransparent2: 'rgba(196, 196, 196, 0.4)',
+  redTransparent1: 'rgba(220, 53, 70, 0.5)',
+  greenTransparent1: 'rgba(40, 167, 70, 0.5)',
 
   transparent: 'transparent',
 };
@@ -54,14 +58,14 @@ export const colors = {
       color: mainColors.green2,
     },
     danger: {
-      backgroundColor: mainColors.white1,
+      backgroundColor: mainColors.red1,
       borderColor: mainColors.red1,
-      color: mainColors.red1,
+      color: mainColors.white1,
     },
   },
   notice: {
     progress: {
-      backgroundColor: mainColors.green1,
+      backgroundColor: mainColors.blueTranparent2,
       color: mainColors.white1,
     },
     pending: {
@@ -69,11 +73,11 @@ export const colors = {
       color: mainColors.black2,
     },
     completed: {
-      backgroundColor: mainColors.blue1,
+      backgroundColor: mainColors.greenTransparent1,
       color: mainColors.white1,
     },
     rejected: {
-      backgroundColor: mainColors.red1,
+      backgroundColor: mainColors.redTransparent1,
       color: mainColors.white1,
     },
   },

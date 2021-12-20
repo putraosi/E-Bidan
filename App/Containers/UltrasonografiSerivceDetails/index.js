@@ -30,7 +30,7 @@ const UltrasonografiSerivceDetails = ({navigation, route}) => {
   return (
     <Container>
       <Header
-        title={`Detail Pesan\nSenam Hamil`}
+        title={`Detail Pesanan\nSenam Hamil`}
         onDismiss={() => navigation.goBack()}
       />
       {loading ? (
