@@ -18,6 +18,7 @@ import {colors, fonts} from '../../Themes';
 const SignUp = ({navigation}) => {
   const [form, setForm] = useForm({
     name: '',
+    username: '',
     email: '',
     religionWife: '',
     professionWife: '',
@@ -36,31 +37,53 @@ const SignUp = ({navigation}) => {
   const validation = () => {
     if (!form.name.trim()) {
       return ToastAlert('Silahkan masukan nama Anda');
-    } else if (
+    }
+
+    if (!form.username.trim()) {
+      return ToastAlert('Silahkan masukan user name Anda');
+    }
+
+    if (
       !form.email.trim() ||
       !constants.REGEX_EMAIL.test(form.email.trim().toLowerCase())
     ) {
       return ToastAlert('Silahkan masukan alamat email valid Anda');
-    } else if (!form.noHandphone.trim()) {
+    }
+
+    if (!form.noHandphone.trim()) {
       return ToastAlert('Silahkan masukan nomor handphone Anda');
-    } else if (
+    }
+
+    if (
       form.noHandphone.length < 9 ||
       form.noHandphone.length > 14 ||
       form.noHandphone.charAt(0) != 0 ||
       form.noHandphone.charAt(1) != 8
     ) {
       return ToastAlert('Silahkan masukan nomor handphone valid Anda');
-    } else if (!form.religionWife.trim()) {
+    }
+
+    if (!form.religionWife.trim()) {
       return ToastAlert('Silahkan pilih agama Anda');
-    } else if (!form.professionWife.trim()) {
+    }
+
+    if (!form.professionWife.trim()) {
       return ToastAlert('Silahkan masukan pekerjaan Anda');
-    } else if (!form.educationWife.trim()) {
+    }
+
+    if (!form.educationWife.trim()) {
       return ToastAlert('Silahkan masukan pendidikan terkahir Anda');
-    } else if (!form.password.trim()) {
+    }
+
+    if (!form.password.trim()) {
       return ToastAlert('Silahkan masukan kata sandi');
-    } else if (form.password.length < 8) {
+    }
+
+    if (form.password.length < 8) {
       return ToastAlert('Kata sandi minimal 8 karakter');
-    } else if (form.password.trim() !== form.repeatPassword.trim()) {
+    }
+
+    if (form.password.trim() !== form.repeatPassword.trim()) {
       return ToastAlert('Ulangi kata sandi Anda tidak sesuai');
     }
 
@@ -71,10 +94,11 @@ const SignUp = ({navigation}) => {
     dispatch({type: 'SET_LOADING', value: true});
 
     try {
-      const res = await Api.post({
+      await Api.post({
         url: 'auth/register',
         body: {
           name: form.name,
+          username: form.username,
           email: form.email,
           phone: form.noHandphone,
           religion_wife: form.religionWife,
@@ -82,11 +106,11 @@ const SignUp = ({navigation}) => {
           education_wife: form.educationWife,
           password: form.password,
         },
+        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
-      if (res) navigation.navigate('Confirmation');
-      else ToastAlert('Silahkan coba beberapa saat lagi');
+      navigation.navigate('Confirmation');
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
       SampleAlert({message: error.message});
@@ -105,27 +129,36 @@ const SignUp = ({navigation}) => {
         <View showsVerticalScrollIndicator={false} style={styles.wrapper}>
           <Text style={styles.title}>{'Registrasi'}</Text>
           <Input
-            style={styles.input}
             label={'Nama'}
             value={form.name}
             onChangeText={value => setForm('name', value)}
           />
-          <Gap height={12} />
+
           <Input
+            style={styles.input}
+            label={'User Name'}
+            value={form.username}
+            onChangeText={value => setForm('username', value)}
+          />
+
+          <Input
+            style={styles.input}
             label={'Alamat E-Mail'}
             value={form.email}
             onChangeText={value => setForm('email', value)}
             keyboardType={'email-address'}
           />
-          <Gap height={12} />
+
           <Input
+            style={styles.input}
             label={'No Handphone'}
             value={form.noHandphone}
             onChangeText={value => setForm('noHandphone', value)}
             keyboardType={'phone-pad'}
           />
-          <Gap height={12} />
+
           <Input
+            style={styles.input}
             label={'Agama'}
             value={form.religionWife}
             placeholder={'Pilih'}
@@ -133,22 +166,22 @@ const SignUp = ({navigation}) => {
             onPress={() => setVisibleReligion(true)}
           />
 
-          <Gap height={12} />
           <Input
+            style={styles.input}
             label={'Pekerjaan'}
             value={form.professionWife}
             onChangeText={value => setForm('professionWife', value)}
           />
 
-          <Gap height={12} />
           <Input
+            style={styles.input}
             label={'Pendidikan Terakhir'}
             value={form.educationWife}
             onChangeText={value => setForm('educationWife', value)}
           />
 
-          <Gap height={12} />
           <Input
+            style={styles.input}
             type={'password'}
             label={'Kata Sandi'}
             value={form.password}
@@ -158,8 +191,9 @@ const SignUp = ({navigation}) => {
               setSecureTextEntry('_password', !secureTextEntry._password)
             }
           />
-          <Gap height={12} />
+
           <Input
+            style={styles.input}
             type={'password'}
             label={'Ulangi Kata Sandi'}
             value={form.repeatPassword}
@@ -230,7 +264,7 @@ const styles = StyleSheet.create({
   },
 
   input: {
-    flex: 1,
+    marginTop: 12,
   },
 
   wrapperHaveAccount: {

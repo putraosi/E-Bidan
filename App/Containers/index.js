@@ -17,13 +17,16 @@ import Confirmation from './Confirmation';
 import DetailsProfileMidwife from './DetailsProfileMidwife';
 import DetailsProfilePatient from './DetailsProfilePatient';
 import GetStarted from './GetStarted';
+import Help from './Help';
 import HomecareSerivceDetails from './HomecareSerivceDetails';
 import HomeMidwife from './HomeMidwife';
 import HomePatient from './HomePatient';
 import ImmunizationSerivceDetails from './ImmunizationSerivceDetails';
+import ImmunizationSerivceDetailsMidwife from './ImmunizationSerivceDetailsMidwife';
 import IncomingOrder from './IncomingOrder';
 import IncomingOrderDetails from './IncomingOrderDetails';
 import KBSerivceDetails from './KBSerivceDetails';
+import NotificationPatient from './NotificationPatient';
 import OrderDetailPatient from './OrderDetailPatient';
 import OrderHistoryPatient from './OrderHistoryPatient';
 import OrderSchedule from './OrderSchedule';
@@ -34,8 +37,6 @@ import SingIn from './SignIn';
 import SignUp from './SignUp';
 import Splash from './Splash';
 import UltrasonografiSerivceDetails from './UltrasonografiSerivceDetails';
-import NotificationPatient from './NotificationPatient'
-import ImmunizationSerivceDetailsMidwife from './ImmunizationSerivceDetailsMidwife'
 
 export {
   GetStarted,
@@ -75,5 +76,6 @@ export {
   UltrasonografiSerivceDetails,
   KBSerivceDetails,
   ChangePassword,
-  NotificationPatient
+  NotificationPatient,
+  Help,
 };

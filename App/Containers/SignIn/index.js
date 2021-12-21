@@ -5,17 +5,12 @@ import {
   ScrollView,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
 import {Button, Container, Gap, Input, Modals, Row} from '../../Components';
-import {
-  constants,
-  SampleAlert,
-  storeData,
-  ToastAlert,
-  useForm,
-} from '../../Helpers';
+import {SampleAlert, storeData, ToastAlert, useForm} from '../../Helpers';
 import {ILHeader, ILLogo} from '../../Images';
 import {Api} from '../../Services/Api';
 import {colors, fonts} from '../../Themes';
@@ -30,11 +25,8 @@ const SignIn = ({navigation}) => {
   const dispatch = useDispatch();
 
   const validation = () => {
-    if (
-      form.email.trim() === '' ||
-      !constants.REGEX_EMAIL.test(form.email.trim().toLowerCase())
-    ) {
-      return SampleAlert({message: 'Silahkan masukan alamat email valid Anda'});
+    if (form.email.trim() === '') {
+      return SampleAlert({message: 'Silahkan masukan username Anda'});
     } else if (form.password.trim() === '') {
       return SampleAlert({message: 'Silahkan masukan kata sandi Anda'});
     }
@@ -51,6 +43,7 @@ const SignIn = ({navigation}) => {
           username: form.email,
           password: form.password,
         },
+        showLog: true,
       });
 
       if (res) {
@@ -78,6 +71,12 @@ const SignIn = ({navigation}) => {
       }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
+
+      if (error.message == 'Akun belum di verifikasi.')
+        return navigation.navigate('Confirmation', {
+          isRepeatConfirmation: true,
+        });
+
       SampleAlert({message: 'Silahkan masukan data login Anda dengan benar'});
     }
   };
@@ -118,7 +117,7 @@ const SignIn = ({navigation}) => {
           <View showsVerticalScrollIndicator={false}>
             <Text style={styles.title}>{'Log In'}</Text>
             <Input
-              label={'Alamat E-Mail'}
+              label={'Username'}
               value={form.email}
               onChangeText={value => setForm('email', value)}
               keyboardType={'email-address'}
@@ -155,6 +154,15 @@ const SignIn = ({navigation}) => {
           </View>
         </View>
       </ScrollView>
+
+      <TouchableOpacity
+        style={styles.containerHelp}
+        onPress={() => navigation.navigate('Help')}>
+        <Text style={styles.help(colors.text.primary)}>
+          {'Butuh Bantuan? '}
+        </Text>
+        <Text style={styles.help(colors.primary)}>{` Hubungi Kami`}</Text>
+      </TouchableOpacity>
 
       <Modals
         type={'forgot-password'}
@@ -222,4 +230,17 @@ const styles = StyleSheet.create({
     fontFamily: fonts.primary.regular,
     textAlign: 'right',
   },
+
+  containerHelp: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'center',
+    marginBottom: 16,
+  },
+
+  help: color => ({
+    fontSize: 12,
+    color,
+    fontFamily: fonts.primary.regular,
+  }),
 });

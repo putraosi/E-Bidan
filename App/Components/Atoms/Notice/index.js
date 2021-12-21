@@ -21,7 +21,7 @@ const Notice = ({type, category}) => {
   } else if (category == 'accepted') {
     label = 'Diterima';
   } else if (category == 'on progress') {
-    label = 'Proses';
+    label = 'Sedang Diproses';
   } else if (category == 'booking') {
     label = 'Dipesan';
   } else if (category == 'finish') {

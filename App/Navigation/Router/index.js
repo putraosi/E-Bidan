@@ -20,6 +20,7 @@ import {
   DetailsProfileMidwife,
   DetailsProfilePatient,
   GetStarted,
+  Help,
   HomecareSerivceDetails,
   HomeMidwife,
   HomePatient,
@@ -46,7 +47,7 @@ const Stack = createNativeStackNavigator();
 
 const Router = () => {
   return (
-    <Stack.Navigator initialRouteName="Splash">
+    <Stack.Navigator initialRouteName="Confirmation">
       <Stack.Screen
         name="Splash"
         component={Splash}
@@ -224,6 +225,12 @@ const Router = () => {
       <Stack.Screen
         name="NotificationPatient"
         component={NotificationPatient}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="Help"
+        component={Help}
         options={{headerShown: false}}
       />
 
