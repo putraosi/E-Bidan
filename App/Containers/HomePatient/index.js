@@ -37,6 +37,8 @@ const HomePatient = ({navigation}) => {
   const [dataOrderHistory, setDataOrderHistory] = useState([]);
   const [dataSevices, setDataSevices] = useState(null);
   const [visibelServices, setVisibelServices] = useState(false);
+  const [visibleCompletenessData, setVisibleCompletenessData] = useState(false);
+  const [isCompletenessData, setIsCompletenessData] = useState(false);
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -44,6 +46,7 @@ const HomePatient = ({navigation}) => {
 
     getData('user').then(res => {
       setDataUser(res);
+      checkUser(res);
       setLoadingUser(false);
     });
 
@@ -55,6 +58,19 @@ const HomePatient = ({navigation}) => {
       getBooking();
     }
   }, [isFocused]);
+
+  const checkUser = async user => {
+    try {
+      await Api.get({
+        url: `self/check-complete-data/${user.id}`,
+      });
+
+      setIsCompletenessData(true);
+    } catch (error) {
+      setIsCompletenessData(false);
+      setVisibleCompletenessData(true);
+    }
+  };
 
   const getServiceCategory = async () => {
     try {
@@ -137,7 +153,8 @@ const HomePatient = ({navigation}) => {
                   </View>
                 </Row>
 
-                <TouchableOpacity onPress={() => navigation.navigate('NotificationPatient')}>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('NotificationPatient')}>
                   <Image
                     style={styles.imageNotification}
                     source={IcNotification}
@@ -212,19 +229,39 @@ const HomePatient = ({navigation}) => {
           </ScrollView>
 
           <View style={styles.containerButton}>
-            <Button type={'circle'} onPress={() => setVisibelServices(true)} />
+            <Button
+              type={'circle'}
+              onPress={() => {
+                if (isCompletenessData) setVisibelServices(true);
+                else setVisibleCompletenessData(true);
+              }}
+            />
           </View>
-
-          <Modals
-            type={'spinner'}
-            title={'Kategori Layanan'}
-            visible={visibelServices}
-            data={dataSevices}
-            onDismiss={() => setVisibelServices(false)}
-            onSelect={value => onShowService(value)}
-          />
         </>
       )}
+
+      <Modals
+        type={'spinner'}
+        title={'Kategori Layanan'}
+        visible={visibelServices}
+        data={dataSevices}
+        onDismiss={() => setVisibelServices(false)}
+        onSelect={value => onShowService(value)}
+      />
+
+      <Modals
+        visible={visibleCompletenessData}
+        title={'Kelengkapan Data'}
+        desc={
+          'Silahkan lengkapi data pribadi Anda terlebih dahulu untuk bisa melanjutkan fitur kami'
+        }
+        labelPress={'Lengkapi'}
+        onDismiss={() => setVisibleCompletenessData(false)}
+        onPress={() => {
+          setVisibleCompletenessData(false);
+          navigation.navigate('DetailsProfilePatient', {data: dataUser});
+        }}
+      />
     </Container>
   );
 };

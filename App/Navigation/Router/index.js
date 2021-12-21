@@ -47,7 +47,7 @@ const Stack = createNativeStackNavigator();
 
 const Router = () => {
   return (
-    <Stack.Navigator initialRouteName="Confirmation">
+    <Stack.Navigator initialRouteName="Splash">
       <Stack.Screen
         name="Splash"
         component={Splash}
