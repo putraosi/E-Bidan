@@ -3,7 +3,6 @@ import React, {useEffect, useState} from 'react';
 import {
   FlatList,
   Image,
-  LogBox,
   ScrollView,
   StyleSheet,
   Text,
@@ -42,20 +41,17 @@ const HomePatient = ({navigation}) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    LogBox.ignoreLogs(['VirtualizedLists should never be nested']);
-
-    getData('user').then(res => {
-      setDataUser(res);
-      checkUser(res);
-      setLoadingUser(false);
-    });
-
     getServiceCategory();
   }, []);
 
   useEffect(() => {
     if (isFocused) {
       getBooking();
+      getData('user').then(res => {
+        setDataUser(res);
+        checkUser(res);
+        setLoadingUser(false);
+      });
     }
   }, [isFocused]);
 
@@ -63,6 +59,7 @@ const HomePatient = ({navigation}) => {
     try {
       await Api.get({
         url: `self/check-complete-data/${user.id}`,
+        showLog: true,
       });
 
       setIsCompletenessData(true);

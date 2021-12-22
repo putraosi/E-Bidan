@@ -16,6 +16,7 @@ import {
 } from '../../Components';
 import {
   ageCalculation,
+  ageCalculationYear,
   constants,
   resetPage,
   SampleAlert,
@@ -38,10 +39,10 @@ const DetailsProfilePatient = ({navigation, route}) => {
   const data = route.params.data;
 
   const [form, setForm] = useForm({
-    photo: data.photo,
     name: data.name,
+    photo: data.photo,
     birthDate: '',
-    nik: '',
+    idCard: '',
     email: data.email,
     phoneNumber: data.phone,
     religion: '',
@@ -67,6 +68,54 @@ const DetailsProfilePatient = ({navigation, route}) => {
   const [selectPhoto, setSelectPhoto] = useState(null);
   const [isChange, setIsChange] = useState(false);
   const dispatch = useDispatch();
+
+  const validation = () => {
+    if (!form.photo && !selectPhoto)
+      return ToastAlert('Silahkan ubah foto profil Anda terlebih dahulu');
+
+    if (form.idCard && (form.idCard.length > 16 || form.idCard.length < 16))
+      return ToastAlert('Silahkan masukan nik Anda yang valid terlebih dahulu');
+
+    if (!form.name)
+      return ToastAlert('Silahkan masukan nama Anda terlebih dahulu');
+
+    if (
+      form.phoneNumber &&
+      (form.phoneNumber.length < 9 ||
+        form.phoneNumber.length > 14 ||
+        form.phoneNumber.charAt(0) != 0 ||
+        form.phoneNumber.charAt(1) != 8)
+    )
+      return ToastAlert(
+        'Silahkan masukan nomor handphone Anda yang valid terlebih dahulu',
+      );
+
+    if (
+      !form.email.trim() ||
+      !constants.REGEX_EMAIL.test(form.email.trim().toLowerCase())
+    ) {
+      return ToastAlert('Silahkan masukan alamat email valid Anda');
+    }
+
+    if (!form.address)
+      return ToastAlert('Silahkan masukan alamat Anda terlebih dahulu');
+
+    if (!form.husbandName)
+      return ToastAlert('Silahkan masukan nama suami Anda terlebih dahulu');
+
+    if (
+      form.husbandPhoneNumber &&
+      (form.husbandPhoneNumber.length < 9 ||
+        form.husbandPhoneNumber.length > 14 ||
+        form.husbandPhoneNumber.charAt(0) != 0 ||
+        form.husbandPhoneNumber.charAt(1) != 8)
+    )
+      return ToastAlert(
+        'Silahkan masukan nomor handphone suami Anda yang valid terlebih dahulu',
+      );
+
+    setVisibleEdit(true);
+  };
 
   const onLogout = async () => {
     setVisibleLogout(false);
@@ -95,17 +144,44 @@ const DetailsProfilePatient = ({navigation, route}) => {
     const photo = selectPhoto
       ? `data:${selectPhoto.type};base64, ${selectPhoto.base64}`
       : form.photo;
+    const birth_date = form.birthDate
+      ? moments(form.birthDate).format('YYYY-MM-DD')
+      : '';
+    const age = form.birthDate
+      ? parseInt(ageCalculationYear(form.birthDate))
+      : 0;
+    const birth_date_spouse = form.husbandBirthDate
+      ? moments(form.husbandBirthDate).format('YYYY-MM-DD')
+      : '';
+    const age_spouse = form.husbandBirthDate
+      ? parseInt(ageCalculationYear(form.husbandBirthDate))
+      : 0;
 
     try {
       const res = await Api.post({
         url: `admin/pasiens/${data.id}`,
         body: {
-          name: form.name,
           photo: photo,
-          spouse: form.spouse,
+          id_card: form.idCard,
+          name: form.name,
+          birth_date,
+          age,
+          religion_wife: form.religion,
+          phone: form.phoneNumber,
+          email: form.email,
           address: form.address,
+          education_wife: form.lastEducation,
+          profession_wife: form.profession,
+          spouse: form.husbandName,
+          birth_date_spouse,
+          age_spouse,
+          religion_husband: form.husbandReligion,
+          phone_spouse: form.husbandPhoneNumber,
+          education_husband: form.husbandLastEducation,
+          profession_husband: form.husbandProfession,
           _method: 'put',
         },
+        showLog: true,
       });
       storeData('user', res.data);
       dispatch({type: 'SET_LOADING', value: false});
@@ -123,7 +199,7 @@ const DetailsProfilePatient = ({navigation, route}) => {
 
   if (isChange) {
     labelButtonFirst = 'Simpan';
-    onPressFirst = () => setVisibleEdit(true);
+    onPressFirst = () => validation();
   }
 
   return (
@@ -152,7 +228,12 @@ const DetailsProfilePatient = ({navigation, route}) => {
         </View>
 
         <View style={styles.content}>
-          <Input label={'NIK'} value={form.nik} editable={editable} />
+          <Input
+            label={'NIK'}
+            value={form.idCard}
+            editable={editable}
+            onChangeText={value => setForm('idCard', value)}
+          />
 
           <Input
             style={styles.input}
@@ -180,7 +261,11 @@ const DetailsProfilePatient = ({navigation, route}) => {
           <Input
             style={styles.input}
             label={'Umur'}
-            value={form.birthDate ? ageCalculation(form.birthDate) : ''}
+            value={
+              form.birthDate
+                ? `${ageCalculationYear(form.birthDate)} Tahun`
+                : ''
+            }
             editable={false}
           />
 
@@ -262,7 +347,9 @@ const DetailsProfilePatient = ({navigation, route}) => {
             style={styles.input}
             label={'Umur Suami'}
             value={
-              form.husbandBirthDate ? ageCalculation(form.husbandBirthDate) : ''
+              form.husbandBirthDate
+                ? `${ageCalculationYear(form.husbandBirthDate)} Tahun`
+                : ''
             }
             editable={false}
           />

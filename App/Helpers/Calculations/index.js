@@ -30,5 +30,5 @@ export const ageCalculation = date => {
 
 export const ageCalculationYear = date => {
   const diff = Math.abs(moments(date).diff(moments(), 'years'));
-  return `${diff} Tahun`;
+  return `${diff}`;
 };
