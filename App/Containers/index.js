@@ -37,6 +37,7 @@ import SingIn from './SignIn';
 import SignUp from './SignUp';
 import Splash from './Splash';
 import UltrasonografiSerivceDetails from './UltrasonografiSerivceDetails';
+import PregnancyExerciseSerivceDetailsMidwife from './PregnancyExerciseSerivceDetailsMidwife'
 
 export {
   GetStarted,
@@ -73,6 +74,7 @@ export {
   AntenatalSerivceDetails,
   AntenatalSerivceDetailsMidwife,
   PregnancyExerciseSerivceDetails,
+  PregnancyExerciseSerivceDetailsMidwife,
   UltrasonografiSerivceDetails,
   KBSerivceDetails,
   ChangePassword,

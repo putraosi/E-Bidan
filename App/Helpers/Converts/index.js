@@ -49,7 +49,7 @@ export const selectPageByServiceMidwife = data => {
 
   if (type == 'HomeCareService') return '';
 
-  if (type == 'PregnancyExercise') return '';
+  if (type == 'PregnancyExercise') return 'PregnancyExerciseSerivceDetailsMidwife';
 
   if (type == 'Ultrasonografi') return '';
 
