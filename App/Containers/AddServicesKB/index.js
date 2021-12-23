@@ -1,7 +1,7 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, { useEffect, useState } from 'react';
-import { FlatList, ScrollView, Text, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {FlatList, ScrollView, Text, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {
   Button,
   Container,
@@ -12,7 +12,7 @@ import {
   ModalAlert,
   Modals,
   RadioButton,
-  SpaceBeetwen
+  SpaceBeetwen,
 } from '../../Components';
 import {
   constants,
@@ -20,10 +20,10 @@ import {
   formatSelectedId,
   SampleAlert,
   ToastAlert,
-  useForm
+  useForm,
 } from '../../Helpers';
-import { moments } from '../../Libs';
-import { Api } from '../../Services';
+import {moments} from '../../Libs';
+import {Api} from '../../Services';
 import styles from './styles';
 
 const defalutSelectMidwife = {
@@ -48,6 +48,7 @@ const AddServicesKB = ({navigation, route}) => {
   });
 
   const [loading, setLoading] = useState(true);
+  const [loadingTypeKB, setLoadingTypeKB] = useState(true);
   const [loadingDiseaseHistory, setLoadingDiseaseHistory] = useState(true);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
@@ -57,6 +58,7 @@ const AddServicesKB = ({navigation, route}) => {
   const [visibleVisitDate, setVisibleVisitDate] = useState(false);
   const [visibleVisitTime, setVisibleVisitTime] = useState(false);
   const [dataMidwife, setDataMidwife] = useState([]);
+  const [selectType, setSelectType] = useState([]);
   const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
   const [selectDiseaseHistory, setSelectDiseaseHistory] = useState([]);
   const [price, setPrice] = useState('');
@@ -66,6 +68,7 @@ const AddServicesKB = ({navigation, route}) => {
   useEffect(() => {
     getMidwife(oldData ? new Date(oldData.bookingable.visit_date) : new Date());
     getDiseasehistory();
+    getTypeKB();
   }, []);
 
   const getMidwife = async date => {
@@ -97,10 +100,21 @@ const AddServicesKB = ({navigation, route}) => {
     }
   };
 
+  const getTypeKB = async () => {
+    try {
+      const res = await Api.get({
+        url: 'self/method-uses',
+      });
+
+    } catch (error) {
+      navigation.goBack();
+    }
+  };
+
   const getDiseasehistory = async () => {
     try {
       const res = await Api.get({
-        url: 'self/disease-history-families',
+        url: 'self/disease-histories',
       });
 
       if (res) {

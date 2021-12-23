@@ -75,26 +75,25 @@ const AddServicesUltrasonografi = ({navigation, route}) => {
 
   const onSubmit = async () => {
     dispatch({type: 'SET_LOADING', value: true});
-
-    let abortus = form.abortion;
-    const ultrasonografi_types = [form.type.id];
-    const visit_date = `${moments(form.visitDate).format(
-      'YYYY-MM-DD',
-    )} ${moments(form.visitTime).format('HH:mm:ss')}`;
-    const date_last_haid = '';
-    const date_estimate_birth = '';
-
-    if (form.hpht) {
-      date_last_haid = moments(form.hpht).format('YYYY-MM-DD');
-      date_estimate_birth = moments(form.hpht)
-        .add(40, 'weeks')
-        .format('YYYY-MM-DD');
-    }
-
-    if (abortus == 'Tidak Pernah') abortus = '0';
-
     try {
-      const res = await Api.post({
+      let abortus = form.abortion;
+      const ultrasonografi_types = [form.type.id];
+      const visit_date = `${moments(form.visitDate).format(
+        'YYYY-MM-DD',
+      )} ${moments(form.visitTime).format('HH:mm:ss')}`;
+      let date_last_haid = '';
+      let date_estimate_birth = '';
+
+      if (form.hpht) {
+        date_last_haid = moments(form.hpht).format('YYYY-MM-DD');
+        date_estimate_birth = moments(form.hpht)
+          .add(40, 'weeks')
+          .format('YYYY-MM-DD');
+      }
+
+      if (abortus == 'Tidak Pernah') abortus = '0';
+
+      await Api.post({
         url: 'admin/ultrasonografis',
         body: {
           service_category_id: route.params.id,
@@ -107,6 +106,7 @@ const AddServicesUltrasonografi = ({navigation, route}) => {
           visit_date,
           gestational_age: gestationalAge,
           date_estimate_birth,
+          remarks: '',
         },
       });
 
@@ -114,7 +114,7 @@ const AddServicesUltrasonografi = ({navigation, route}) => {
       setVisibleSuccess(true);
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      SampleAlert(error.message);
+      SampleAlert({message: error.message});
     }
   };
 
@@ -279,8 +279,10 @@ const AddServicesUltrasonografi = ({navigation, route}) => {
           onChange={(event, selectedDate) => {
             const currentDate = selectedDate || form.visitDate;
             setVisibleVisitDate(false);
-            const calculation = hplCalculation(form.visitDate, currentDate);
-            setGestationalAge(calculation);
+            if (form.hpht != '') {
+              const calculation = hplCalculation(currentDate, form.hpht);
+              setGestationalAge(calculation);
+            }
             setForm('visitDate', currentDate);
           }}
         />

@@ -1,14 +1,14 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { constants } from '../../../Helpers';
-import { colors, fonts } from '../../../Themes';
+import {StyleSheet, Text, View} from 'react-native';
+import {constants} from '../../../Helpers';
+import {colors, fonts} from '../../../Themes';
 
 const Status = ({type, mode}) => {
   let label = 'Pesanan Baru';
   let backgroundColor = colors.notice.progress.backgroundColor;
   let color = colors.notice.progress.color;
 
-  if (type == 'cancel') {
+  if (type == 'canceled') {
     label = 'Pesanan Anda Telah Dibatalkan';
     backgroundColor = colors.notice.rejected.backgroundColor;
     color = colors.notice.rejected.color;

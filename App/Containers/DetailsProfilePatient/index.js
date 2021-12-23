@@ -181,7 +181,6 @@ const DetailsProfilePatient = ({navigation, route}) => {
           profession_husband: form.husbandProfession,
           _method: 'put',
         },
-        showLog: true,
       });
       storeData('user', res.data);
       dispatch({type: 'SET_LOADING', value: false});

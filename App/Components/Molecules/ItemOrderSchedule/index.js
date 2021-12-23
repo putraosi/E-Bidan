@@ -1,15 +1,15 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Gap, Notice, Row, SpaceBeetwen } from '../../../Components';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Gap, Notice, Row, SpaceBeetwen} from '../../../Components';
 import {
   getBookingType,
   selectPageByService,
-  ToastAlert
+  ToastAlert,
 } from '../../../Helpers';
-import { ILNullPhoto } from '../../../Images';
-import { IcRightArrow } from '../../../Images/icon';
-import { moments } from '../../../Libs';
-import { colors, fonts } from '../../../Themes';
+import {ILNullPhoto} from '../../../Images';
+import {IcRightArrow} from '../../../Images/icon';
+import {moments} from '../../../Libs';
+import {colors, fonts} from '../../../Themes';
 
 const ItemOrderSchedule = ({navigation, data}) => {
   const type = getBookingType(data.bookingable_type);
@@ -24,14 +24,17 @@ const ItemOrderSchedule = ({navigation, data}) => {
     });
   };
 
-  const photo = data.bidan.photo ? {uri: data.bidan.photo} : ILNullPhoto;
+  const isMidwife = data.bidan ? true : false;
+
+  const photo =
+    isMidwife && data.bidan.photo ? {uri: data.bidan.photo} : ILNullPhoto;
 
   return (
     <TouchableOpacity style={styles.container} onPress={onShowDetails}>
       <SpaceBeetwen>
-        <Image style={styles.image} source={photo} />
+        {isMidwife && <Image style={styles.image} source={photo} />}
         <View style={styles.containerAccount}>
-          <Text style={styles.name}>{data.bidan.name}</Text>
+          {isMidwife && <Text style={styles.name}>{data.bidan.name}</Text>}
           <Text style={styles.type}>{type}</Text>
           <Gap height={2} />
           <Notice category={data.request_status.name} />

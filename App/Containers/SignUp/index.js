@@ -106,7 +106,6 @@ const SignUp = ({navigation}) => {
           education_wife: form.educationWife,
           password: form.password,
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});

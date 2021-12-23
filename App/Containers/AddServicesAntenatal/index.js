@@ -196,6 +196,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
           marital_status_husband: parseInt(form.husbandsTotalMarriage),
           disease_history_id,
           disease_history_name,
+          remark: '',
         },
       });
 
@@ -431,7 +432,6 @@ const AddServicesAntenatal = ({navigation, route}) => {
                 onChangeText={value => setForm('husbandsTotalMarriage', value)}
               />
             </SpaceBeetwen>
-
 
             <Text style={styles.desc}>{'*Coming Soon!'}</Text>
 

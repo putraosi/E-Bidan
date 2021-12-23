@@ -29,11 +29,11 @@ import {colors, fonts} from '../../Themes';
 const HomePatient = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [loadingUser, setLoadingUser] = useState(true);
-  const [loadingOrderSchedule, setLoadingOrderSchedule] = useState(true);
-  const [loadingOrderHistory, setLoadingOrderHistory] = useState(false);
+  const [loadingBooking, setLoadingBooking] = useState(true);
+  const [loadingHistoryBooking, setLoadingHistoryBooking] = useState(true);
   const [dataUser, setDataUser] = useState(null);
-  const [dataOrderSchedule, setDataOrderSchedule] = useState([]);
-  const [dataOrderHistory, setDataOrderHistory] = useState([]);
+  const [dataBooking, setDataBooking] = useState([]);
+  const [dataHistoryBooking, setDataHistoryBooking] = useState([]);
   const [dataSevices, setDataSevices] = useState(null);
   const [visibelServices, setVisibelServices] = useState(false);
   const [visibleCompletenessData, setVisibleCompletenessData] = useState(false);
@@ -46,12 +46,13 @@ const HomePatient = ({navigation}) => {
 
   useEffect(() => {
     if (isFocused) {
-      getBooking();
       getData('user').then(res => {
         setDataUser(res);
         checkUser(res);
         setLoadingUser(false);
       });
+      getBooking();
+      getHistoryBooking();
     }
   }, [isFocused]);
 
@@ -59,7 +60,6 @@ const HomePatient = ({navigation}) => {
     try {
       await Api.get({
         url: `self/check-complete-data/${user.id}`,
-        showLog: true,
       });
 
       setIsCompletenessData(true);
@@ -92,10 +92,29 @@ const HomePatient = ({navigation}) => {
         },
       });
 
-      setDataOrderSchedule(res);
-      setLoadingOrderSchedule(false);
+      setDataBooking(res);
+      setLoadingBooking(false);
     } catch (error) {
-      setLoadingOrderSchedule(false);
+      setLoadingBooking(false);
+    }
+  };
+
+  const getHistoryBooking = async () => {
+    try {
+      const res = await Api.get({
+        url: 'admin/bookings/history',
+        params: {
+          type: 'pasien',
+          per_page: 3,
+        },
+      });
+
+      console.log('cek res', res);
+
+      setDataHistoryBooking(res);
+      setLoadingHistoryBooking(false);
+    } catch (error) {
+      setLoadingHistoryBooking(false);
     }
   };
 
@@ -129,112 +148,105 @@ const HomePatient = ({navigation}) => {
 
   return (
     <Container>
-      {loading ? (
-        <Loading />
-      ) : (
-        <>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            {loadingUser ? (
-              <Loading />
-            ) : (
-              <TouchableOpacity
-                style={styles.containerHeader}
-                onPress={() =>
-                  navigation.navigate('DetailsProfilePatient', {data: dataUser})
-                }>
-                <Row>
-                  <Image style={styles.image} source={photo} />
-                  <View style={styles.wrapperAccount}>
-                    <Text style={styles.name}>{dataUser.name}</Text>
-                    <Text style={styles.type}>{'Pasien'}</Text>
-                  </View>
-                </Row>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        {loadingUser ? (
+          <Loading />
+        ) : (
+          <TouchableOpacity
+            style={styles.containerHeader}
+            onPress={() =>
+              navigation.navigate('DetailsProfilePatient', {data: dataUser})
+            }>
+            <Row>
+              <Image style={styles.image} source={photo} />
+              <View style={styles.wrapperAccount}>
+                <Text style={styles.name}>{dataUser.name}</Text>
+                <Text style={styles.type}>{'Pasien'}</Text>
+              </View>
+            </Row>
 
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('NotificationPatient')}>
-                  <Image
-                    style={styles.imageNotification}
-                    source={IcNotification}
-                  />
-                </TouchableOpacity>
-              </TouchableOpacity>
-            )}
+            <TouchableOpacity
+              onPress={() => navigation.navigate('NotificationPatient')}>
+              <Image style={styles.imageNotification} source={IcNotification} />
+            </TouchableOpacity>
+          </TouchableOpacity>
+        )}
 
-            <View style={styles.containerOrder}>
-              <SpaceBeetwen>
-                <Text style={styles.title}>{'Jadwal Booking'}</Text>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('OrderSchedule')}>
-                  {!loadingOrderSchedule && dataOrderSchedule.length > 0 && (
-                    <Text style={styles.showAll}>{'Lihat Semua'}</Text>
-                  )}
-                </TouchableOpacity>
-              </SpaceBeetwen>
-              <Gap height={10} />
-
-              {loadingOrderSchedule ? (
-                <Loading />
-              ) : (
-                <FlatList
-                  showsVerticalScrollIndicator={false}
-                  scrollEnabled={false}
-                  keyExtractor={item => item.id}
-                  data={dataOrderSchedule}
-                  renderItem={({item}) => (
-                    <ItemOrderSchedule navigation={navigation} data={item} />
-                  )}
-                  ListEmptyComponent={() => (
-                    <EmptyList desc="Belum terdapat jadwal booking." />
-                  )}
-                />
+        <View style={styles.containerOrder}>
+          <SpaceBeetwen>
+            <Text style={styles.title}>{'Jadwal Pesanan'}</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('OrderSchedule')}>
+              {!loadingBooking && dataBooking.length > 0 && (
+                <Text style={styles.showAll}>{'Lihat Semua'}</Text>
               )}
-            </View>
+            </TouchableOpacity>
+          </SpaceBeetwen>
+          <Gap height={10} />
 
-            <View style={styles.containerOrder}>
-              <SpaceBeetwen>
-                <Text style={styles.title}>{'History Booking'}</Text>
-                <TouchableOpacity
-                  onPress={() => navigation.navigate('OrderHistoryPatient')}>
-                  {!loadingOrderHistory && dataOrderHistory.length > 0 && (
-                    <Text style={styles.showAll}>{'Lihat Semua'}</Text>
-                  )}
-                </TouchableOpacity>
-              </SpaceBeetwen>
-              <Gap height={10} />
-              {loadingOrderHistory ? (
-                <Loading />
-              ) : (
-                <FlatList
-                  showsVerticalScrollIndicator={false}
-                  scrollEnabled={false}
-                  keyExtractor={item => item.id}
-                  data={dataOrderHistory}
-                  renderItem={({item}) => (
-                    <ItemOrderHistory
-                      key={item.id}
-                      data={item}
-                      onPress={() => ToastAlert()}
-                    />
-                  )}
-                  ListEmptyComponent={() => (
-                    <EmptyList desc="Belum terdapat history booking." />
-                  )}
-                />
+          {loadingBooking ? (
+            <Loading />
+          ) : (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              scrollEnabled={false}
+              keyExtractor={item => item.id}
+              data={dataBooking}
+              renderItem={({item}) => (
+                <ItemOrderSchedule navigation={navigation} data={item} />
               )}
-            </View>
-            <Gap height={50} />
-          </ScrollView>
-
-          <View style={styles.containerButton}>
-            <Button
-              type={'circle'}
-              onPress={() => {
-                if (isCompletenessData) setVisibelServices(true);
-                else setVisibleCompletenessData(true);
-              }}
+              ListEmptyComponent={() => (
+                <EmptyList desc="Belum terdapat jadwal booking." />
+              )}
             />
-          </View>
-        </>
+          )}
+        </View>
+
+        <View style={styles.containerOrder}>
+          <SpaceBeetwen>
+            <Text style={styles.title}>{'Riwayat Pesanan'}</Text>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('OrderHistoryPatient')}>
+              {!loadingHistoryBooking && dataHistoryBooking.length > 0 && (
+                <Text style={styles.showAll}>{'Lihat Semua'}</Text>
+              )}
+            </TouchableOpacity>
+          </SpaceBeetwen>
+          <Gap height={10} />
+          {loadingHistoryBooking ? (
+            <Loading />
+          ) : (
+            <FlatList
+              showsVerticalScrollIndicator={false}
+              scrollEnabled={false}
+              keyExtractor={item => item.id}
+              data={dataHistoryBooking}
+              renderItem={({item}) => (
+                <ItemOrderHistory
+                  key={item.id}
+                  data={item}
+                  onPress={() => ToastAlert()}
+                />
+              )}
+              ListEmptyComponent={() => (
+                <EmptyList desc="Belum terdapat history booking." />
+              )}
+            />
+          )}
+        </View>
+        <Gap height={50} />
+      </ScrollView>
+
+      {!loading && (
+        <View style={styles.containerButton}>
+          <Button
+            type={'circle'}
+            onPress={() => {
+              if (isCompletenessData) setVisibelServices(true);
+              else setVisibleCompletenessData(true);
+            }}
+          />
+        </View>
       )}
 
       <Modals
