@@ -58,8 +58,6 @@ const UltrasonografiSerivceDetails = ({navigation, route}) => {
 
   const status = data && data.request_status.name;
 
-  console.log('cek data', data);
-
   return (
     <Container>
       <Header
@@ -71,13 +69,18 @@ const UltrasonografiSerivceDetails = ({navigation, route}) => {
       ) : (
         <View style={styles.wrapper}>
           <Status type={status} />
-          {data.remarks && (
-            <Text
-              style={
-                styles.cancel
-              }>{`Alasana Penolakan:\n${data.remarks}`}</Text>
-          )}
+
           <ScrollView showsVerticalScrollIndicator={false}>
+            {data.remarks && (
+              <>
+                <Text
+                  style={
+                    styles.cancel
+                  }>{`Alasan Dibatalkan:\n${data.remarks}`}</Text>
+                <Separator backgroundColor={colors.primary} />
+              </>
+            )}
+
             <View style={styles.content}>
               <Input
                 label={'Total Anak'}
@@ -153,7 +156,7 @@ const UltrasonografiSerivceDetails = ({navigation, route}) => {
                     <Button
                       style={styles.flex}
                       type={'cancel'}
-                      label={'Tolak Pesanan'}
+                      label={'Batalkan Pesanan'}
                       onPress={() => setVisibleCancel(true)}
                     />
                   </SpaceBeetwen>
