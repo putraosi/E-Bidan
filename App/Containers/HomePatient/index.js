@@ -165,10 +165,10 @@ const HomePatient = ({navigation}) => {
               </View>
             </Row>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => navigation.navigate('NotificationPatient')}>
               <Image style={styles.imageNotification} source={IcNotification} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </TouchableOpacity>
         )}
 

@@ -15,7 +15,6 @@ import {
   SpaceBeetwen,
 } from '../../Components';
 import {
-  ageCalculation,
   ageCalculationYear,
   constants,
   resetPage,
@@ -38,23 +37,25 @@ import styles from './styles';
 const DetailsProfilePatient = ({navigation, route}) => {
   const data = route.params.data;
 
+  console.log('cek data', data);
+
   const [form, setForm] = useForm({
     name: data.name,
     photo: data.photo,
-    birthDate: '',
-    idCard: '',
+    birthDate: data.birth_date,
+    idCard: data.id_card,
     email: data.email,
     phoneNumber: data.phone,
-    religion: '',
-    lastEducation: '',
-    profession: '',
+    religion: data.religion_wife,
+    lastEducation: data.education_wife,
+    profession: data.profession_wife,
     address: data.address,
-    husbandName: '',
-    husbandReligion: '',
-    husbandBirthDate: '',
-    husbandLastEducation: '',
-    husbandProfession: '',
-    husbandPhoneNumber: '',
+    husbandName: data.spouse,
+    husbandReligion: data.religion_husband,
+    husbandBirthDate: data.birth_date_spouse,
+    husbandLastEducation: data.education_husband,
+    husbandProfession: data.profession_husband,
+    husbandPhoneNumber: data.phone_spouse,
   });
   const [visibleLogout, setVisibleLogout] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);

@@ -104,8 +104,8 @@ const AddServicesKB = ({navigation, route}) => {
     try {
       const res = await Api.get({
         url: 'self/method-uses',
+        showLog: true,
       });
-
     } catch (error) {
       navigation.goBack();
     }

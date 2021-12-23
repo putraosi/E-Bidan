@@ -19,7 +19,7 @@ import {
   useForm,
 } from '../../Helpers';
 import {moments} from '../../Libs';
-import {Api} from '../../Services';
+import {Api, onFinishServices, onUpdateStatusSerivces} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const AntenatalSerivceDetailsMidwife = ({navigation, route}) => {
@@ -55,15 +55,19 @@ const AntenatalSerivceDetailsMidwife = ({navigation, route}) => {
   const onUpdateOrderStatus = async (status, reason) => {
     setLoading(true);
     try {
-      await Api.post({
-        url: `admin/bookings/update-status/${data.id}`,
-        body: {
-          status,
-          remarks: reason,
-        },
-      });
-
+      await onUpdateStatusSerivces(data.id, status, reason);
       getData();
+    } catch (error) {
+      setLoading(false);
+      SampleAlert({message: error.message});
+    }
+  };
+
+  const onFinish = async () => {
+    setLoading(true);
+    try {
+      await onFinishServices(data.id, form.price, form.note);
+      getData()
     } catch (error) {
       setLoading(false);
       SampleAlert({message: error.message});
@@ -328,7 +332,7 @@ const AntenatalSerivceDetailsMidwife = ({navigation, route}) => {
         onDismiss={() => setVisibleComplete(false)}
         onPress={() => {
           setVisibleComplete(false);
-          ToastAlert();
+          onFinish();
         }}
         onCancel={() => setVisibleComplete(false)}
       />

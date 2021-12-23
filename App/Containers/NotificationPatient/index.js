@@ -13,10 +13,13 @@ const NotificationPatient = ({navigation}) => {
 
   const getData = async () => {
     try {
-      return setLoading(false);
-      const res = await Api.post({
-        url: '',
+      const res = await Api.get({
+        url: 'admin/notification/unread',
+        showLog: true,
       });
+
+      setLoading(false)
+
     } catch (error) {
       navigation.goBack();
     }
