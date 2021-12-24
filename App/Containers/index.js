@@ -26,18 +26,19 @@ import ImmunizationSerivceDetailsMidwife from './ImmunizationSerivceDetailsMidwi
 import IncomingOrder from './IncomingOrder';
 import IncomingOrderDetails from './IncomingOrderDetails';
 import KBSerivceDetails from './KBSerivceDetails';
+import KBSerivceDetailsMidwife from './KBSerivceDetailsMidwife';
 import NotificationPatient from './NotificationPatient';
 import OrderDetailPatient from './OrderDetailPatient';
 import OrderHistoryPatient from './OrderHistoryPatient';
 import OrderSchedule from './OrderSchedule';
 import OtherSerivceDetails from './OtherSerivceDetails';
 import PregnancyExerciseSerivceDetails from './PregnancyExerciseSerivceDetails';
+import PregnancyExerciseSerivceDetailsMidwife from './PregnancyExerciseSerivceDetailsMidwife';
 import PreviewPhoto from './PreviewPhoto';
 import SingIn from './SignIn';
 import SignUp from './SignUp';
 import Splash from './Splash';
 import UltrasonografiSerivceDetails from './UltrasonografiSerivceDetails';
-import PregnancyExerciseSerivceDetailsMidwife from './PregnancyExerciseSerivceDetailsMidwife'
 
 export {
   GetStarted,
@@ -77,6 +78,7 @@ export {
   PregnancyExerciseSerivceDetailsMidwife,
   UltrasonografiSerivceDetails,
   KBSerivceDetails,
+  KBSerivceDetailsMidwife,
   ChangePassword,
   NotificationPatient,
   Help,

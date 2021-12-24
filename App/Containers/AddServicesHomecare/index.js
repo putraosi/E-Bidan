@@ -207,6 +207,24 @@ const AddServicesHomecare = ({navigation, route}) => {
               editable={false}
               onPress={() => setVisibleDatePicker(true)}
             />
+
+            <Gap height={12} />
+            <Input
+              label={'Bidan'}
+              value={selectMidwife.name}
+              editable={false}
+              onPress={() => {
+                if (dataMidwife && dataMidwife.length) setVisibleMidwife(true);
+                else
+                  SampleAlert({
+                    title: 'Mohon Maaf',
+                    message: `Pada tanggal ${moments(form.executionDate).format(
+                      'DD MMMM YYYY',
+                    )} tidak ada jadwal praktek.\n\nSilahkan pilih tanggal yang lain.`,
+                  });
+              }}
+            />
+
             <Gap height={12} />
             <Input
               label={'Waktu Kunjungan'}
@@ -233,23 +251,6 @@ const AddServicesHomecare = ({navigation, route}) => {
                 />
               ))}
             </SpaceBeetwen>
-
-            <Gap height={12} />
-            <Input
-              label={'Bidan'}
-              value={selectMidwife.name}
-              editable={false}
-              onPress={() => {
-                if (dataMidwife && dataMidwife.length) setVisibleMidwife(true);
-                else
-                  SampleAlert({
-                    title: 'Mohon Maaf',
-                    message: `Pada tanggal ${moments(form.executionDate).format(
-                      'DD MMMM YYYY',
-                    )} tidak ada jadwal praktek.\n\nSilahkan pilih tanggal yang lain.`,
-                  });
-              }}
-            />
 
             <Gap height={12} />
             <Text style={styles.label}>{'Treatment'}</Text>

@@ -1,28 +1,23 @@
+import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
   Button,
   Container,
   Gap,
   Header,
   Input,
+  ItemList,
   Loading,
   Modals,
   Status,
 } from '../../Components';
-import {constants, useForm} from '../../Helpers';
+import {constants, SampleAlert, ToastAlert, useForm} from '../../Helpers';
 import {moments} from '../../Libs';
 import {Api, onFinishServices, onUpdateStatusSerivces} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
-const PregnancyExerciseSerivceDetailsMidwife = ({navigation, route}) => {
+const KBSerivceDetailsMidwife = ({navigation, route}) => {
   const [form, setForm] = useForm({
     price: '',
     note: '',
@@ -34,10 +29,13 @@ const PregnancyExerciseSerivceDetailsMidwife = ({navigation, route}) => {
   const [visibleRejectReason, setVisibleRejectReason] = useState(false);
   const [visibleComplete, setVisibleComplete] = useState(false);
   const [data, setData] = useState('');
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    getData();
-  }, []);
+    if (isFocused) {
+      getData();
+    }
+  }, [isFocused]);
 
   const getData = async () => {
     try {
@@ -74,6 +72,16 @@ const PregnancyExerciseSerivceDetailsMidwife = ({navigation, route}) => {
     }
   };
 
+  const onEdit = () => {
+    return ToastAlert();
+    navigation.navigate('AddServicesKB', {
+      data: data,
+      id: data.bookingable.service_category_id,
+      userId: data.pasien_id,
+      isEdit: true,
+    });
+  };
+
   const validation = () => {
     if (!form.price)
       return ToastAlert('Silahkan isi total harga terlebih dahulu');
@@ -96,10 +104,12 @@ const PregnancyExerciseSerivceDetailsMidwife = ({navigation, route}) => {
     onPress = () => validation();
   }
 
+  console.log('cek data', data);
+
   return (
     <Container>
       <Header
-        title={`Detail Pesanan\nSenam Hamil`}
+        title={`Detail Pesanan\nKeluarga Berencana (KB)`}
         onDismiss={() => navigation.goBack()}
       />
       {loading ? (
@@ -110,13 +120,74 @@ const PregnancyExerciseSerivceDetailsMidwife = ({navigation, route}) => {
           <ScrollView showsVerticalScrollIndicator={false}>
             <View style={styles.content}>
               <Input
-                label={'Kehamilan Ke'}
-                value={data.bookingable.pregnancy.toString()}
+                label={'Jumlah Anak'}
+                value={data.bookingable.total_child.toString()}
                 editable={false}
               />
 
               <Input
                 style={styles.input}
+                label={'Umur Anak Terkecil'}
+                value={data.bookingable.yongest_child_age.toString()}
+                editable={false}
+              />
+
+              <Text style={styles.label}>{'Cara KB'}</Text>
+              <FlatList
+                data={data.bookingable.method_uses}
+                renderItem={({item}) => (
+                  <ItemList
+                    style={styles.list}
+                    key={item.id}
+                    name={item.name}
+                  />
+                )}
+                numColumns={2}
+                scrollEnabled={false}
+              />
+
+              <Gap height={8} />
+              <Input
+                label={'Status Pengguna'}
+                value={data.bookingable.status_use}
+                editable={false}
+              />
+
+              <Input
+                style={styles.input}
+                label={'Tanggal Terakhir Haid'}
+                value={moments(data.bookingable.date_last_haid).format(
+                  'DD MMMM YYYY',
+                )}
+                editable={false}
+              />
+
+              <Input
+                style={styles.input}
+                label={'Menyusui'}
+                value={data.bookingable.is_breast_feed ? 'Iya' : 'Tidak'}
+                editable={false}
+              />
+
+              <Text style={styles.label}>{'Riwayat Penyakit'}</Text>
+              <FlatList
+                data={data.bookingable.disease_history_families}
+                renderItem={({item}) => (
+                  <ItemList
+                    style={styles.list}
+                    key={item.id}
+                    name={item.name}
+                  />
+                )}
+                numColumns={2}
+                scrollEnabled={false}
+                ListEmptyComponent={() => (
+                  <ItemList style={styles.list} name={'Tidak Ada'} />
+                )}
+              />
+
+              <Gap height={8} />
+              <Input
                 label={'Waktu Kunjungan'}
                 value={moments(data.bookingable.visit_date).format(
                   'DD MMMM YYYY | HH:mm:ss',
@@ -130,40 +201,6 @@ const PregnancyExerciseSerivceDetailsMidwife = ({navigation, route}) => {
                 value={data.bidan.name}
                 editable={false}
               />
-
-              <Input
-                style={styles.input}
-                label={'Hari Pertama Haid Terakhir (HPHT)'}
-                value={data.bookingable.date_last_haid}
-                editable={false}
-              />
-
-              <Input
-                style={styles.input}
-                label={'Hari Perkiraan Lahir (HPL)'}
-                value={data.bookingable.date_estimate_birth}
-                editable={false}
-              />
-
-              <Input
-                style={styles.input}
-                label={'Usia Kehamilan'}
-                value={data.bookingable.gestational_age}
-                editable={false}
-              />
-
-              <Text style={styles.label}>{'Bukti Transfer'}</Text>
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('PreviewPhoto', {
-                    image: {uri: data.bookingable.file_upload},
-                  })
-                }>
-                <Image
-                  style={styles.photo}
-                  source={{uri: data.bookingable.file_upload}}
-                />
-              </TouchableOpacity>
 
               {showInput && (
                 <>
@@ -272,7 +309,7 @@ const PregnancyExerciseSerivceDetailsMidwife = ({navigation, route}) => {
   );
 };
 
-export default PregnancyExerciseSerivceDetailsMidwife;
+export default KBSerivceDetailsMidwife;
 
 const styles = StyleSheet.create({
   flex: {flex: 1},

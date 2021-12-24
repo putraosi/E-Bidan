@@ -18,6 +18,7 @@ import {
   constants,
   formatSelect,
   formatSelectedId,
+  rupiah,
   SampleAlert,
   ToastAlert,
   useForm,
@@ -104,8 +105,11 @@ const AddServicesKB = ({navigation, route}) => {
     try {
       const res = await Api.get({
         url: 'self/method-uses',
-        showLog: true,
       });
+
+      const formated = formatSelect(res);
+      setSelectType(formated);
+      setLoadingTypeKB(false);
     } catch (error) {
       navigation.goBack();
     }
@@ -134,7 +138,8 @@ const AddServicesKB = ({navigation, route}) => {
 
     if (!form.child) return ToastAlert('Silahkan isi jumlah anak  Anda');
     if (!form.age) return ToastAlert('Silahkan isi umur anak terkecil Anda');
-    if (!form.method) return ToastAlert('Silahkan pilih cara KB Anda');
+    if (Object.values(selectType).every(item => item.select === false))
+      return ToastAlert('Silahkan pilih cara KB Anda');
     if (!form.status) return ToastAlert('Silahkan pilih status pengguna Anda');
     if (selectDiseaseHistory[position].select && !form.otherDiseaseHistory) {
       return ToastAlert('Silahkan isi riwayat penyakit Anda');
@@ -153,6 +158,7 @@ const AddServicesKB = ({navigation, route}) => {
     )} ${moments(form.visitTime).format('HH:mm:ss')}`;
     let disease_history_family_name = form.otherDiseaseHistory;
     const disease_history_family_ids = formatSelectedId(selectDiseaseHistory);
+    const method_use_ids = formatSelectedId(selectType);
     const date_last_haid = form.lastDateMenstruation
       ? moments(form.lastDateMenstruation).format('YYYY-MM-DD')
       : '';
@@ -171,13 +177,15 @@ const AddServicesKB = ({navigation, route}) => {
           total_child: parseInt(form.child),
           status_use: form.status,
           yongest_child_age: parseInt(form.age),
-          method_use: form.method,
+          method_use_ids,
           is_breast_feed,
           bidan_id: selectMidwife.id,
           pasien_id: route.params.userId,
           visit_date,
           disease_history_family_name,
+          cost: parseInt(price),
         },
+        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
@@ -189,6 +197,7 @@ const AddServicesKB = ({navigation, route}) => {
   };
 
   const onEdit = async () => {
+    return ToastAlert();
     dispatch({type: 'SET_LOADING', value: true});
 
     const visit_date = `${moments(form.visitDate).format(
@@ -227,10 +236,21 @@ const AddServicesKB = ({navigation, route}) => {
     }
   };
 
+  const onChangePrice = item => {
+    let price = 0;
+    item.map(check => {
+      if (check.select) {
+        price += check.price;
+      }
+    });
+
+    setPrice(price.toString());
+  };
+
   return (
     <Container>
       <Header title={'Pesanan Baru'} onDismiss={() => navigation.goBack()} />
-      {loading || loadingDiseaseHistory ? (
+      {loading || loadingDiseaseHistory || loadingTypeKB ? (
         <Loading />
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -258,14 +278,22 @@ const AddServicesKB = ({navigation, route}) => {
 
             <Text style={styles.label}>{'Cara KB'}</Text>
             <FlatList
-              data={constants.SELECT_TYPE_KB}
+              data={selectType}
               renderItem={({item}) => (
                 <RadioButton
                   style={styles.radioButton}
                   key={item.id}
+                  type={'rounded'}
                   label={item.name}
-                  isActive={item.name == form.method}
-                  onPress={() => setForm('method', item.name)}
+                  isActive={item.select}
+                  onPress={() => {
+                    const position = selectType.findIndex(
+                      obj => obj.id == item.id,
+                    );
+                    selectType[position].select = !selectType[position].select;
+                    onChangePrice(selectType);
+                    setSelectType(selectType);
+                  }}
                 />
               )}
               scrollEnabled={false}
@@ -275,7 +303,7 @@ const AddServicesKB = ({navigation, route}) => {
             <Input
               style={styles.inputSecond}
               label={'Biaya'}
-              value={price}
+              value={`Rp${rupiah(price)}`}
               disable
             />
 

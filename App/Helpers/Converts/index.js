@@ -53,7 +53,7 @@ export const selectPageByServiceMidwife = data => {
 
   if (type == 'Ultrasonografi') return '';
 
-  if (type == 'FamilyPlanning') return '';
+  if (type == 'FamilyPlanning') return 'KBSerivceDetailsMidwife';
 
   return null;
 };

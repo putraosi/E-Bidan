@@ -29,6 +29,7 @@ import {
   IncomingOrder,
   IncomingOrderDetails,
   KBSerivceDetails,
+  KBSerivceDetailsMidwife,
   Notification,
   NotificationPatient,
   OrderDetailPatient,
@@ -220,6 +221,12 @@ const Router = () => {
       <Stack.Screen
         name="KBSerivceDetails"
         component={KBSerivceDetails}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="KBSerivceDetailsMidwife"
+        component={KBSerivceDetailsMidwife}
         options={{headerShown: false}}
       />
 

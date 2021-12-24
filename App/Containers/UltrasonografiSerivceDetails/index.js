@@ -11,9 +11,9 @@ import {
   SpaceBeetwen,
   Status,
 } from '../../Components';
-import {rupiah, ToastAlert} from '../../Helpers';
+import {rupiah, SampleAlert, ToastAlert} from '../../Helpers';
 import {moments} from '../../Libs';
-import {Api} from '../../Services';
+import {Api, onCancelService} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const UltrasonografiSerivceDetails = ({navigation, route}) => {
@@ -39,16 +39,10 @@ const UltrasonografiSerivceDetails = ({navigation, route}) => {
     }
   };
 
-  const onUpdateOrderStatus = async reason => {
+  const onCancel = async reason => {
     setLoading(true);
     try {
-      await Api.post({
-        url: `admin/bookings/cancelled/${data.id}`,
-        body: {
-          remarks: reason,
-        },
-      });
-
+      await onCancelService(data.id, reason);
       getData();
     } catch (error) {
       setLoading(false);
@@ -196,7 +190,7 @@ const UltrasonografiSerivceDetails = ({navigation, route}) => {
             });
 
           setVisibleCancelReason(false);
-          onUpdateOrderStatus(reason);
+          onCancel(reason);
         }}
         onCancel={() => setVisibleCancelReason(false)}
       />

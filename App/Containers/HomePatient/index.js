@@ -22,7 +22,7 @@ import {
   SpaceBeetwen,
 } from '../../Components';
 import {getData, ToastAlert} from '../../Helpers';
-import {IcNotification, ILNullPhoto} from '../../Images';
+import {ILNullPhoto} from '../../Images';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
@@ -108,8 +108,6 @@ const HomePatient = ({navigation}) => {
           per_page: 3,
         },
       });
-
-      console.log('cek res', res);
 
       setDataHistoryBooking(res);
       setLoadingHistoryBooking(false);

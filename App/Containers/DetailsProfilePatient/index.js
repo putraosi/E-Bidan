@@ -37,8 +37,6 @@ import styles from './styles';
 const DetailsProfilePatient = ({navigation, route}) => {
   const data = route.params.data;
 
-  console.log('cek data', data);
-
   const [form, setForm] = useForm({
     name: data.name,
     photo: data.photo,
