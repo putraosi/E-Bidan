@@ -32,3 +32,14 @@ export const ageCalculationYear = date => {
   const diff = Math.abs(moments(date).diff(moments(), 'years'));
   return `${diff}`;
 };
+
+export const onPrice = item => {
+  let price = 0;
+  item.map(check => {
+    if (check.select) {
+      price += check.price;
+    }
+  });
+
+  return price.toString();
+};

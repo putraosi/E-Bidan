@@ -13,7 +13,7 @@ import {
 } from '../../Components';
 import {constants, SampleAlert, ToastAlert, useForm} from '../../Helpers';
 import {moments} from '../../Libs';
-import {Api} from '../../Services';
+import {Api, onFinishServices, onUpdateStatusSerivces} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const ImmunizationSerivceDetailsMidwife = ({navigation, route}) => {
@@ -49,14 +49,18 @@ const ImmunizationSerivceDetailsMidwife = ({navigation, route}) => {
   const onUpdateOrderStatus = async (status, reason) => {
     setLoading(true);
     try {
-      await Api.post({
-        url: `admin/bookings/update-status/${data.id}`,
-        body: {
-          status,
-          remarks: reason,
-        },
-      });
+      await onUpdateStatusSerivces(data.id, status, reason);
+      getData();
+    } catch (error) {
+      setLoading(false);
+      SampleAlert({message: error.message});
+    }
+  };
 
+  const onFinish = async () => {
+    setLoading(true);
+    try {
+      await onFinishServices(data.id, form.price, form.note);
       getData();
     } catch (error) {
       setLoading(false);
@@ -124,7 +128,7 @@ const ImmunizationSerivceDetailsMidwife = ({navigation, route}) => {
               <Input
                 style={styles.input}
                 label={'Tempat Lahir'}
-                value={'Coming Soon!'}
+                value={data.bookingable.place.name}
                 editable={false}
               />
 
@@ -161,7 +165,11 @@ const ImmunizationSerivceDetailsMidwife = ({navigation, route}) => {
               <Input
                 style={styles.input}
                 label={'Keterangan'}
-                value={data.bookingable.remarks}
+                value={
+                  data.bookingable.remarks
+                    ? data.bookingable.remarks
+                    : 'Tidak Ada'
+                }
                 editable={false}
               />
 
@@ -257,7 +265,7 @@ const ImmunizationSerivceDetailsMidwife = ({navigation, route}) => {
             });
 
           setVisibleRejectReason(false);
-          ToastAlert();
+          onUpdateOrderStatus(4, reason);
         }}
         onCancel={() => setVisibleRejectReason(false)}
       />
@@ -271,7 +279,7 @@ const ImmunizationSerivceDetailsMidwife = ({navigation, route}) => {
         onDismiss={() => setVisibleComplete(false)}
         onPress={() => {
           setVisibleComplete(false);
-          ToastAlert();
+          onFinish();
         }}
         onCancel={() => setVisibleComplete(false)}
       />

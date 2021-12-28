@@ -9,9 +9,10 @@ import {
   ItemList,
   Loading,
   Modals,
+  Separator,
   Status,
 } from '../../Components';
-import {rupiah, SampleAlert} from '../../Helpers';
+import {constants, rupiah, SampleAlert} from '../../Helpers';
 import {moments} from '../../Libs';
 import {Api, onFinishServices, onUpdateStatusSerivces} from '../../Services';
 import {colors, fonts} from '../../Themes';
@@ -95,7 +96,7 @@ const HomecareSerivceDetails = ({navigation, route}) => {
         <Loading />
       ) : (
         <View style={styles.wrapper}>
-          <Status type={status} />
+          <Status type={status} mode={constants.MIDWIFE}/>
           <ScrollView showsVerticalScrollIndicator={false}>
             {data.remarks && (
               <>

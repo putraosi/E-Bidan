@@ -1,7 +1,7 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, { useEffect, useState } from 'react';
-import { FlatList, ScrollView, Text, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {FlatList, ScrollView, Text, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {
   Button,
   Container,
@@ -12,19 +12,20 @@ import {
   ModalAlert,
   Modals,
   RadioButton,
-  SpaceBeetwen
+  SpaceBeetwen,
 } from '../../Components';
 import {
   constants,
   formatSelect,
   formatSelectedId,
+  onPrice,
   rupiah,
   SampleAlert,
   ToastAlert,
-  useForm
+  useForm,
 } from '../../Helpers';
-import { moments } from '../../Libs';
-import { Api } from '../../Services';
+import {moments} from '../../Libs';
+import {Api} from '../../Services';
 import styles from './styles';
 
 const defalutSelectMidwife = {
@@ -317,6 +318,8 @@ const AddServicesImmunization = ({navigation, route}) => {
                     selectTypeImmunization[position].select =
                       !selectTypeImmunization[position].select;
                     setIsView(!isView);
+                    const _price = onPrice(selectTypeImmunization);
+                    setPrice(_price);
                     setSelectTypeImmunization(selectTypeImmunization);
                   }}
                 />
