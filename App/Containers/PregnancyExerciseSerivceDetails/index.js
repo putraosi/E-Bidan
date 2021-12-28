@@ -19,9 +19,9 @@ import {
   SpaceBeetwen,
   Status,
 } from '../../Components';
-import {ToastAlert} from '../../Helpers';
+import {SampleAlert, ToastAlert} from '../../Helpers';
 import {moments} from '../../Libs';
-import {Api} from '../../Services';
+import {Api, onCancelService} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const PregnancyExerciseSerivceDetails = ({navigation, route}) => {

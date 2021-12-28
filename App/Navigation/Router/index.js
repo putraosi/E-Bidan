@@ -22,6 +22,7 @@ import {
   GetStarted,
   Help,
   HomecareSerivceDetails,
+  HomecareSerivceDetailsMidwife,
   HomeMidwife,
   HomePatient,
   ImmunizationSerivceDetails,
@@ -120,11 +121,19 @@ const Router = () => {
         component={AddServicesReferral}
         options={{headerShown: false}}
       />
+
       <Stack.Screen
         name="AddServicesHomecare"
         component={AddServicesHomecare}
         options={{headerShown: false}}
       />
+
+      <Stack.Screen
+        name="HomecareSerivceDetailsMidwife"
+        component={HomecareSerivceDetailsMidwife}
+        options={{headerShown: false}}
+      />
+
       <Stack.Screen
         name="AddServicesAntenatal"
         component={AddServicesAntenatal}

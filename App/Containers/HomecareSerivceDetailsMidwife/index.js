@@ -9,18 +9,19 @@ import {
   ItemList,
   Loading,
   Modals,
-  SpaceBeetwen,
   Status,
 } from '../../Components';
-import {rupiah, SampleAlert, ToastAlert} from '../../Helpers';
+import {rupiah, SampleAlert} from '../../Helpers';
 import {moments} from '../../Libs';
-import {Api, onCancelService} from '../../Services';
+import {Api, onFinishServices, onUpdateStatusSerivces} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const HomecareSerivceDetails = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
-  const [visibleCancel, setVisibleCancel] = useState(false);
-  const [visibleCancelReason, setVisibleCancelReason] = useState(false);
+  const [visibleAccept, setVisibleAccept] = useState(false);
+  const [visibleReject, setVisibleReject] = useState(false);
+  const [visibleRejectReason, setVisibleRejectReason] = useState(false);
+  const [visibleComplete, setVisibleComplete] = useState(false);
   const [data, setData] = useState('');
 
   useEffect(() => {
@@ -40,10 +41,10 @@ const HomecareSerivceDetails = ({navigation, route}) => {
     }
   };
 
-  const onCancel = async reason => {
+  const onUpdateOrderStatus = async (status, reason) => {
     setLoading(true);
     try {
-      await onCancelService(data.id, reason);
+      await onUpdateStatusSerivces(data.id, status, reason);
       getData();
     } catch (error) {
       setLoading(false);
@@ -51,7 +52,38 @@ const HomecareSerivceDetails = ({navigation, route}) => {
     }
   };
 
+  const onFinish = async () => {
+    setLoading(true);
+    try {
+      await onFinishServices(data.id, form.price, form.note);
+      getData();
+    } catch (error) {
+      setLoading(false);
+      SampleAlert({message: error.message});
+    }
+  };
+
+  const validation = () => {
+    if (!form.price)
+      return ToastAlert('Silahkan isi total harga terlebih dahulu');
+    if (!form.note) return ToastAlert('Silahkan isi catatan terlebih dahulu');
+
+    setVisibleComplete(true);
+  };
+
   const status = data && data.request_status.name;
+  let showButtonFooter = status == 'new';
+  let showInput = false;
+  let label = 'Terima Pesanan';
+  let onPress = () => setVisibleAccept(true);
+
+  if (status == 'accepted') {
+    showButtonFooter = true;
+    showInput = true;
+
+    label = 'Selesaikan Pesananan';
+    onPress = () => validation();
+  }
 
   return (
     <Container>
@@ -133,62 +165,108 @@ const HomecareSerivceDetails = ({navigation, route}) => {
                 editable={false}
               />
 
+              {showInput && (
+                <>
+                  <Input
+                    style={styles.input}
+                    label={'Total Harga'}
+                    value={form.price}
+                    keyboardType={'numeric'}
+                    onChangeText={value => setForm('price', value)}
+                  />
+
+                  <Input
+                    style={styles.input}
+                    label={'Catatan'}
+                    value={form.note}
+                    multiline
+                    onChangeText={value => setForm('note', value)}
+                  />
+                </>
+              )}
+
               {status == 'new' && (
                 <>
                   <Gap height={20} />
-                  <SpaceBeetwen>
-                    <Button
-                      style={styles.flex}
-                      label={'Ubah'}
-                      onPress={() => ToastAlert()}
-                    />
-                    <Gap width={20} />
-                    <Button
-                      style={styles.flex}
-                      type={'cancel'}
-                      label={'Batalkan Pesanan'}
-                      onPress={() => setVisibleCancel(true)}
-                    />
-                  </SpaceBeetwen>
+                  <Button
+                    type={'reject'}
+                    label={'Tolak Pesanan'}
+                    onPress={() => setVisibleReject(true)}
+                  />
                 </>
               )}
             </View>
           </ScrollView>
+
+          {showButtonFooter && (
+            <View style={styles.button}>
+              <Button label={label} onPress={onPress} />
+            </View>
+          )}
         </View>
       )}
 
       <Modals
-        visible={visibleCancel}
-        title={'Batalkan Pesanan'}
-        desc={'Apakah anda yakin untuk membatalkan pesanan ini?'}
+        visible={visibleAccept}
+        title={'Terima Pesanan'}
+        desc={'Apakah anda yakin untuk menerima pesanan ini?'}
         labelPress={'Iya'}
         labelCancel={'Kembali'}
-        onDismiss={() => setVisibleCancel(false)}
+        onDismiss={() => setVisibleAccept(false)}
         onPress={() => {
-          setVisibleCancel(false);
-          setVisibleCancelReason(true);
+          setVisibleAccept(false);
+
+          onUpdateOrderStatus(3, '');
         }}
-        onCancel={() => setVisibleCancel(false)}
+        onCancel={() => setVisibleAccept(false)}
       />
 
       <Modals
-        visible={visibleCancelReason}
-        title={'Batalkan Pesanan'}
-        desc={'Silahkan beri alasan kenapa Anda membatalkan layanan ini?'}
+        visible={visibleReject}
+        title={'Tolak Pesanan'}
+        desc={'Apakah anda yakin untuk menolak pesanan ini?'}
+        labelPress={'Iya'}
+        labelCancel={'Kembali'}
+        onDismiss={() => setVisibleReject(false)}
+        onPress={() => {
+          setVisibleReject(false);
+          setVisibleRejectReason(true);
+        }}
+        onCancel={() => setVisibleReject(false)}
+      />
+
+      <Modals
+        visible={visibleRejectReason}
+        title={'Tolak Pesanan'}
+        desc={'Apakah anda yakin untuk menolak pesanan ini?'}
         labelPress={'Iya'}
         labelCancel={'Kembali'}
         isReason
-        onDismiss={() => setVisibleCancelReason(false)}
+        onDismiss={() => setVisibleRejectReason(false)}
         onPress={reason => {
           if (!reason)
             return SampleAlert({
               message: 'Silahkan isi alasan menolak pesanan Anda',
             });
 
-          setVisibleCancelReason(false);
-          onCancel(reason);
+          setVisibleRejectReason(false);
+          onUpdateOrderStatus(4, reason);
         }}
-        onCancel={() => setVisibleCancelReason(false)}
+        onCancel={() => setVisibleRejectReason(false)}
+      />
+
+      <Modals
+        visible={visibleComplete}
+        title={'Selesaikan Pesanan'}
+        desc={'Apakah anda yakin untuk menyelesaikan pesanan ini?'}
+        labelPress={'Iya'}
+        labelCancel={'Kembali'}
+        onDismiss={() => setVisibleComplete(false)}
+        onPress={() => {
+          setVisibleComplete(false);
+          onFinish();
+        }}
+        onCancel={() => setVisibleComplete(false)}
       />
     </Container>
   );
@@ -223,5 +301,13 @@ const styles = StyleSheet.create({
   list: {
     flex: 1,
     marginBottom: 4,
+  },
+
+  button: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    backgroundColor: colors.white,
+    borderTopWidth: 1,
+    borderTopColor: colors.borderColor.primary,
   },
 });

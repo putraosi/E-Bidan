@@ -19,6 +19,7 @@ import DetailsProfilePatient from './DetailsProfilePatient';
 import GetStarted from './GetStarted';
 import Help from './Help';
 import HomecareSerivceDetails from './HomecareSerivceDetails';
+import HomecareSerivceDetailsMidwife from './HomecareSerivceDetailsMidwife';
 import HomeMidwife from './HomeMidwife';
 import HomePatient from './HomePatient';
 import ImmunizationSerivceDetails from './ImmunizationSerivceDetails';
@@ -69,6 +70,7 @@ export {
   AddServicesUltrasonografi,
   AddServicesKB,
   HomecareSerivceDetails,
+  HomecareSerivceDetailsMidwife,
   OtherSerivceDetails,
   ImmunizationSerivceDetails,
   ImmunizationSerivceDetailsMidwife,

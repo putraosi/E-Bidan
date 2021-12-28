@@ -47,7 +47,7 @@ export const selectPageByServiceMidwife = data => {
 
   if (type == 'Immunization') return 'ImmunizationSerivceDetailsMidwife';
 
-  if (type == 'HomeCareService') return '';
+  if (type == 'HomeCareService') return 'HomecareSerivceDetailsMidwife';
 
   if (type == 'PregnancyExercise') return 'PregnancyExerciseSerivceDetailsMidwife';
 
