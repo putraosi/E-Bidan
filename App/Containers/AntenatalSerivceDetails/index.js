@@ -14,7 +14,7 @@ import {
   SpaceBeetwen,
   Status,
 } from '../../Components';
-import {formatSplit, SampleAlert, ToastAlert} from '../../Helpers';
+import {formatSplit, SampleAlert} from '../../Helpers';
 import {moments} from '../../Libs';
 import {Api, onCancelService} from '../../Services';
 import {colors, fonts} from '../../Themes';
@@ -154,6 +154,9 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
                 )}
                 numColumns={2}
                 scrollEnabled={false}
+                ListEmptyComponent={() => (
+                  <ItemList style={styles.list} name={'Tidak Ada'} />
+                )}
               />
 
               <Text style={styles.label}>{'Riwayat Persalinan'}</Text>
@@ -173,7 +176,11 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
               <Input
                 style={styles.input}
                 label={'Gangguan Menstruasi'}
-                value={data.bookingable.menstrual_disorders}
+                value={
+                  data.bookingable.menstrual_disorders
+                    ? data.bookingable.menstrual_disorders
+                    : 'Tidak Ada'
+                }
                 editable={false}
               />
 
@@ -209,12 +216,12 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
                 <>
                   <Gap height={20} />
                   <SpaceBeetwen>
-                    <Button
+                    {/* <Button
                       style={styles.flex}
                       label={'Ubah'}
                       onPress={() => ToastAlert()}
                     />
-                    <Gap width={20} />
+                    <Gap width={20} /> */}
                     <Button
                       style={styles.flex}
                       type={'cancel'}

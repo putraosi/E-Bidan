@@ -178,12 +178,12 @@ const KBSerivceDetails = ({navigation, route}) => {
                 <>
                   <Gap height={20} />
                   <SpaceBeetwen>
-                    <Button
+                    {/* <Button
                       style={styles.flex}
                       label={'Ubah'}
                       onPress={() => ToastAlert()}
                     />
-                    <Gap width={20} />
+                    <Gap width={20} /> */}
                     <Button
                       style={styles.flex}
                       type={'cancel'}
