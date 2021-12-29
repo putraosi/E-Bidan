@@ -34,6 +34,7 @@ import {
   Notification,
   NotificationPatient,
   OrderDetailPatient,
+  OrderHistory,
   OrderHistoryPatient,
   OrderSchedule,
   OtherSerivceDetails,
@@ -281,6 +282,12 @@ const Router = () => {
       <Stack.Screen
         name="AddPatient"
         component={AddPatient}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="OrderHistory"
+        component={OrderHistory}
         options={{headerShown: false}}
       />
     </Stack.Navigator>

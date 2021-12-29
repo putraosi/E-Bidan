@@ -9,7 +9,7 @@ import {
 } from '../../Components';
 import {Api} from '../../Services';
 
-const IncomingOrder = ({navigation}) => {
+const OrderHistory = ({navigation}) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState([]);
 
@@ -20,7 +20,7 @@ const IncomingOrder = ({navigation}) => {
   const getData = async () => {
     try {
       const res = await Api.get({
-        url: 'admin/bookings',
+        url: 'admin/bookings/history',
         params: {
           type: 'bidan',
         },
@@ -36,7 +36,7 @@ const IncomingOrder = ({navigation}) => {
   return (
     <Container>
       <Header
-        title={'Daftar Pesanan Masuk'}
+        title={'Daftar Histori Pesanan'}
         onDismiss={() => navigation.goBack()}
       />
       {loading ? (
@@ -48,11 +48,7 @@ const IncomingOrder = ({navigation}) => {
           keyExtractor={item => item.id}
           data={data}
           renderItem={({item}) => (
-            <IncomingOrderItems
-              key={item.id}
-              navigation={navigation}
-              data={item}
-            />
+            <IncomingOrderItems navigation={navigation} data={item} />
           )}
           ListEmptyComponent={() => (
             <EmptyList desc="Belum terdapat pesanan masuk." />
@@ -63,7 +59,7 @@ const IncomingOrder = ({navigation}) => {
   );
 };
 
-export default IncomingOrder;
+export default OrderHistory;
 
 const styles = StyleSheet.create({
   content: {

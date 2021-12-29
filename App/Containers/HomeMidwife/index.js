@@ -15,10 +15,11 @@ import {
   Gap,
   IncomingOrderItems,
   ItemOldPatient,
+  ItemOrderHistory,
   Loading,
   Row,
 } from '../../Components';
-import {getData, ToastAlert} from '../../Helpers';
+import {getData} from '../../Helpers';
 import {IcAdd, ILNullPhoto} from '../../Images';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
@@ -26,8 +27,10 @@ import {colors, fonts} from '../../Themes';
 const HomeMidwife = ({navigation}) => {
   const [loadingUser, setLoadingUser] = useState(true);
   const [loadingIncomingOrder, setLoadingIncomingOrder] = useState(true);
+  const [loadingOrderHistory, setLoadingOrderHistory] = useState(true);
   const [dataUser, setDataUser] = useState(null);
   const [dataIncomingOrder, setDataIncomingOrder] = useState([]);
+  const [dataOrderHistory, setDataOrderHistory] = useState([]);
   const isFocused = useIsFocused();
 
   const dataOldPatient = [];
@@ -42,6 +45,7 @@ const HomeMidwife = ({navigation}) => {
   useEffect(() => {
     if (isFocused) {
       getBooking();
+      getHistory();
     }
   }, [isFocused]);
 
@@ -59,6 +63,23 @@ const HomeMidwife = ({navigation}) => {
       setLoadingIncomingOrder(false);
     } catch (error) {
       setLoadingIncomingOrder(false);
+    }
+  };
+
+  const getHistory = async () => {
+    try {
+      const res = await Api.get({
+        url: 'admin/bookings/history',
+        params: {
+          type: 'bidan',
+          per_page: 3,
+        },
+      });
+
+      setDataOrderHistory(res);
+      setLoadingOrderHistory(false);
+    } catch (error) {
+      setLoadingOrderHistory(false);
     }
   };
 
@@ -108,11 +129,7 @@ const HomeMidwife = ({navigation}) => {
                 keyExtractor={item => item.id}
                 data={dataIncomingOrder}
                 renderItem={({item}) => (
-                  <IncomingOrderItems
-                    key={item.id}
-                    navigation={navigation}
-                    data={item}
-                  />
+                  <IncomingOrderItems navigation={navigation} data={item} />
                 )}
                 ListEmptyComponent={() => (
                   <EmptyList
@@ -135,35 +152,32 @@ const HomeMidwife = ({navigation}) => {
         <Text style={styles.subTitle}>{'Histori Pesanan'} </Text>
 
         <View style={styles.wrapper}>
-          {dataOldPatient.map(item => (
-            <ItemOldPatient
-              key={item.id}
-              data={item}
-              onPress={() => ToastAlert()}
-            />
-          ))}
-          <FlatList
-            showsVerticalScrollIndicator={false}
-            keyExtractor={item => item.id}
-            data={dataOldPatient}
-            renderItem={({item}) => (
-              <ItemOldPatient
-                key={item.id}
-                data={item}
-                onPress={() => ToastAlert()}
+          {loadingOrderHistory ? (
+            <Loading type={'secondary'} />
+          ) : (
+            <>
+              <FlatList
+                showsVerticalScrollIndicator={false}
+                keyExtractor={item => item.id}
+                data={dataOrderHistory}
+                renderItem={({item}) => (
+                  <IncomingOrderItems navigation={navigation} data={item} />
+                )}
+                ListEmptyComponent={() => (
+                  <EmptyList
+                    type={'secondary'}
+                    desc="Belum terdapat histori pesanan."
+                  />
+                )}
               />
-            )}
-            ListEmptyComponent={() => (
-              <EmptyList
-                type={'secondary'}
-                desc="Belum terdapat histori pesanan."
-              />
-            )}
-          />
-          {dataOldPatient.length > 0 && (
-            <Text style={styles.next} onPress={() => ToastAlert()}>
-              {'Selengkapnya'}{' '}
-            </Text>
+              {dataOrderHistory.length > 0 && (
+                <Text
+                  style={styles.next}
+                  onPress={() => navigation.navigate('OrderHistory')}>
+                  {'Selengkapnya'}
+                </Text>
+              )}
+            </>
           )}
         </View>
         <Gap height={16} />

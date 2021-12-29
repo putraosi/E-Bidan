@@ -40,6 +40,7 @@ import SingIn from './SignIn';
 import SignUp from './SignUp';
 import Splash from './Splash';
 import UltrasonografiSerivceDetails from './UltrasonografiSerivceDetails';
+import OrderHistory from './OrderHistory'
 
 export {
   GetStarted,
@@ -56,6 +57,7 @@ export {
   AddOrderPatientDetails,
   AddPatient,
   OrderSchedule,
+  OrderHistory,
   OrderHistoryPatient,
   OrderDetailPatient,
   IncomingOrder,

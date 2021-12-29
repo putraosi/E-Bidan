@@ -204,7 +204,7 @@ const DetailsProfilePatient = ({navigation, route}) => {
     <Container>
       <Header
         onDismiss={() => navigation.goBack()}
-        label={'Detail Profil'}
+        title={'Detail Profil'}
         iconRight={IcMenu}
         onPress={() => setVisibleSelect(true)}
       />
