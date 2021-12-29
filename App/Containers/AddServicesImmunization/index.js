@@ -107,7 +107,7 @@ const AddServicesImmunization = ({navigation, route}) => {
       });
 
       if (res) {
-        const formated = formatSelect(res, true);
+        const formated = formatSelect(res, false);
 
         setSelectTypeImmunization(formated);
         setLoadingTypeImmunization(false);

@@ -15,9 +15,10 @@ import {
 } from '../../Components';
 import {
   ageCalculation,
+  formatSelect,
   formatSelectedId,
-  formatTreatment,
   getData,
+  onPrice,
   rupiah,
   SampleAlert,
   ToastAlert,
@@ -95,8 +96,9 @@ const AddServicesOther = ({navigation, route}) => {
       });
 
       if (res) {
-        const newData = formatTreatment(res);
-        setSelectTreatment(newData);
+        const formated = formatSelect(res, true);
+
+        setSelectTreatment(formated);
         setLoadingTreatment(false);
       } else {
         navigation.goBack();
@@ -108,7 +110,7 @@ const AddServicesOther = ({navigation, route}) => {
 
   const validation = () => {
     if (!form.name) return ToastAlert('Silahkan isi nama anda');
-    if (!form.age) return ToastAlert('Silahkan isi usia anda');
+    if (!form.birthDate) return ToastAlert('Silahkan pilih tanggal lahir anda');
     if (!selectMidwife.name) return ToastAlert('Silahkan pilih bidan Anda');
     if (Object.values(selectTreatment).every(item => item.select === false))
       return ToastAlert('Silahkan pilih treatment Anda');
@@ -135,6 +137,7 @@ const AddServicesOther = ({navigation, route}) => {
           bidan_id: selectMidwife.id,
           pasien_id: dataUser.id,
           visit_date,
+          cost: parseInt(price),
         },
       });
 
@@ -235,6 +238,8 @@ const AddServicesOther = ({navigation, route}) => {
                       !selectTreatment[position].select;
 
                     setIsView(!isView);
+                    const _price = onPrice(selectTreatment);
+                    setPrice(_price || 0);
                     setSelectTreatment(selectTreatment);
                   }}
                 />

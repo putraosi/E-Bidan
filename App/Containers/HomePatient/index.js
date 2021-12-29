@@ -173,12 +173,12 @@ const HomePatient = ({navigation}) => {
         <View style={styles.containerOrder}>
           <SpaceBeetwen>
             <Text style={styles.title}>{'Jadwal Pesanan'}</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('OrderSchedule')}>
-              {!loadingBooking && dataBooking.length > 0 && (
+            {!loadingBooking && dataBooking.length > 0 && (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('OrderSchedule')}>
                 <Text style={styles.showAll}>{'Lihat Semua'}</Text>
-              )}
-            </TouchableOpacity>
+              </TouchableOpacity>
+            )}
           </SpaceBeetwen>
           <Gap height={10} />
 
@@ -203,12 +203,12 @@ const HomePatient = ({navigation}) => {
         <View style={styles.containerOrder}>
           <SpaceBeetwen>
             <Text style={styles.title}>{'Riwayat Pesanan'}</Text>
-            <TouchableOpacity
-              onPress={() => navigation.navigate('OrderHistoryPatient')}>
-              {!loadingHistoryBooking && dataHistoryBooking.length > 0 && (
+            {!loadingHistoryBooking && dataHistoryBooking.length > 0 && (
+              <TouchableOpacity
+                onPress={() => navigation.navigate('OrderHistoryPatient')}>
                 <Text style={styles.showAll}>{'Lihat Semua'}</Text>
-              )}
-            </TouchableOpacity>
+              </TouchableOpacity>
+            )}
           </SpaceBeetwen>
           <Gap height={10} />
           {loadingHistoryBooking ? (
@@ -220,11 +220,7 @@ const HomePatient = ({navigation}) => {
               keyExtractor={item => item.id}
               data={dataHistoryBooking}
               renderItem={({item}) => (
-                <ItemOrderHistory
-                  key={item.id}
-                  data={item}
-                  onPress={() => ToastAlert()}
-                />
+                <ItemOrderHistory navigation={navigation} data={item} />
               )}
               ListEmptyComponent={() => (
                 <EmptyList desc="Belum terdapat history booking." />

@@ -1,24 +1,50 @@
 import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {
+  getBookingType,
+  selectPageByService,
+  ToastAlert,
+} from '../../../Helpers';
+import { ILNullPhoto } from '../../../Images';
 import {IcRightArrow} from '../../../Images/icon';
-import {ILPorife} from '../../../Images/illustration';
+import {moments} from '../../../Libs';
 import {colors, fonts} from '../../../Themes';
 import {Gap, Notice, Row, SpaceBeetwen} from '../../Atoms';
 
-const ItemOrderHistory = ({data, onPress}) => {
+const ItemOrderHistory = ({navigation, data}) => {
+  const type = getBookingType(data.bookingable_type);
+
+  const onShowDetails = () => {
+    const screen = selectPageByService(data.bookingable_type);
+
+    if (!screen) return ToastAlert();
+
+    navigation.navigate(screen, {
+      data: data,
+    });
+  };
+
+  const isMidwife = data.bidan ? true : false;
+
+  const photo =
+    isMidwife && data.bidan.photo ? {uri: data.bidan.photo} : ILNullPhoto;
+
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={styles.container} onPress={onShowDetails}>
       <SpaceBeetwen>
-        <Image style={styles.image} source={ILPorife} />
+        {isMidwife && <Image style={styles.image} source={photo} />}
         <View style={styles.containerAccount}>
-          <Text style={styles.name}>{'Bd. Syantika Apriliani'}</Text>
-          <Text style={styles.date}>{'30 Agustus 2021'}</Text>
-          <Text style={styles.type}>{'Imunisasi'}</Text>
+          {isMidwife && <Text style={styles.name}>{data.bidan.name}</Text>}
+          <Text style={styles.type}>{type}</Text>
           <Gap height={2} />
+          <Notice category={data.request_status.name} />
         </View>
         <Row>
-          <Notice type={'rounded'} category={data.category} />
-          <Gap width={8} />
+          <View style={styles.wrapperDateTime}>
+            <Text style={styles.date}>
+              {moments(data.booking_date).format('DD MMM YYYY')}
+            </Text>
+          </View>
           <Image style={styles.arrow} source={IcRightArrow} />
         </Row>
       </SpaceBeetwen>
@@ -48,9 +74,9 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: 46,
-    height: 46,
-    borderRadius: 46 / 2,
+    width: 60,
+    height: 60,
+    borderRadius: 60 / 2,
     marginRight: 8,
     borderWidth: 1,
     borderColor: colors.primary,
@@ -62,7 +88,7 @@ const styles = StyleSheet.create({
 
   name: {
     fontSize: 14,
-    color: colors.primary,
+    color: colors.text.primary,
     fontFamily: fonts.primary.regular,
   },
 
@@ -78,13 +104,13 @@ const styles = StyleSheet.create({
   },
 
   date: {
-    fontSize: 7,
-    color: colors.text.danger,
+    fontSize: 16,
+    color: colors.black,
     fontFamily: fonts.primary.regular,
   },
 
   time: {
-    fontSize: 13,
+    fontSize: 16,
     color: colors.black,
     fontFamily: fonts.primary.regular,
   },

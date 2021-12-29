@@ -6,7 +6,7 @@
     "a": "npx react-native run-android",
     "android": "npx react-native run-android",
     "ios": "npx react-native run-ios;",
-    "start": "clear; npx react-native start --reset-cache",
+    "start": "npx react-native start --reset-cache",
     "link": "npx react-native link",
     "lint": "eslint .",
     "bundle": "react-native bundle --verbose --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
