@@ -41,7 +41,7 @@ export const selectPageByService = data => {
 export const selectPageByServiceMidwife = data => {
   const type = data.replace('App\\Models\\', '');
 
-  if (type == 'OtherService') return '';
+  if (type == 'OtherService') return 'OtherSerivceDetailsMidwife';
 
   if (type == 'Antenatal') return 'AntenatalSerivceDetailsMidwife';
 

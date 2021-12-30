@@ -26,6 +26,7 @@ export const formatSelect = (data, isAddOther) => {
     const newItem = {
       id: 999,
       name: 'Lainnya',
+      price: 0,
       select: false,
     };
 

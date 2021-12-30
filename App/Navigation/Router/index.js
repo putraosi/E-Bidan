@@ -38,6 +38,7 @@ import {
   OrderHistoryPatient,
   OrderSchedule,
   OtherSerivceDetails,
+  OtherSerivceDetailsMidwife,
   PregnancyExerciseSerivceDetails,
   PregnancyExerciseSerivceDetailsMidwife,
   PreviewPhoto,
@@ -183,6 +184,12 @@ const Router = () => {
       <Stack.Screen
         name="OtherSerivceDetails"
         component={OtherSerivceDetails}
+        options={{headerShown: false}}
+      />
+
+      <Stack.Screen
+        name="OtherSerivceDetailsMidwife"
+        component={OtherSerivceDetailsMidwife}
         options={{headerShown: false}}
       />
 

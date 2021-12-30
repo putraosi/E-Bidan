@@ -1,4 +1,3 @@
-import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
@@ -10,14 +9,15 @@ import {
   ItemList,
   Loading,
   Modals,
+  Separator,
   Status,
 } from '../../Components';
-import {constants, SampleAlert, ToastAlert, useForm} from '../../Helpers';
+import {constants, SampleAlert, useForm} from '../../Helpers';
 import {moments} from '../../Libs';
 import {Api, onFinishServices, onUpdateStatusSerivces} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
-const KBSerivceDetailsMidwife = ({navigation, route}) => {
+const OtherSerivceDetailsMidwife = ({navigation, route}) => {
   const [form, setForm] = useForm({
     price: '',
     note: '',
@@ -29,13 +29,10 @@ const KBSerivceDetailsMidwife = ({navigation, route}) => {
   const [visibleRejectReason, setVisibleRejectReason] = useState(false);
   const [visibleComplete, setVisibleComplete] = useState(false);
   const [data, setData] = useState('');
-  const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (isFocused) {
-      getData();
-    }
-  }, [isFocused]);
+    getData();
+  }, []);
 
   const getData = async () => {
     try {
@@ -72,16 +69,6 @@ const KBSerivceDetailsMidwife = ({navigation, route}) => {
     }
   };
 
-  const onEdit = () => {
-    return ToastAlert();
-    navigation.navigate('AddServicesKB', {
-      data: data,
-      id: data.bookingable.service_category_id,
-      userId: data.pasien_id,
-      isEdit: true,
-    });
-  };
-
   const validation = () => {
     if (!form.price)
       return ToastAlert('Silahkan isi total harga terlebih dahulu');
@@ -107,7 +94,7 @@ const KBSerivceDetailsMidwife = ({navigation, route}) => {
   return (
     <Container>
       <Header
-        title={`Detail Pesanan\nKeluarga Berencana (KB)`}
+        title={`Detail Pesanan\nLainnya`}
         onDismiss={() => navigation.goBack()}
       />
       {loading ? (
@@ -116,75 +103,31 @@ const KBSerivceDetailsMidwife = ({navigation, route}) => {
         <View style={styles.wrapper}>
           <Status type={status} mode={constants.MIDWIFE} />
           <ScrollView showsVerticalScrollIndicator={false}>
+            {data.remarks && (
+              <>
+                <Text
+                  style={
+                    styles.cancel
+                  }>{`Alasan Dibatalkan:\n${data.remarks}`}</Text>
+                <Separator backgroundColor={colors.primary} />
+              </>
+            )}
+
             <View style={styles.content}>
               <Input
-                label={'Jumlah Anak'}
-                value={data.bookingable.total_child.toString()}
+                label={'Nama'}
+                value={data.bookingable.name}
                 editable={false}
               />
 
+              <Gap height={12} />
               <Input
-                style={styles.input}
-                label={'Umur Anak Terkecil'}
-                value={data.bookingable.yongest_child_age.toString()}
+                label={'Usia'}
+                value={data.bookingable.age.toString()}
                 editable={false}
               />
 
-              <Text style={styles.label}>{'Cara KB'}</Text>
-              <FlatList
-                data={data.bookingable.method_uses}
-                renderItem={({item}) => (
-                  <ItemList
-                    style={styles.list}
-                    key={item.id}
-                    name={item.name}
-                  />
-                )}
-                numColumns={2}
-                scrollEnabled={false}
-              />
-
-              <Gap height={8} />
-              <Input
-                label={'Status Pengguna'}
-                value={data.bookingable.status_use}
-                editable={false}
-              />
-
-              <Input
-                style={styles.input}
-                label={'Tanggal Terakhir Haid'}
-                value={moments(data.bookingable.date_last_haid).format(
-                  'DD MMMM YYYY',
-                )}
-                editable={false}
-              />
-
-              <Input
-                style={styles.input}
-                label={'Menyusui'}
-                value={data.bookingable.is_breast_feed ? 'Iya' : 'Tidak'}
-                editable={false}
-              />
-
-              <Text style={styles.label}>{'Riwayat Penyakit'}</Text>
-              <FlatList
-                data={data.bookingable.disease_history_families}
-                renderItem={({item}) => (
-                  <ItemList
-                    style={styles.list}
-                    key={item.id}
-                    name={item.name}
-                  />
-                )}
-                numColumns={2}
-                scrollEnabled={false}
-                ListEmptyComponent={() => (
-                  <ItemList style={styles.list} name={'Tidak Ada'} />
-                )}
-              />
-
-              <Gap height={8} />
+              <Gap height={12} />
               <Input
                 label={'Waktu Kunjungan'}
                 value={moments(data.bookingable.visit_date).format(
@@ -193,11 +136,22 @@ const KBSerivceDetailsMidwife = ({navigation, route}) => {
                 editable={false}
               />
 
-              <Input
-                style={styles.input}
-                label={'Bidan'}
-                value={data.bidan.name}
-                editable={false}
+              <Gap height={12} />
+              <Input label={'Bidan'} value={data.bidan.name} editable={false} />
+
+              <Gap height={12} />
+              <Text style={styles.label}>{'Treatment'}</Text>
+              <FlatList
+                data={data.bookingable.other_service_other_category_services}
+                renderItem={({item}) => (
+                  <ItemList
+                    style={styles.list}
+                    key={item.id}
+                    name={item.name}
+                  />
+                )}
+                numColumns={2}
+                scrollEnabled={false}
               />
 
               {showInput && (
@@ -307,7 +261,7 @@ const KBSerivceDetailsMidwife = ({navigation, route}) => {
   );
 };
 
-export default KBSerivceDetailsMidwife;
+export default OtherSerivceDetailsMidwife;
 
 const styles = StyleSheet.create({
   flex: {flex: 1},
@@ -315,13 +269,6 @@ const styles = StyleSheet.create({
   wrapper: {
     justifyContent: 'space-between',
     flex: 1,
-  },
-
-  cancel: {
-    fontSize: 12,
-    color: colors.text.primary,
-    fontFamily: fonts.primary.regular,
-    padding: 16,
   },
 
   content: {
@@ -333,22 +280,11 @@ const styles = StyleSheet.create({
     color: colors.black,
     fontFamily: fonts.primary.regular,
     marginBottom: 6,
-    marginTop: 12,
   },
 
   list: {
     flex: 1,
     marginBottom: 4,
-  },
-
-  input: {
-    marginTop: 12,
-  },
-
-  photo: {
-    width: 60,
-    height: 60,
-    borderRadius: 4,
   },
 
   button: {

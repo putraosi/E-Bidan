@@ -98,6 +98,8 @@ const AddServicesOther = ({navigation, route}) => {
       if (res) {
         const formated = formatSelect(res, true);
 
+        console.log('cek formated', formated);
+
         setSelectTreatment(formated);
         setLoadingTreatment(false);
       } else {
@@ -132,13 +134,14 @@ const AddServicesOther = ({navigation, route}) => {
         body: {
           service_category_id: route.params.id,
           name: form.name,
-          age: parseInt(form.age),
+          age: ageCalculation(form.birthDate),
           other_category_service_ids,
           bidan_id: selectMidwife.id,
           pasien_id: dataUser.id,
           visit_date,
-          cost: parseInt(price),
+          cost: parseInt(price || 0),
         },
+        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});

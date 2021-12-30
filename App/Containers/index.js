@@ -41,6 +41,7 @@ import SignUp from './SignUp';
 import Splash from './Splash';
 import UltrasonografiSerivceDetails from './UltrasonografiSerivceDetails';
 import OrderHistory from './OrderHistory'
+import OtherSerivceDetailsMidwife from './OtherSerivceDetailsMidwife'
 
 export {
   GetStarted,
@@ -74,6 +75,7 @@ export {
   HomecareSerivceDetails,
   HomecareSerivceDetailsMidwife,
   OtherSerivceDetails,
+  OtherSerivceDetailsMidwife,
   ImmunizationSerivceDetails,
   ImmunizationSerivceDetailsMidwife,
   AntenatalSerivceDetails,
