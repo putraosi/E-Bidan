@@ -53,7 +53,6 @@ const DetailsProfilePatient = ({navigation, route}) => {
     husbandBirthDate: data.birth_date_spouse,
     husbandLastEducation: data.education_husband,
     husbandProfession: data.profession_husband,
-    husbandPhoneNumber: data.phone_spouse,
   });
   const [visibleLogout, setVisibleLogout] = useState(false);
   const [visibleEdit, setVisibleEdit] = useState(false);
@@ -101,17 +100,6 @@ const DetailsProfilePatient = ({navigation, route}) => {
 
     if (!form.husbandName)
       return ToastAlert('Silahkan masukan nama suami Anda terlebih dahulu');
-
-    if (
-      form.husbandPhoneNumber &&
-      (form.husbandPhoneNumber.length < 9 ||
-        form.husbandPhoneNumber.length > 14 ||
-        form.husbandPhoneNumber.charAt(0) != 0 ||
-        form.husbandPhoneNumber.charAt(1) != 8)
-    )
-      return ToastAlert(
-        'Silahkan masukan nomor handphone suami Anda yang valid terlebih dahulu',
-      );
 
     setVisibleEdit(true);
   };
@@ -175,7 +163,6 @@ const DetailsProfilePatient = ({navigation, route}) => {
           birth_date_spouse,
           age_spouse,
           religion_husband: form.husbandReligion,
-          phone_spouse: form.husbandPhoneNumber,
           education_husband: form.husbandLastEducation,
           profession_husband: form.husbandProfession,
           _method: 'put',
@@ -361,14 +348,6 @@ const DetailsProfilePatient = ({navigation, route}) => {
             onPress={() => {
               if (editable) setVisibleHusbandReligion(true);
             }}
-          />
-
-          <Input
-            style={styles.input}
-            label={'No. Hanphone Suami'}
-            value={form.husbandPhoneNumber}
-            editable={editable}
-            onChangeText={value => setForm('husbandPhoneNumber', value)}
           />
 
           <Input

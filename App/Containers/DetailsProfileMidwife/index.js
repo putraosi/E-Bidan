@@ -16,18 +16,34 @@ import {
   Gap,
   Header,
   Input,
+  ModalAlert,
   Modals,
   ModalSelect,
   SpaceBeetwen,
 } from '../../Components';
-import {constants, resetPage, ToastAlert, useForm} from '../../Helpers';
+import {
+  constants,
+  resetPage,
+  SampleAlert,
+  storeData,
+  ToastAlert,
+  useForm,
+} from '../../Helpers';
 import {IcEditCircle, IcMenu, ILNullPhoto} from '../../Images';
-import {moments} from '../../Libs';
+import {
+  checkPermissionCamera,
+  checkPermissionGallery,
+  moments,
+  openCamera,
+  openGallery,
+} from '../../Libs';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const DetailsProfileMidwife = ({navigation, route}) => {
   const data = route.params.data;
+
+  console.log('cek data', data);
 
   const [form, setForm] = useForm({
     photo: data.photo,
@@ -44,27 +60,95 @@ const DetailsProfileMidwife = ({navigation, route}) => {
   const [visibleSelect, setVisibleSelect] = useState(false);
   const [visibleGender, setVisibleGender] = useState(false);
   const [visibleBirthDate, setVisibleBirthDate] = useState(false);
+  const [visibleEdit, setVisibleEdit] = useState(false);
+  const [visibleSelectPhoto, setVisibleSelectPhoto] = useState(false);
+  const [visibleSuccess, setVisibleSuccess] = useState(false);
   const [isChange, setIsChange] = useState(false);
+  const [selectPhoto, setSelectPhoto] = useState(null);
   const dispatch = useDispatch();
 
   const onLogout = async () => {
     setVisibleLogout(false);
     dispatch({type: 'SET_LOADING', value: true});
     try {
-      const res = Api.post({
+      Api.post({
         url: 'auth/logout',
       });
 
       dispatch({type: 'SET_LOADING', value: false});
-      if (res) {
-        resetPage(navigation, 'SignIn');
-      } else {
-        ToastAlert('Silahkan coba beberapa saat lagi!');
-      }
+      resetPage(navigation, 'SignIn');
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      ToastAlert('Silahkan coba beberapa saat lagi!');
+      SampleAlert({message: error.message});
     }
+  };
+
+  const onUpdate = async () => {
+    setVisibleEdit(false);
+    dispatch({type: 'SET_LOADING', value: true});
+
+    const photo = selectPhoto
+      ? `data:${selectPhoto.type};base64, ${selectPhoto.base64}`
+      : form.photo;
+    const birth_date = form.birthDate
+      ? moments(form.birthDate).format('YYYY-MM-DD')
+      : '';
+
+    try {
+      const res = await Api.post({
+        url: `admin/bidans/${data.id}`,
+        body: {
+          name: form.name,
+          email: form.email,
+          photo: photo,
+          phone: form.phoneNumber,
+          birth_place: form.birthPlace,
+          birth_date,
+          gender: form.gender,
+          description: form.description,
+          gelar: form.title,
+          _method: 'put',
+        },
+        showLog: true,
+      });
+
+      let newData = res;
+      newData.roles = 'bidan';
+
+      storeData('user', newData);
+      dispatch({type: 'SET_LOADING', value: false});
+      setVisibleSuccess(true);
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      SampleAlert({message: error.message});
+    }
+  };
+
+  const validation = () => {
+    if (
+      !form.email.trim() ||
+      !constants.REGEX_EMAIL.test(form.email.trim().toLowerCase())
+    ) {
+      return ToastAlert(
+        'Silahkan masukan alamat email valid Anda terlebih dahulu',
+      );
+    }
+
+    if (
+      form.phoneNumber &&
+      (form.phoneNumber.length < 9 ||
+        form.phoneNumber.length > 14 ||
+        form.phoneNumber.charAt(0) != 0 ||
+        form.phoneNumber.charAt(1) != 8)
+    )
+      return ToastAlert(
+        'Silahkan masukan nomor handphone Anda yang valid terlebih dahulu',
+      );
+
+    if (!form.description)
+      return ToastAlert('Silahkan masukan deskripsi Anda terlebih dahulu');
+
+    setVisibleEdit(true);
   };
 
   let labelButtonFirst = 'Ubah';
@@ -74,7 +158,7 @@ const DetailsProfileMidwife = ({navigation, route}) => {
 
   if (isChange) {
     labelButtonFirst = 'Simpan';
-    onPressFirst = () => ToastAlert();
+    onPressFirst = () => validation();
   }
 
   return (
@@ -93,7 +177,7 @@ const DetailsProfileMidwife = ({navigation, route}) => {
             {isChange && (
               <TouchableOpacity
                 style={styles.containerEdit}
-                onPress={() => ToastAlert()}>
+                onPress={() => setVisibleSelectPhoto(true)}>
                 <Image style={styles.edit} source={IcEditCircle} />
               </TouchableOpacity>
             )}
@@ -207,6 +291,23 @@ const DetailsProfileMidwife = ({navigation, route}) => {
         onCancel={() => setVisibleLogout(false)}
       />
 
+      <Modals
+        visible={visibleEdit}
+        desc={'Anda yakin ingin\nmengubah profil?'}
+        onDismiss={() => setVisibleEdit(false)}
+        labelPress={'Ya'}
+        labelCancel={'Tidak'}
+        onPress={onUpdate}
+        onCancel={() => setVisibleEdit(false)}
+      />
+
+      <ModalAlert
+        visible={visibleSuccess}
+        desc={'Selamat anda telah berhasil\nmendaftar di layanan kami'}
+        onDismiss={() => navigation.goBack()}
+        onPress={() => navigation.goBack()}
+      />
+
       <ModalSelect
         visible={visibleSelect}
         data={constants.MENU_ITEM_PROFILE}
@@ -228,6 +329,32 @@ const DetailsProfileMidwife = ({navigation, route}) => {
         onPress={value => {
           setVisibleGender(false);
           setForm('gender', value);
+        }}
+      />
+
+      <ModalSelect
+        visible={visibleSelectPhoto}
+        data={constants.SELECT_PHOTO}
+        onDismiss={() => setVisibleSelectPhoto(false)}
+        onPress={async value => {
+          setVisibleSelectPhoto(false);
+          if (value == 'Gallery') {
+            const granted = await checkPermissionGallery();
+            if (granted) {
+              const callback = await openGallery();
+              const item = callback.assets[0];
+              setSelectPhoto(item);
+              setForm('photo', item.uri);
+            }
+          } else {
+            const granted = await checkPermissionCamera();
+            if (granted) {
+              const callback = await openCamera();
+              const item = callback.assets[0];
+              setSelectPhoto(item);
+              setForm('photo', item.uri);
+            }
+          }
         }}
       />
 

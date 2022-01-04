@@ -1,7 +1,6 @@
 import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
-  FlatList,
   Image,
   ScrollView,
   StyleSheet,
@@ -21,7 +20,7 @@ import {
   Row,
   SpaceBeetwen,
 } from '../../Components';
-import {getData, ToastAlert} from '../../Helpers';
+import {getData, storeData, ToastAlert} from '../../Helpers';
 import {ILNullPhoto} from '../../Images';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
@@ -37,6 +36,8 @@ const HomePatient = ({navigation}) => {
   const [dataSevices, setDataSevices] = useState(null);
   const [visibelServices, setVisibelServices] = useState(false);
   const [visibleCompletenessData, setVisibleCompletenessData] = useState(false);
+  const [visibleCompletenessDataSuccess, setVisibleCompletenessDataSuccess] =
+    useState(false);
   const [isCompletenessData, setIsCompletenessData] = useState(false);
   const isFocused = useIsFocused();
 
@@ -60,8 +61,16 @@ const HomePatient = ({navigation}) => {
     try {
       await Api.get({
         url: `self/check-complete-data/${user.id}`,
+        showLog: true,
       });
 
+      getData('isCompletenessData').then(res => {
+        console.log('cek res', res);
+        if (!res) {
+          setVisibleCompletenessDataSuccess(true);
+          storeData('isCompletenessData', true);
+        }
+      });
       setIsCompletenessData(true);
     } catch (error) {
       setIsCompletenessData(false);
@@ -184,19 +193,16 @@ const HomePatient = ({navigation}) => {
 
           {loadingBooking ? (
             <Loading />
+          ) : dataBooking && dataBooking.length ? (
+            dataBooking.map((item, index) => (
+              <ItemOrderSchedule
+                key={parseInt(index + 1)}
+                navigation={navigation}
+                data={item}
+              />
+            ))
           ) : (
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              scrollEnabled={false}
-              keyExtractor={item => item.id}
-              data={dataBooking}
-              renderItem={({item}) => (
-                <ItemOrderSchedule navigation={navigation} data={item} />
-              )}
-              ListEmptyComponent={() => (
-                <EmptyList desc="Belum terdapat jadwal booking." />
-              )}
-            />
+            <EmptyList desc="Belum terdapat jadwal booking." />
           )}
         </View>
 
@@ -213,19 +219,16 @@ const HomePatient = ({navigation}) => {
           <Gap height={10} />
           {loadingHistoryBooking ? (
             <Loading />
+          ) : dataHistoryBooking && dataHistoryBooking.length ? (
+            dataHistoryBooking.map((item, index) => (
+              <ItemOrderHistory
+                key={parseInt(index + 1)}
+                navigation={navigation}
+                data={item}
+              />
+            ))
           ) : (
-            <FlatList
-              showsVerticalScrollIndicator={false}
-              scrollEnabled={false}
-              keyExtractor={item => item.id}
-              data={dataHistoryBooking}
-              renderItem={({item}) => (
-                <ItemOrderHistory navigation={navigation} data={item} />
-              )}
-              ListEmptyComponent={() => (
-                <EmptyList desc="Belum terdapat history booking." />
-              )}
-            />
+            <EmptyList desc="Belum terdapat history booking." />
           )}
         </View>
         <Gap height={50} />
@@ -264,6 +267,15 @@ const HomePatient = ({navigation}) => {
           setVisibleCompletenessData(false);
           navigation.navigate('DetailsProfilePatient', {data: dataUser});
         }}
+      />
+
+      <Modals
+        visible={visibleCompletenessDataSuccess}
+        title={'Selamat'}
+        desc={'Anda telah berhasil melengkapi data pribadi'}
+        labelPress={'Oke'}
+        onDismiss={() => setVisibleCompletenessDataSuccess(false)}
+        onPress={() => setVisibleCompletenessDataSuccess(false)}
       />
     </Container>
   );
