@@ -9,7 +9,7 @@ import {
   View,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
-import {Button, Container, Gap, Input, Modals, Row} from '../../Components';
+import {Button, ContactUs, Container, Gap, Input, Modals, Row} from '../../Components';
 import {SampleAlert, storeData, ToastAlert, useForm} from '../../Helpers';
 import {ILHeader, ILLogo} from '../../Images';
 import {Api} from '../../Services/Api';
@@ -154,14 +154,7 @@ const SignIn = ({navigation}) => {
         </View>
       </ScrollView>
 
-      <TouchableOpacity
-        style={styles.containerHelp}
-        onPress={() => navigation.navigate('Help')}>
-        <Text style={styles.help(colors.text.primary)}>
-          {'Butuh Bantuan? '}
-        </Text>
-        <Text style={styles.help(colors.primary)}>{` Hubungi Kami`}</Text>
-      </TouchableOpacity>
+      <ContactUs />
 
       <Modals
         type={'forgot-password'}

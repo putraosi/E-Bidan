@@ -65,7 +65,6 @@ const HomePatient = ({navigation}) => {
       });
 
       getData('isCompletenessData').then(res => {
-        console.log('cek res', res);
         if (!res) {
           setVisibleCompletenessDataSuccess(true);
           storeData('isCompletenessData', true);

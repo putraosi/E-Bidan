@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
   Button,
+  ContactUs,
   Container,
   Gap,
   Header,
@@ -211,6 +212,8 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
                 value={data.bookingable.marital_status_husband.toString()}
                 editable={false}
               />
+
+              {status == 'accepted' && <ContactUs />}
 
               {status == 'new' && (
                 <>

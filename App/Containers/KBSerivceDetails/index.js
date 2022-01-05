@@ -3,6 +3,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
   Button,
+  ContactUs,
   Container,
   Gap,
   Header,
@@ -16,7 +17,7 @@ import {
 } from '../../Components';
 import {SampleAlert, ToastAlert} from '../../Helpers';
 import {moments} from '../../Libs';
-import {Api, onCancelService, onUpdateStatusSerivces} from '../../Services';
+import {Api, onCancelService} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
 const KBSerivceDetails = ({navigation, route}) => {
@@ -173,6 +174,8 @@ const KBSerivceDetails = ({navigation, route}) => {
                 value={data.bidan.name}
                 editable={false}
               />
+
+              <ContactUs />
 
               {status == 'new' && (
                 <>

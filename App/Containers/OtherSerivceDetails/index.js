@@ -23,7 +23,6 @@ const OtherSerivceDetails = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
   const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleCancelReason, setVisibleCancelReason] = useState(false);
-  const [visibleContact, setVisibleContact] = useState(false)
   const [data, setData] = useState('');
 
   useEffect(() => {
@@ -119,7 +118,7 @@ const OtherSerivceDetails = ({navigation, route}) => {
                 scrollEnabled={false}
               />
 
-              <ContactUs />
+              {status == 'accepted' && <ContactUs />}
 
               {status == 'new' && (
                 <>

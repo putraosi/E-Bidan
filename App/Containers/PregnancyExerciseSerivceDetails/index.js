@@ -9,6 +9,7 @@ import {
 } from 'react-native';
 import {
   Button,
+  ContactUs,
   Container,
   Gap,
   Header,
@@ -138,6 +139,8 @@ const PregnancyExerciseSerivceDetails = ({navigation, route}) => {
                   source={{uri: data.bookingable.file_upload}}
                 />
               </TouchableOpacity>
+
+              {status == 'accepted' && <ContactUs />}
 
               {status == 'new' && (
                 <>

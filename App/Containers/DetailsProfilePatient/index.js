@@ -168,7 +168,8 @@ const DetailsProfilePatient = ({navigation, route}) => {
           _method: 'put',
         },
       });
-      storeData('user', res.data);
+
+      storeData('user', res);
       dispatch({type: 'SET_LOADING', value: false});
       setVisibleSuccess(true);
     } catch (error) {
@@ -454,8 +455,8 @@ const DetailsProfilePatient = ({navigation, route}) => {
       <ModalAlert
         visible={visibleSuccess}
         desc={'Selamat anda telah berhasil\nmendaftar di layanan kami'}
-        onDismiss={() => navigation.goBack()}
-        onPress={() => navigation.goBack()}
+        onDismiss={() => setVisibleSuccess(false)}
+        onPress={() => setVisibleSuccess(false)}
       />
 
       {visibleBirthDate && (

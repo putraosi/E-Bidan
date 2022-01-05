@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
   Button,
+  ContactUs,
   Container,
   Gap,
   Header,
@@ -13,7 +14,7 @@ import {
   SpaceBeetwen,
   Status,
 } from '../../Components';
-import {rupiah, SampleAlert, ToastAlert} from '../../Helpers';
+import {rupiah, SampleAlert} from '../../Helpers';
 import {moments} from '../../Libs';
 import {Api, onCancelService} from '../../Services';
 import {colors, fonts} from '../../Themes';
@@ -133,6 +134,8 @@ const HomecareSerivceDetails = ({navigation, route}) => {
                 value={`Rp${rupiah(data.bookingable.cost)}`}
                 editable={false}
               />
+
+              {status == 'accepted' && <ContactUs />}
 
               {status == 'new' && (
                 <>

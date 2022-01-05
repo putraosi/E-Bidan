@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
   Button,
+  ContactUs,
   Container,
   Gap,
   Header,
@@ -53,8 +54,6 @@ const ImmunizationSerivceDetails = ({navigation, route}) => {
   };
 
   const status = data && data.request_status.name;
-
-  console.log('cek data', data);
 
   return (
     <Container>
@@ -156,7 +155,7 @@ const ImmunizationSerivceDetails = ({navigation, route}) => {
                 editable={false}
               />
 
-              <Text>{'Hubungi Kami'}</Text>
+              {status == 'accepted' && <ContactUs />}
 
               {status == 'new' && (
                 <>
