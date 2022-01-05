@@ -43,8 +43,6 @@ import {colors, fonts} from '../../Themes';
 const DetailsProfileMidwife = ({navigation, route}) => {
   const data = route.params.data;
 
-  console.log('cek data', data);
-
   const [form, setForm] = useForm({
     photo: data.photo,
     name: data.name,
@@ -304,8 +302,8 @@ const DetailsProfileMidwife = ({navigation, route}) => {
       <ModalAlert
         visible={visibleSuccess}
         desc={'Selamat anda telah berhasil\nmendaftar di layanan kami'}
-        onDismiss={() => navigation.goBack()}
-        onPress={() => navigation.goBack()}
+        onDismiss={() => setVisibleSuccess(false)}
+        onPress={() => setVisibleSuccess(false)}
       />
 
       <ModalSelect

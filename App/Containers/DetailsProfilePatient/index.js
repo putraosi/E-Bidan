@@ -169,7 +169,10 @@ const DetailsProfilePatient = ({navigation, route}) => {
         },
       });
 
-      storeData('user', res);
+      let newData = res;
+      newData.roles = 'pasien';
+
+      storeData('user', newData);
       dispatch({type: 'SET_LOADING', value: false});
       setVisibleSuccess(true);
     } catch (error) {

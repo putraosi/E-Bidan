@@ -98,8 +98,6 @@ const AddServicesOther = ({navigation, route}) => {
       if (res) {
         const formated = formatSelect(res, true);
 
-        console.log('cek formated', formated);
-
         setSelectTreatment(formated);
         setLoadingTreatment(false);
       } else {
