@@ -7,3 +7,4 @@ export * from './MoveScreen';
 export * from './UseForm';
 export * from './Rupiah'
 export * from './Calculations'
+export * from './Linkings'

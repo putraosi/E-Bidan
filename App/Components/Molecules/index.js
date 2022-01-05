@@ -9,6 +9,8 @@ import ModalAlert from './ModalAlert';
 import Modals from './Modals';
 import ModalSelect from './ModalSelect';
 import ItemList from './ItemList'
+import ModalContact from './ModalContact'
+import ContactUs from './ContactUs'
 
 export {
   ItemOrderSchedule,
@@ -20,6 +22,8 @@ export {
   Modals,
   ModalAlert,
   ModalSelect,
+  ModalContact,
   Header,
   EmptyList,
+  ContactUs
 };

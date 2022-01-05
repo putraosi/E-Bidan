@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
   Button,
+  ContactUs,
   Container,
   Gap,
   Header,
@@ -22,6 +23,7 @@ const OtherSerivceDetails = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
   const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleCancelReason, setVisibleCancelReason] = useState(false);
+  const [visibleContact, setVisibleContact] = useState(false)
   const [data, setData] = useState('');
 
   useEffect(() => {
@@ -116,6 +118,8 @@ const OtherSerivceDetails = ({navigation, route}) => {
                 numColumns={2}
                 scrollEnabled={false}
               />
+
+              <ContactUs />
 
               {status == 'new' && (
                 <>

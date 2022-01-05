@@ -3,6 +3,7 @@ export const constants = {
   MIDWIFE: 'bidan',
   PATIENT: 'pasien',
 
+  PHONE_NUMBER_ADMIN : '+6282114881831',
 
   REGEX_EMAIL:
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
