@@ -5,11 +5,18 @@ import {
   ScrollView,
   StyleSheet,
   Text,
-  TouchableOpacity,
   View,
 } from 'react-native';
 import {useDispatch} from 'react-redux';
-import {Button, ContactUs, Container, Gap, Input, Modals, Row} from '../../Components';
+import {
+  Button,
+  ContactUs,
+  Container,
+  Gap,
+  Input,
+  Modals,
+  Row,
+} from '../../Components';
 import {SampleAlert, storeData, ToastAlert, useForm} from '../../Helpers';
 import {ILHeader, ILLogo} from '../../Images';
 import {Api} from '../../Services/Api';
@@ -45,29 +52,24 @@ const SignIn = ({navigation}) => {
         },
       });
 
-      if (res) {
-        const {roles, token} = res;
+      const {roles, token} = res;
 
-        storeData('token', token);
-        storeData('mode', roles.name);
+      storeData('token', token);
+      storeData('mode', roles.name);
 
-        if (roles.name === 'bidan') {
-          let newData = res.bidan;
-          newData.roles = roles.name;
-          storeData('user', newData);
-          navigation.replace('HomeMidwife');
-        } else {
-          let newData = res.pasien;
-          newData.roles = roles.name;
-          storeData('user', newData);
-          navigation.replace('HomePatient');
-        }
-
-        dispatch({type: 'SET_LOADING', value: false});
+      if (roles.name === 'bidan') {
+        let newData = res.bidan;
+        newData.roles = roles.name;
+        storeData('user', newData);
+        navigation.replace('HomeMidwife');
       } else {
-        dispatch({type: 'SET_LOADING', value: false});
-        SampleAlert({message: 'Silahkan masukan data login Anda dengan benar'});
+        let newData = res.pasien;
+        newData.roles = roles.name;
+        storeData('user', newData);
+        navigation.replace('HomePatient');
       }
+
+      dispatch({type: 'SET_LOADING', value: false});
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
 
@@ -75,7 +77,6 @@ const SignIn = ({navigation}) => {
         return navigation.navigate('Confirmation', {
           isRepeatConfirmation: true,
         });
-
       SampleAlert({message: 'Silahkan masukan data login Anda dengan benar'});
     }
   };

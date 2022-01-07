@@ -5,20 +5,44 @@ import {ILLogo} from '../../Images';
 import {colors} from '../../Themes';
 
 const Splash = ({navigation}) => {
-  useEffect(() => {
-    getData('user').then(res => {
-      if (res) {
-        const {roles} = res;
+  // useEffect(() => {
+  //   getData('user').then(res => {
+  //     if (res) {
+  //       const {roles} = res;
 
-        if (roles === 'bidan') {
-          navigation.replace('HomeMidwife');
-        } else {
-          navigation.replace('HomePatient');
-        }
-      } else {
-        navigation.replace('SignIn');
-      }
-    });
+  //       if (roles === 'bidan') {
+  //         navigation.replace('HomeMidwife');
+  //       } else {
+  //         navigation.replace('HomePatient');
+  //       }
+  //     } else {
+  //       navigation.replace('SignIn');
+  //     }
+  //   });
+  // }, []);
+
+  useEffect(() => {
+    let timer1 = setTimeout(
+      () =>
+        getData('user').then(res => {
+          if (res) {
+            const {roles} = res;
+
+            if (roles === 'bidan') {
+              navigation.replace('HomeMidwife');
+            } else {
+              navigation.replace('HomePatient');
+            }
+          } else {
+            navigation.replace('SignIn');
+          }
+        }),
+      1500,
+    );
+
+    return () => {
+      clearTimeout(timer1);
+    };
   }, []);
 
   return (

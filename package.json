@@ -3,14 +3,16 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "a": "npx react-native run-android",
     "android": "npx react-native run-android",
+    "android-release": "npx react-native run-android --variant=release",
     "ios": "npx react-native run-ios;",
     "start": "npx react-native start --reset-cache",
     "link": "npx react-native link",
     "lint": "eslint .",
+    "assembleRelease": "cd android; ./gradlew clean; ./gradlew assembleRelease",
     "bundle": "react-native bundle --verbose --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
     "apk-debug": "yarn bundle; cd android; ./gradlew clean; ./gradlew assembleDebug",
+    "apk-release": "yarn; node android-react-gradle-fix.js; yarn assembleRelease",
     "update-nm": "rm -rf node_modules yarn.lock; rm -rf /tmp/metro-bundler-cache-*; rm -rf /tmp/haste-map-react-native-packager-*; yarn"
   },
   "dependencies": {
