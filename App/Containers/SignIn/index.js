@@ -176,11 +176,11 @@ const styles = StyleSheet.create({
   },
 
   image: {
-    width: 70,
-    height: 70,
+    width: 120,
+    height: 120,
     position: 'absolute',
-    top: 16,
-    right: 16,
+    top: 0,
+    right: 0,
   },
 
   wrapper: {
