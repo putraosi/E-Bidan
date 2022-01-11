@@ -1,4 +1,4 @@
-package com.ebidan;
+package com.cikal_mulia;
 
 import com.facebook.react.ReactActivity;
 
@@ -10,6 +10,6 @@ public class MainActivity extends ReactActivity {
    */
   @Override
   protected String getMainComponentName() {
-    return "EBidan";
+    return "cikal_mulia";
   }
 }
