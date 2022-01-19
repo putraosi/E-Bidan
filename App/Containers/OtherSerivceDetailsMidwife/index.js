@@ -137,9 +137,6 @@ const OtherSerivceDetailsMidwife = ({navigation, route}) => {
               />
 
               <Gap height={12} />
-              <Input label={'Bidan'} value={data.bidan.name} editable={false} />
-
-              <Gap height={12} />
               <Text style={styles.label}>{'Treatment'}</Text>
               <FlatList
                 data={data.bookingable.other_service_other_category_services}

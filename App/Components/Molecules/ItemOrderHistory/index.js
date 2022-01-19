@@ -24,17 +24,17 @@ const ItemOrderHistory = ({navigation, data}) => {
     });
   };
 
-  const isMidwife = data.bidan ? true : false;
+  const isMidwife = data.practice_schedule_time.practice_schedule_detail.bidan ? true : false;
 
   const photo =
-    isMidwife && data.bidan.photo ? {uri: data.bidan.photo} : ILNullPhoto;
+    isMidwife && data.practice_schedule_time.practice_schedule_detail.bidan.photo ? {uri: data.practice_schedule_time.practice_schedule_detail.bidan.photo} : ILNullPhoto;
 
   return (
     <TouchableOpacity style={styles.container} onPress={onShowDetails}>
       <SpaceBeetwen>
         {isMidwife && <Image style={styles.image} source={photo} />}
         <View style={styles.containerAccount}>
-          {isMidwife && <Text style={styles.name}>{data.bidan.name}</Text>}
+          {isMidwife && <Text style={styles.name}>{data.practice_schedule_time.practice_schedule_detail.bidan.name}</Text>}
           <Text style={styles.type}>{type}</Text>
           <Gap height={2} />
           <Notice category={data.request_status.name} />

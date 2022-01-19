@@ -114,7 +114,10 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
               <Input
                 style={styles.input}
                 label={'Bidan'}
-                value={data.bidan.name}
+                value={
+                  data.practice_schedule_time.practice_schedule_detail.bidan
+                    .name
+                }
                 editable={false}
               />
 
@@ -213,7 +216,12 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
                 editable={false}
               />
 
-              {status == 'accepted' && <ContactUs />}
+              {status == 'accepted' && (
+                <>
+                  <Gap height={16} />
+                  <ContactUs />
+                </>
+              )}
 
               {status == 'new' && (
                 <>

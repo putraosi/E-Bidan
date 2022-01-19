@@ -36,7 +36,7 @@ const IncomingOrderItems = ({navigation, data}) => {
         </View>
         <Row>
           <Text style={styles.date}>
-            {moments(data.bookingable.visit_date).format('DD MMMM YYYY')}
+            {moments(data.bookingable.visit_date).format('DD MMM YYYY')}
           </Text>
           <Image style={styles.arrow} source={IcRightArrow} />
         </Row>

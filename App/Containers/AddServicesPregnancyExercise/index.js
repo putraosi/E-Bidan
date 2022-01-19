@@ -15,6 +15,8 @@ import {
 } from '../../Components';
 import {
   constants,
+  formatMidwife,
+  formatMidwifeTime,
   getData,
   SampleAlert,
   ToastAlert,
@@ -31,7 +33,7 @@ import {
 import {Api} from '../../Services';
 import styles from './styles';
 
-const defalutSelectMidwife = {
+const defaultEmpty = {
   id: 0,
   name: '',
 };
@@ -40,56 +42,72 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
   const [form, setForm] = useForm({
     pregnancy: '',
     visitDate: new Date(),
-    visitTime: new Date(),
     hpht: new Date(),
     photo: '',
   });
 
   const [loading, setLoading] = useState(true);
   const [visibleVisitDate, setVisibleVisitDate] = useState(false);
+  const [visibleVisitTime, setVisibleVisitTime] = useState(false);
   const [visibleDatePickerHPHT, setVisibleDatePickerHPHT] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
   const [visiblePregnancy, setVisiblePregnancy] = useState(false);
-  const [visibleTimePicker, setVisibleTimePicker] = useState(false);
   const [visibleSelectPhoto, setVisibleSelectPhoto] = useState(false);
-  const [dataUser, setDataUser] = useState(null);
   const [dataMidwife, setDataMidwife] = useState([]);
-  const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
+  const [dataMidwifeTime, setDataMidwifeTime] = useState([]);
+  const [selectMidwife, setSelectMidwife] = useState(defaultEmpty);
+  const [selectMidwifeTime, setSelectMidwifeTime] = useState(defaultEmpty);
   const [selectPhoto, setSelectPhoto] = useState(null);
   const [gestationalAge, setGestationalAge] = useState('');
-  const [isView, setIsView] = useState(false);
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getData('user').then(res => {
-      setDataUser(res);
-    });
-
     getMidwife(new Date());
     checkGestationalAge(form.visitDate, form.hpht);
   }, []);
 
   const getMidwife = async date => {
     try {
-      const res = await Api.get({
-        url: 'admin/practice-schedulles',
-        params: {
-          now: moments(date).format('YYYY-MM-DD'),
+      const res = await Api.post({
+        url: 'self/show-schedules',
+        body: {
+          visit_date: moments(date).format('YYYY-MM-DD'),
         },
       });
 
+      const newData = formatMidwife(res);
+      setDataMidwife(newData);
+      setSelectMidwife(defaultEmpty);
+      setSelectMidwifeTime(defaultEmpty);
       dispatch({type: 'SET_LOADING', value: false});
       setLoading(false);
-      if (res && res.length) {
-        setDataMidwife(res[0].bidans);
-        setSelectMidwife(defalutSelectMidwife);
-      } else {
-        setDataMidwife([]);
-      }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      navigation.goBack();
+      setLoading(false);
+      setDataMidwife([]);
+      setSelectMidwife(defaultEmpty);
+      setSelectMidwifeTime(defaultEmpty);
+    }
+  };
+
+  const getMidwfieTime = async id => {
+    dispatch({type: 'SET_LOADING', value: true});
+
+    try {
+      const res = await Api.post({
+        url: 'self/show-schedule-times',
+        body: {
+          detail_id: id,
+        },
+      });
+
+      const newData = formatMidwifeTime(res);
+      setDataMidwifeTime(newData);
+      dispatch({type: 'SET_LOADING', value: false});
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      setDataMidwifeTime([]);
     }
   };
 
@@ -109,6 +127,8 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
   const validation = () => {
     if (!form.pregnancy) return ToastAlert('Silahkan pilih kehamilan anda');
     if (!selectMidwife.name) return ToastAlert('Silahkan pilih bidan anda');
+    if (!selectMidwifeTime.name)
+      return ToastAlert('Silahkan pilih waktu kunjungan Anda');
     if (!form.photo) return ToastAlert('Silahkan upload bukti transfer');
 
     onSubmit();
@@ -117,9 +137,9 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
   const onSubmit = async () => {
     dispatch({type: 'SET_LOADING', value: true});
 
-    const visit_date = `${moments(form.visitDate).format(
-      'YYYY-MM-DD',
-    )} ${moments(form.visitTime).format('HH:mm:ss')}`;
+    const visit_date = `${moments(form.visitDate).format('YYYY-MM-DD')} ${
+      selectMidwifeTime.name
+    }`;
     const photo = `data:${selectPhoto.type};base64, ${selectPhoto.base64}`;
 
     try {
@@ -133,7 +153,7 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
             .format('YYYY-MM-DD'),
           pregnancy: form.pregnancy,
           visit_date,
-          bidan_id: selectMidwife.id,
+          practice_schedule_time_id: selectMidwifeTime.id,
           pasien_id: route.params.userId,
           service_category_id: route.params.id,
           date_last_haid: moments(form.hpht).format('YYYY-MM-DD'),
@@ -177,14 +197,6 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
 
             <Input
               style={styles.input}
-              label={'Waktu Kunjungan'}
-              value={moments(form.visitTime).format('HH:mm')}
-              editable={false}
-              onPress={() => setVisibleTimePicker(true)}
-            />
-
-            <Input
-              style={styles.input}
               label={'Bidan'}
               value={selectMidwife.name}
               placeholder={'Pilih'}
@@ -197,6 +209,23 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
                     message: `Pada tanggal ${moments(form.visitDate).format(
                       'DD MMMM YYYY',
                     )} tidak ada jadwal praktek.\n\nSilahkan pilih tanggal yang lain.`,
+                  });
+              }}
+            />
+
+            <Input
+              style={styles.input}
+              label={'Waktu Kunjungan'}
+              value={selectMidwifeTime.name}
+              placeholder={'Pilih'}
+              editable={false}
+              onPress={() => {
+                if (dataMidwifeTime && dataMidwifeTime.length)
+                  setVisibleVisitTime(true);
+                else
+                  SampleAlert({
+                    title: 'Mohon Maaf',
+                    message: `Silahkan pilih bidan terlebih dahulu`,
                   });
               }}
             />
@@ -253,26 +282,15 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
           mode={'date'}
           minimumDate={new Date()}
           onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || form.visitDate;
             setVisibleVisitDate(false);
-            dispatch({type: 'SET_LOADING', value: true});
-            getMidwife(currentDate);
-            checkGestationalAge(currentDate, form.hpht);
-            setForm('visitDate', currentDate);
-          }}
-        />
-      )}
 
-      {visibleTimePicker && (
-        <DatePicker
-          testID="dateTimePicker"
-          value={form.visitTime}
-          mode={'time'}
-          is24Hour={true}
-          onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || form.visitTime;
-            setVisibleTimePicker(false);
-            setForm('visitTime', currentDate);
+            if (event.type == 'set') {
+              const currentDate = selectedDate || form.visitDate;
+              dispatch({type: 'SET_LOADING', value: true});
+              getMidwife(currentDate);
+              checkGestationalAge(currentDate, form.hpht);
+              setForm('visitDate', currentDate);
+            }
           }}
         />
       )}
@@ -313,6 +331,19 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
         onSelect={value => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
+          getMidwfieTime(value.id);
+        }}
+      />
+
+      <Modals
+        type={'spinner'}
+        title={'Pilih Waktu Kunjungan'}
+        visible={visibleVisitTime}
+        data={dataMidwifeTime}
+        onDismiss={() => setVisibleVisitTime(false)}
+        onSelect={value => {
+          setVisibleVisitTime(false);
+          setSelectMidwifeTime(value);
         }}
       />
 
@@ -349,7 +380,6 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
         }}
       />
 
-      {isView && <View />}
     </Container>
   );
 };

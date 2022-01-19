@@ -126,13 +126,6 @@ const PregnancyExerciseSerivceDetailsMidwife = ({navigation, route}) => {
 
               <Input
                 style={styles.input}
-                label={'Bidan'}
-                value={data.bidan.name}
-                editable={false}
-              />
-
-              <Input
-                style={styles.input}
                 label={'Hari Pertama Haid Terakhir (HPHT)'}
                 value={data.bookingable.date_last_haid}
                 editable={false}

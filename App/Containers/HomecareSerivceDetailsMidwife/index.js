@@ -12,7 +12,7 @@ import {
   Separator,
   Status,
 } from '../../Components';
-import {constants, rupiah, SampleAlert} from '../../Helpers';
+import {ageCalculation, constants, rupiah, SampleAlert} from '../../Helpers';
 import {moments} from '../../Libs';
 import {Api, onFinishServices, onUpdateStatusSerivces} from '../../Services';
 import {colors, fonts} from '../../Themes';
@@ -73,7 +73,7 @@ const HomecareSerivceDetails = ({navigation, route}) => {
   };
 
   const status = data && data.request_status.name;
-  let showButtonFooter = status == 'new';
+  let showButtonFooter = status == 'new' ? true:  false;
   let showInput = false;
   let label = 'Terima Pesanan';
   let onPress = () => setVisibleAccept(true);
@@ -118,7 +118,7 @@ const HomecareSerivceDetails = ({navigation, route}) => {
               <Input
                 style={styles.input}
                 label={'Usia Anak'}
-                value={data.bookingable.age_son.toString()}
+                value={ageCalculation(data.bookingable.birth_date)}
                 editable={false}
               />
 
@@ -128,13 +128,6 @@ const HomecareSerivceDetails = ({navigation, route}) => {
                 value={moments(data.bookingable.implementation_date).format(
                   'DD MMMMM YYYY | HH:mm:ss',
                 )}
-                editable={false}
-              />
-
-              <Input
-                style={styles.input}
-                label={'Bidan'}
-                value={data.bidan.name}
                 editable={false}
               />
 

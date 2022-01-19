@@ -15,7 +15,7 @@ import {
   SpaceBeetwen,
   Status,
 } from '../../Components';
-import {SampleAlert, ToastAlert} from '../../Helpers';
+import {ageCalculation, SampleAlert, ToastAlert} from '../../Helpers';
 import {moments} from '../../Libs';
 import {Api, onCancelService} from '../../Services';
 import {colors, fonts} from '../../Themes';
@@ -101,7 +101,7 @@ const KBSerivceDetails = ({navigation, route}) => {
               <Input
                 style={styles.input}
                 label={'Umur Anak Terkecil'}
-                value={data.bookingable.yongest_child_age.toString()}
+                value={ageCalculation(data.bookingable.birth_date)}
                 editable={false}
               />
 
@@ -171,11 +171,19 @@ const KBSerivceDetails = ({navigation, route}) => {
               <Input
                 style={styles.input}
                 label={'Bidan'}
-                value={data.bidan.name}
+                value={
+                  data.practice_schedule_time.practice_schedule_detail.bidan
+                    .name
+                }
                 editable={false}
               />
 
-              <ContactUs />
+              {status == 'accepted' && (
+                <>
+                  <Gap height={16} />
+                  <ContactUs />
+                </>
+              )}
 
               {status == 'new' && (
                 <>

@@ -157,13 +157,6 @@ const ImmunizationSerivceDetailsMidwife = ({navigation, route}) => {
 
               <Input
                 style={styles.input}
-                label={'Bidan'}
-                value={data.bidan.name}
-                editable={false}
-              />
-
-              <Input
-                style={styles.input}
                 label={'Keterangan'}
                 value={
                   data.bookingable.remarks

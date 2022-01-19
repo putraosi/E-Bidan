@@ -24,20 +24,22 @@ const Splash = ({navigation}) => {
   useEffect(() => {
     let timer1 = setTimeout(
       () =>
-        getData('user').then(res => {
-          if (res) {
-            const {roles} = res;
+        getData('user')
+          .then(res => {
+            if (res) {
+              const {roles} = res;
 
-            if (roles === 'bidan') {
-              navigation.replace('HomeMidwife');
+              if (roles === 'bidan') {
+                navigation.replace('HomeMidwife');
+              } else {
+                navigation.replace('HomePatient');
+              }
             } else {
-              navigation.replace('HomePatient');
+              navigation.replace('SignIn');
             }
-          } else {
-            navigation.replace('SignIn');
-          }
-        }),
-      1500,
+          })
+          .catch(error => navigation.replace('SignIn')),
+      0,
     );
 
     return () => {

@@ -1,3 +1,21 @@
+export const formatMidwife = data => {
+  return data.map(item => {
+    return {
+      id: item.detail_id,
+      name: item.bidan_name,
+    };
+  });
+};
+
+export const formatMidwifeTime = data => {
+  return data.map(item => {
+    return {
+      id: item.time_id,
+      name: item.practice_time,
+    };
+  });
+};
+
 export const formatTreatment = data => {
   return data.map(item => {
     const newItem = {
@@ -12,14 +30,12 @@ export const formatTreatment = data => {
 
 export const formatSelect = (data, isAddOther) => {
   const newData = data.map(item => {
-    const newItem = {
+    return {
       id: item.id,
       name: item.name,
       price: item.cost,
       select: false,
     };
-
-    return newItem;
   });
 
   if (isAddOther) {

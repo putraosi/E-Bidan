@@ -61,7 +61,6 @@ const HomePatient = ({navigation}) => {
     try {
       await Api.get({
         url: `self/check-complete-data/${user.id}`,
-        showLog: true,
       });
 
       getData('isCompletenessData').then(res => {
@@ -99,6 +98,8 @@ const HomePatient = ({navigation}) => {
           per_page: 3,
         },
       });
+
+      console.log('cek res', res);
 
       setDataBooking(res);
       setLoadingBooking(false);

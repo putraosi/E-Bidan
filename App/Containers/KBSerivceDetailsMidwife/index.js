@@ -12,7 +12,7 @@ import {
   Modals,
   Status,
 } from '../../Components';
-import {constants, SampleAlert, ToastAlert, useForm} from '../../Helpers';
+import {ageCalculation, constants, SampleAlert, ToastAlert, useForm} from '../../Helpers';
 import {moments} from '../../Libs';
 import {Api, onFinishServices, onUpdateStatusSerivces} from '../../Services';
 import {colors, fonts} from '../../Themes';
@@ -126,7 +126,7 @@ const KBSerivceDetailsMidwife = ({navigation, route}) => {
               <Input
                 style={styles.input}
                 label={'Umur Anak Terkecil'}
-                value={data.bookingable.yongest_child_age.toString()}
+                value={ageCalculation(data.bookingable.birth_date)}
                 editable={false}
               />
 
@@ -190,13 +190,6 @@ const KBSerivceDetailsMidwife = ({navigation, route}) => {
                 value={moments(data.bookingable.visit_date).format(
                   'DD MMMM YYYY | HH:mm:ss',
                 )}
-                editable={false}
-              />
-
-              <Input
-                style={styles.input}
-                label={'Bidan'}
-                value={data.bidan.name}
                 editable={false}
               />
 

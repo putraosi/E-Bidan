@@ -161,8 +161,8 @@ export const constants = {
   SELECT_STATUS_KB: [
     {id: 1, name: 'Baru'},
     {id: 2, name: 'Ulangan'},
-    {id: 3, name: 'Anti Cara'},
-    {id: 4, name: 'Paksa Bersalin'},
+    {id: 3, name: 'Ganti Cara'},
+    {id: 4, name: 'Paska Bersalin'},
   ],
 
   SELECT_TYPE_KB: [

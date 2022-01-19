@@ -107,7 +107,6 @@ const DetailsProfileMidwife = ({navigation, route}) => {
           gelar: form.title,
           _method: 'put',
         },
-        showLog: true,
       });
 
       let newData = res;
@@ -386,6 +385,8 @@ const styles = StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 120 / 2,
+    borderWidth: 1,
+    borderColor: colors.white
   },
 
   mode: {

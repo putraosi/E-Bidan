@@ -10,7 +10,7 @@ const Notice = ({type, category}) => {
   let backgroundColor = colors.notice.progress.backgroundColor;
   let color = colors.notice.progress.color;
 
-  if (category == 'cancel') {
+  if (category == 'cancel' || category == 'canceled') {
     label = 'Dibatalkan';
     backgroundColor = colors.notice.rejected.backgroundColor;
     color = colors.notice.rejected.color;

@@ -16,6 +16,8 @@ import {
 } from '../../Components';
 import {
   constants,
+  formatMidwife,
+  formatMidwifeTime,
   formatSelect,
   formatSelectedId,
   onPrice,
@@ -28,7 +30,7 @@ import {moments} from '../../Libs';
 import {Api} from '../../Services';
 import styles from './styles';
 
-const defalutSelectMidwife = {
+const defaultEmpty = {
   id: 0,
   name: '',
 };
@@ -46,7 +48,6 @@ const AddServicesImmunization = ({navigation, route}) => {
     birthWeight: '',
     immunizationTypeName: '',
     visitDate: new Date(),
-    visitTime: new Date(),
     typeDescription: '',
     birthType: '',
   });
@@ -55,17 +56,18 @@ const AddServicesImmunization = ({navigation, route}) => {
   const [loadingTypeImmunization, setLoadingTypeImmunization] = useState(true);
   const [loadingMidwife, setLoadingMidwife] = useState(true);
   const [dataMidwife, setDataMidwife] = useState([]);
+  const [dataMidwifeTime, setDataMidwifeTime] = useState([]);
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
-
+  const [visibleVisitTime, setVisibleVisitTime] = useState(false);
   const [visibleDatePickerVisitDate, setVisibleDatePickerVisitDate] =
     useState(false);
-  const [visibleTimePicker, setVisibleTimePicker] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
   const [selectTypeImmunization, setSelectTypeImmunization] = useState(
     constants.SELECT_TYPE_IMMUNIZATION,
   );
   const [selectBirthPlace, setSelectBirthPlace] = useState([]);
-  const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
+  const [selectMidwife, setSelectMidwife] = useState(defaultEmpty);
+  const [selectMidwifeTime, setSelectMidwifeTime] = useState(defaultEmpty);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [price, setPrice] = useState(0);
   const [isView, setIsView] = useState(false);
@@ -121,22 +123,45 @@ const AddServicesImmunization = ({navigation, route}) => {
 
   const getMidwife = async date => {
     try {
-      const res = await Api.get({
-        url: 'admin/practice-schedulles',
-        params: {
-          now: moments(date).format('YYYY-MM-DD'),
+      const res = await Api.post({
+        url: 'self/show-schedules',
+        body: {
+          visit_date: moments(date).format('YYYY-MM-DD'),
         },
       });
 
+      const newData = formatMidwife(res);
+      setDataMidwife(newData);
+      setSelectMidwife(defaultEmpty);
+      setSelectMidwifeTime(defaultEmpty);
       dispatch({type: 'SET_LOADING', value: false});
       setLoadingMidwife(false);
-      if (res && res.length) {
-        setDataMidwife(res[0].bidans);
-        setSelectMidwife(defalutSelectMidwife);
-      }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      navigation.goBack();
+      setLoadingMidwife(false);
+      setDataMidwife([]);
+      setSelectMidwife(defaultEmpty);
+      setSelectMidwifeTime(defaultEmpty);
+    }
+  };
+
+  const getMidwfieTime = async id => {
+    dispatch({type: 'SET_LOADING', value: true});
+
+    try {
+      const res = await Api.post({
+        url: 'self/show-schedule-times',
+        body: {
+          detail_id: id,
+        },
+      });
+
+      const newData = formatMidwifeTime(res);
+      setDataMidwifeTime(newData);
+      dispatch({type: 'SET_LOADING', value: false});
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      setDataMidwifeTime([]);
     }
   };
 
@@ -153,16 +178,9 @@ const AddServicesImmunization = ({navigation, route}) => {
       Object.values(selectTypeImmunization).every(item => item.select === false)
     )
       return ToastAlert('Silahkan pilih jenis imunisasi Anda');
-
-    const position = selectTypeImmunization.findIndex(
-      obj => obj.name == 'Lainnya',
-    );
-
-    if (selectTypeImmunization[position].select && !form.immunizationTypeName) {
-      return ToastAlert('Silahkan isi jenis imunisasi Anda');
-    }
-
     if (!selectMidwife.name) return ToastAlert('Silahkan pilih bidan Anda');
+    if (!selectMidwifeTime.name)
+      return ToastAlert('Silahkan pilih waktu kunjungan Anda');
     if (!form.birthType)
       return ToastAlert('Silahkan pilih jenis persalinan Anda');
 
@@ -172,36 +190,12 @@ const AddServicesImmunization = ({navigation, route}) => {
   const onSubmit = async () => {
     dispatch({type: 'SET_LOADING', value: true});
 
-    const position = selectTypeImmunization.findIndex(
-      obj => obj.name == 'Lainnya',
-    );
-
     const immunizationId = formatSelectedId(selectTypeImmunization);
     const _birthPlaceName =
       form.birthPlace.name == 'Lainnya' ? form.birthPlaceName : '';
-    const immunization_type_name = selectTypeImmunization[position].select
-      ? form.immunizationTypeName
-      : '';
-    const visit_date = `${moments(form.visitDate).format(
-      'YYYY-MM-DD',
-    )} ${moments(form.visitTime).format('HH:mm:ss')}`;
-
-    const body = {
-      name: form.name,
-      gender: form.gender.toLowerCase(),
-      birth_date: moments(form.birthday).format('YYYY-MM-DD'),
-      birth_place_id: parseInt(form.birthPlace.id),
-      birth_weight: form.birthWeight,
-      visit_date,
-      pasien_id: route.params.userId,
-      bidan_id: selectMidwife.id,
-      service_category_id: route.params.id,
-      immunization_types: immunizationId,
-      birth_place_name: _birthPlaceName,
-      immunization_type_name,
-      maternity_type: form.birthType,
-      is_new: false,
-    };
+    const visit_date = `${moments(form.visitDate).format('YYYY-MM-DD')} ${
+      selectMidwifeTime.name
+    }`;
 
     try {
       await Api.post({
@@ -214,11 +208,11 @@ const AddServicesImmunization = ({navigation, route}) => {
           birth_weight: form.birthWeight,
           visit_date,
           pasien_id: route.params.userId,
-          bidan_id: selectMidwife.id,
+          practice_schedule_time_id: selectMidwifeTime.id,
           service_category_id: route.params.id,
           immunization_types: immunizationId,
           birth_place_name: _birthPlaceName,
-          immunization_type_name,
+          immunization_type_name: '',
           maternity_type: form.birthType.toLowerCase(),
           is_new: false,
         },
@@ -360,9 +354,18 @@ const AddServicesImmunization = ({navigation, route}) => {
             <Gap height={12} />
             <Input
               label={'Waktu Kunjungan'}
-              value={moments(form.visitTime).format('HH:mm')}
+              value={selectMidwifeTime.name}
+              placeholder={'Pilih'}
               editable={false}
-              onPress={() => setVisibleTimePicker(true)}
+              onPress={() => {
+                if (dataMidwifeTime && dataMidwifeTime.length)
+                  setVisibleVisitTime(true);
+                else
+                  SampleAlert({
+                    title: 'Mohon Maaf',
+                    message: `Silahkan pilih bidan terlebih dahulu`,
+                  });
+              }}
             />
 
             <Gap height={12} />
@@ -422,25 +425,14 @@ const AddServicesImmunization = ({navigation, route}) => {
           mode={'date'}
           minimumDate={new Date()}
           onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || form.visitDate;
             setVisibleDatePickerVisitDate(false);
-            dispatch({type: 'SET_LOADING', value: true});
-            getMidwife(currentDate);
-            setForm('visitDate', currentDate);
-          }}
-        />
-      )}
 
-      {visibleTimePicker && (
-        <DatePicker
-          testID="dateTimePicker"
-          value={form.visitTime}
-          mode={'time'}
-          is24Hour={true}
-          onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || form.visitTime;
-            setVisibleTimePicker(false);
-            setForm('visitTime', currentDate);
+            if (event.type == 'set') {
+              const currentDate = selectedDate || form.visitDate;
+              dispatch({type: 'SET_LOADING', value: true});
+              getMidwife(currentDate);
+              setForm('visitDate', currentDate);
+            }
           }}
         />
       )}
@@ -454,6 +446,19 @@ const AddServicesImmunization = ({navigation, route}) => {
         onSelect={value => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
+          getMidwfieTime(value.id);
+        }}
+      />
+
+      <Modals
+        type={'spinner'}
+        title={'Pilih Waktu Kunjungan'}
+        visible={visibleVisitTime}
+        data={dataMidwifeTime}
+        onDismiss={() => setVisibleVisitTime(false)}
+        onSelect={value => {
+          setVisibleVisitTime(false);
+          setSelectMidwifeTime(value);
         }}
       />
 

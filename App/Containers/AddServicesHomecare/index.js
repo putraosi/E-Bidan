@@ -15,7 +15,10 @@ import {
   SpaceBeetwen,
 } from '../../Components';
 import {
+  ageCalculation,
   constants,
+  formatMidwife,
+  formatMidwifeTime,
   formatSelectedId,
   formatTreatment,
   getData,
@@ -27,7 +30,7 @@ import {moments} from '../../Libs';
 import {Api} from '../../Services';
 import styles from './styles';
 
-const defalutSelectMidwife = {
+const defaultEmpty = {
   id: 0,
   name: 'Pilih',
 };
@@ -35,9 +38,9 @@ const defalutSelectMidwife = {
 const AddServicesHomecare = ({navigation, route}) => {
   const [form, setForm] = useForm({
     childName: '',
-    childAge: '',
+    childBirthDate: '',
     executionTime: new Date(),
-    executionDate: new Date(),
+    visitDate: new Date(),
     placeExecution: 'Klinik Bidan Amel',
     midwife: '',
     price: '0',
@@ -45,13 +48,16 @@ const AddServicesHomecare = ({navigation, route}) => {
 
   const [loading, setLoading] = useState(true);
   const [loadingTreatment, setLoadingTreatment] = useState(true);
+  const [visibleChildBirthDate, setVisibleChildBirthDate] = useState(false);
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
-  const [visibleTimePicker, setVisibleTimePicker] = useState(false);
+  const [visibleVisitTime, setVisibleVisitTime] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
   const [dataUser, setDataUser] = useState(null);
   const [dataMidwife, setDataMidwife] = useState([]);
-  const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
+  const [dataMidwifeTime, setDataMidwifeTime] = useState([]);
+  const [selectMidwife, setSelectMidwife] = useState(defaultEmpty);
+  const [selectMidwifeTime, setSelectMidwifeTime] = useState(defaultEmpty);
   const [selectTreatment, setSelectTreatment] = useState(null);
   const [showDesc, setShowDesc] = useState(false);
   const [isView, setIsView] = useState(false);
@@ -68,24 +74,45 @@ const AddServicesHomecare = ({navigation, route}) => {
 
   const getMidwife = async date => {
     try {
-      const res = await Api.get({
-        url: 'admin/practice-schedulles',
-        params: {
-          now: moments(date).format('YYYY-MM-DD'),
+      const res = await Api.post({
+        url: 'self/show-schedules',
+        body: {
+          visit_date: moments(date).format('YYYY-MM-DD'),
         },
       });
 
+      const newData = formatMidwife(res);
+      setDataMidwife(newData);
+      setSelectMidwife(defaultEmpty);
+      setSelectMidwifeTime(defaultEmpty);
       dispatch({type: 'SET_LOADING', value: false});
       setLoading(false);
-      if (res && res.length) {
-        setDataMidwife(res[0].bidans);
-        setSelectMidwife(defalutSelectMidwife);
-      } else {
-        setDataMidwife([]);
-      }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      navigation.goBack();
+      setLoading(false);
+      setDataMidwife([]);
+      setSelectMidwife(defaultEmpty);
+      setSelectMidwifeTime(defaultEmpty);
+    }
+  };
+
+  const getMidwfieTime = async id => {
+    dispatch({type: 'SET_LOADING', value: true});
+
+    try {
+      const res = await Api.post({
+        url: 'self/show-schedule-times',
+        body: {
+          detail_id: id,
+        },
+      });
+
+      const newData = formatMidwifeTime(res);
+      setDataMidwifeTime(newData);
+      dispatch({type: 'SET_LOADING', value: false});
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      setDataMidwifeTime([]);
     }
   };
 
@@ -108,7 +135,7 @@ const AddServicesHomecare = ({navigation, route}) => {
   };
 
   const onChangeDate = (event, selectedDate) => {
-    const currentDate = selectedDate || form.executionDate;
+    const currentDate = selectedDate || form.visitDate;
     setVisibleDatePicker(false);
     dispatch({type: 'SET_LOADING', value: true});
     getMidwife(currentDate);
@@ -128,9 +155,12 @@ const AddServicesHomecare = ({navigation, route}) => {
 
   const validation = () => {
     if (!form.childName) return ToastAlert('Silahkan isi Nama Anak Anda');
-    if (!form.childAge) return ToastAlert('Silahkan isi Usia Anak Anda');
+    if (!form.childBirthDate)
+      return ToastAlert('Silahkan pilih tanggal lahir anak terkecil Anda');
     if (selectMidwife.name == 'Pilih')
       return ToastAlert('Silahkan pilih bidan anda');
+    if (!selectMidwifeTime.name)
+      return ToastAlert('Silahkan pilih waktu kunjungan Anda');
     if (Object.values(selectTreatment).every(item => item.select === false))
       return ToastAlert('Silahkan pilih treatment Anda');
 
@@ -142,9 +172,9 @@ const AddServicesHomecare = ({navigation, route}) => {
     const _selectTreatment = formatSelectedId(selectTreatment);
     const implementation_place =
       form.placeExecution == 'Klinik Bidan Amel' ? 'bidan' : 'rumah';
-    const implementation_date = `${moments(form.executionDate).format(
+    const implementation_date = `${moments(form.visitDate).format(
       'YYYY-MM-DD',
-    )} ${moments(form.executionTime).format('HH:mm:ss')}`;
+    )} ${selectMidwifeTime.name}`;
 
     try {
       const res = await Api.post({
@@ -152,12 +182,12 @@ const AddServicesHomecare = ({navigation, route}) => {
         body: {
           service_category_id: route.params.id,
           name_son: form.childName,
-          age_son: parseInt(form.childAge),
+          birth_date: moments(form.childBirthDate).format('YYYY-MM-DD'),
           implementation_date,
           implementation_place,
           cost: parseInt(form.price),
           pasien_id: dataUser.id,
-          bidan_id: selectMidwife.id,
+          practice_schedule_time_id: selectMidwifeTime.id,
           treatments: _selectTreatment,
           is_new: false,
         },
@@ -194,16 +224,32 @@ const AddServicesHomecare = ({navigation, route}) => {
 
             <Gap height={12} />
             <Input
+              style={styles.input}
+              label={'Tanggal Lahir Anak Terkecil'}
+              value={
+                form.childBirthDate
+                  ? moments(form.childBirthDate).format('DD MMMM YYYY')
+                  : ''
+              }
+              placeholder={'Pilih'}
+              onPress={() => setVisibleChildBirthDate(true)}
+              editable={false}
+            />
+
+            <Gap height={12} />
+            <Input
               label={'Usia Anak'}
               value={form.childAge}
-              keyboardType={'numeric'}
-              onChangeText={value => setForm('childAge', value)}
+              value={
+                form.childBirthDate ? ageCalculation(form.childBirthDate) : '-'
+              }
+              editable={false}
             />
 
             <Gap height={12} />
             <Input
               label={'Tanggal Kunjungan'}
-              value={moments(form.executionDate).format('DD MMMM YYYY')}
+              value={moments(form.visitDate).format('DD MMMM YYYY')}
               editable={false}
               onPress={() => setVisibleDatePicker(true)}
             />
@@ -218,7 +264,7 @@ const AddServicesHomecare = ({navigation, route}) => {
                 else
                   SampleAlert({
                     title: 'Mohon Maaf',
-                    message: `Pada tanggal ${moments(form.executionDate).format(
+                    message: `Pada tanggal ${moments(form.visitDate).format(
                       'DD MMMM YYYY',
                     )} tidak ada jadwal praktek.\n\nSilahkan pilih tanggal yang lain.`,
                   });
@@ -228,9 +274,18 @@ const AddServicesHomecare = ({navigation, route}) => {
             <Gap height={12} />
             <Input
               label={'Waktu Kunjungan'}
-              value={moments(form.executionTime).format('HH:mm')}
+              value={selectMidwifeTime.name}
+              placeholder={'Pilih'}
               editable={false}
-              onPress={() => setVisibleTimePicker(true)}
+              onPress={() => {
+                if (dataMidwifeTime && dataMidwifeTime.length)
+                  setVisibleVisitTime(true);
+                else
+                  SampleAlert({
+                    title: 'Mohon Maaf',
+                    message: `Silahkan pilih bidan terlebih dahulu`,
+                  });
+              }}
             />
 
             <Gap height={12} />
@@ -304,23 +359,23 @@ const AddServicesHomecare = ({navigation, route}) => {
       {visibleDatePicker && (
         <DatePicker
           testID="dateTimePicker"
-          value={form.executionDate}
+          value={form.visitDate}
           mode={'date'}
           minimumDate={new Date()}
           onChange={onChangeDate}
         />
       )}
 
-      {visibleTimePicker && (
+      {visibleChildBirthDate && (
         <DatePicker
           testID="dateTimePicker"
-          value={form.executionTime}
-          mode={'time'}
-          is24Hour={true}
+          value={form.childBirthDate ? form.childBirthDate : new Date()}
+          mode={'date'}
+          maximumDate={new Date()}
           onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || form.executionTime;
-            setVisibleTimePicker(false);
-            setForm('executionTime', currentDate);
+            const currentDate = selectedDate || form.childBirthDate;
+            setVisibleChildBirthDate(false);
+            setForm('childBirthDate', currentDate);
           }}
         />
       )}
@@ -334,6 +389,19 @@ const AddServicesHomecare = ({navigation, route}) => {
         onSelect={value => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
+          getMidwfieTime(value.id);
+        }}
+      />
+
+      <Modals
+        type={'spinner'}
+        title={'Pilih Waktu Kunjungan'}
+        visible={visibleVisitTime}
+        data={dataMidwifeTime}
+        onDismiss={() => setVisibleVisitTime(false)}
+        onSelect={value => {
+          setVisibleVisitTime(false);
+          setSelectMidwifeTime(value);
         }}
       />
 

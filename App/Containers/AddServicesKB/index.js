@@ -15,7 +15,10 @@ import {
   SpaceBeetwen,
 } from '../../Components';
 import {
+  ageCalculation,
   constants,
+  formatMidwife,
+  formatMidwifeTime,
   formatSelect,
   formatSelectedId,
   rupiah,
@@ -27,7 +30,7 @@ import {moments} from '../../Libs';
 import {Api} from '../../Services';
 import styles from './styles';
 
-const defalutSelectMidwife = {
+const defaultEmpty = {
   id: 0,
   name: '',
 };
@@ -36,7 +39,7 @@ const AddServicesKB = ({navigation, route}) => {
   const oldData = route.params.data;
   const [form, setForm] = useForm({
     child: oldData ? oldData.bookingable.total_child.toString() : '',
-    age: oldData ? oldData.bookingable.yongest_child_age.toString() : '',
+    childBirthDate: '',
     status: oldData ? oldData.bookingable.status_use : '',
     method: oldData ? oldData.bookingable.method_use : '',
     breastfeed: oldData ? oldData.bookingable.is_breast_feed == 1 : '',
@@ -45,12 +48,12 @@ const AddServicesKB = ({navigation, route}) => {
       ? new Date(oldData.bookingable.date_last_haid)
       : '',
     visitDate: oldData ? new Date(oldData.bookingable.visit_date) : new Date(),
-    visitTime: oldData ? new Date(oldData.bookingable.visit_date) : new Date(),
   });
 
   const [loading, setLoading] = useState(true);
   const [loadingTypeKB, setLoadingTypeKB] = useState(true);
   const [loadingDiseaseHistory, setLoadingDiseaseHistory] = useState(true);
+  const [visibleChildBirthDate, setVisibleChildBirthDate] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
   const [visibleSuccessEdit, setVisibleSuccessEdit] = useState(false);
@@ -59,8 +62,10 @@ const AddServicesKB = ({navigation, route}) => {
   const [visibleVisitDate, setVisibleVisitDate] = useState(false);
   const [visibleVisitTime, setVisibleVisitTime] = useState(false);
   const [dataMidwife, setDataMidwife] = useState([]);
+  const [dataMidwifeTime, setDataMidwifeTime] = useState([]);
   const [selectType, setSelectType] = useState([]);
-  const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
+  const [selectMidwife, setSelectMidwife] = useState(defaultEmpty);
+  const [selectMidwifeTime, setSelectMidwifeTime] = useState(defaultEmpty);
   const [selectDiseaseHistory, setSelectDiseaseHistory] = useState([]);
   const [price, setPrice] = useState('');
   const [isView, setIsView] = useState(false);
@@ -74,30 +79,45 @@ const AddServicesKB = ({navigation, route}) => {
 
   const getMidwife = async date => {
     try {
-      const res = await Api.get({
-        url: 'admin/practice-schedulles',
-        params: {
-          now: moments(date).format('YYYY-MM-DD'),
+      const res = await Api.post({
+        url: 'self/show-schedules',
+        body: {
+          visit_date: moments(date).format('YYYY-MM-DD'),
         },
       });
 
+      const newData = formatMidwife(res);
+      setDataMidwife(newData);
+      setSelectMidwife(defaultEmpty);
+      setSelectMidwifeTime(defaultEmpty);
       dispatch({type: 'SET_LOADING', value: false});
       setLoading(false);
-      if (res && res.length) {
-        setDataMidwife(res[0].bidans);
-
-        if (route.params.data)
-          setSelectMidwife({
-            id: route.params.data.bidan.id,
-            name: route.params.data.bidan.name,
-          });
-        else setSelectMidwife(defalutSelectMidwife);
-      } else {
-        setDataMidwife([]);
-      }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      navigation.goBack();
+      setLoading(false);
+      setDataMidwife([]);
+      setSelectMidwife(defaultEmpty);
+      setSelectMidwifeTime(defaultEmpty);
+    }
+  };
+
+  const getMidwfieTime = async id => {
+    dispatch({type: 'SET_LOADING', value: true});
+
+    try {
+      const res = await Api.post({
+        url: 'self/show-schedule-times',
+        body: {
+          detail_id: id,
+        },
+      });
+
+      const newData = formatMidwifeTime(res);
+      setDataMidwifeTime(newData);
+      dispatch({type: 'SET_LOADING', value: false});
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      setDataMidwifeTime([]);
     }
   };
 
@@ -137,7 +157,8 @@ const AddServicesKB = ({navigation, route}) => {
     );
 
     if (!form.child) return ToastAlert('Silahkan isi jumlah anak  Anda');
-    if (!form.age) return ToastAlert('Silahkan isi umur anak terkecil Anda');
+    if (!form.childBirthDate)
+      return ToastAlert('Silahkan pilih tanggal lahir anak terkecil Anda');
     if (Object.values(selectType).every(item => item.select === false))
       return ToastAlert('Silahkan pilih cara KB Anda');
     if (!form.status) return ToastAlert('Silahkan pilih status pengguna Anda');
@@ -145,6 +166,7 @@ const AddServicesKB = ({navigation, route}) => {
       return ToastAlert('Silahkan isi riwayat penyakit Anda');
     }
     if (!selectMidwife.name) return ToastAlert('Silahkan pilih bidan Anda');
+    if (!selectMidwifeTime.name) return ToastAlert('Silahkan pilih waktu kunjungan Anda');
 
     if (route.params.isEdit) onEdit();
     else onSubmit();
@@ -153,9 +175,9 @@ const AddServicesKB = ({navigation, route}) => {
   const onSubmit = async () => {
     dispatch({type: 'SET_LOADING', value: true});
 
-    const visit_date = `${moments(form.visitDate).format(
-      'YYYY-MM-DD',
-    )} ${moments(form.visitTime).format('HH:mm:ss')}`;
+    const visit_date = `${moments(form.visitDate).format('YYYY-MM-DD')} ${
+      selectMidwifeTime.name
+    }`;
     let disease_history_family_name = form.otherDiseaseHistory;
     const disease_history_family_ids = formatSelectedId(selectDiseaseHistory);
     const method_use_ids = formatSelectedId(selectType);
@@ -176,16 +198,15 @@ const AddServicesKB = ({navigation, route}) => {
           date_last_haid,
           total_child: parseInt(form.child),
           status_use: form.status,
-          yongest_child_age: parseInt(form.age),
+          birth_date: moments(form.childBirthDate).format('YYYY-MM-DD'),
           method_use_ids,
           is_breast_feed,
-          bidan_id: selectMidwife.id,
+          practice_schedule_time_id: selectMidwifeTime.id,
           pasien_id: route.params.userId,
           visit_date,
           disease_history_family_name,
           cost: parseInt(price),
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
@@ -198,42 +219,6 @@ const AddServicesKB = ({navigation, route}) => {
 
   const onEdit = async () => {
     return ToastAlert();
-    dispatch({type: 'SET_LOADING', value: true});
-
-    const visit_date = `${moments(form.visitDate).format(
-      'YYYY-MM-DD',
-    )} ${moments(form.visitTime).format('HH:mm:ss')}`;
-    let disease_history_family_name = form.otherDiseaseHistory;
-    const disease_history_family_ids = formatSelectedId(selectDiseaseHistory);
-
-    if (disease_history_family_ids.length == 0)
-      disease_history_family_name = '';
-
-    try {
-      await Api.put({
-        url: `admin/family-plannings/${route.params.data.id}`,
-        body: {
-          disease_history_family_ids,
-          date_last_haid: moments(form.lastDateMenstruation).format(
-            'YYYY-MM-DD',
-          ),
-          total_child: parseInt(form.child),
-          status_use: form.status,
-          yongest_child_age: parseInt(form.age),
-          method_use: form.method,
-          is_breast_feed: form.breastfeed,
-          bidan_id: selectMidwife.id,
-          visit_date,
-          disease_history_family_name,
-        },
-      });
-
-      dispatch({type: 'SET_LOADING', value: false});
-      setVisibleSuccessEdit(true);
-    } catch (error) {
-      dispatch({type: 'SET_LOADING', value: false});
-      SampleAlert(error.message);
-    }
   };
 
   const onChangePrice = item => {
@@ -247,6 +232,7 @@ const AddServicesKB = ({navigation, route}) => {
     setPrice(price.toString());
   };
 
+  // User Interface
   return (
     <Container>
       <Header title={'Pesanan Baru'} onDismiss={() => navigation.goBack()} />
@@ -271,9 +257,22 @@ const AddServicesKB = ({navigation, route}) => {
 
             <Input
               style={styles.input}
+              label={'Tanggal Lahir Anak Terkecil'}
+              value={
+                form.childBirthDate
+                  ? moments(form.childBirthDate).format('DD MMMM YYYY')
+                  : ''
+              }
+              placeholder={'Pilih'}
+              onPress={() => setVisibleChildBirthDate(true)}
+              editable={false}
+            />
+
+            <Input
+              style={styles.input}
               label={'Umur Anak Terkecil'}
-              value={form.age}
-              onChangeText={value => setForm('age', value)}
+              value={form.childBirthDate ? ageCalculation(form.childBirthDate) : '-'}
+              editable={false}
             />
 
             <Text style={styles.label}>{'Cara KB'}</Text>
@@ -405,9 +404,18 @@ const AddServicesKB = ({navigation, route}) => {
             <Input
               style={styles.input}
               label={'Waktu Kunjungan'}
-              value={moments(form.visitTime).format('HH:mm')}
+              value={selectMidwifeTime.name}
+              placeholder={'Pilih'}
               editable={false}
-              onPress={() => setVisibleVisitTime(true)}
+              onPress={() => {
+                if (dataMidwifeTime && dataMidwifeTime.length)
+                  setVisibleVisitTime(true);
+                else
+                  SampleAlert({
+                    title: 'Mohon Maaf',
+                    message: `Silahkan pilih bidan terlebih dahulu`,
+                  });
+              }}
             />
 
             <Gap height={20} />
@@ -425,6 +433,19 @@ const AddServicesKB = ({navigation, route}) => {
         onSelect={value => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
+          getMidwfieTime(value.id);
+        }}
+      />
+
+      <Modals
+        type={'spinner'}
+        title={'Pilih Waktu Kunjungan'}
+        visible={visibleVisitTime}
+        data={dataMidwifeTime}
+        onDismiss={() => setVisibleVisitTime(false)}
+        onSelect={value => {
+          setVisibleVisitTime(false);
+          setSelectMidwifeTime(value);
         }}
       />
 
@@ -458,6 +479,20 @@ const AddServicesKB = ({navigation, route}) => {
         />
       )}
 
+      {visibleChildBirthDate && (
+        <DatePicker
+          testID="dateTimePicker"
+          value={form.childBirthDate ? form.childBirthDate : new Date()}
+          mode={'date'}
+          maximumDate={new Date()}
+          onChange={(event, selectedDate) => {
+            const currentDate = selectedDate || form.childBirthDate;
+            setVisibleChildBirthDate(false);
+            setForm('childBirthDate', currentDate);
+          }}
+        />
+      )}
+
       {visibleVisitDate && (
         <DatePicker
           testID="dateTimePicker"
@@ -465,25 +500,14 @@ const AddServicesKB = ({navigation, route}) => {
           mode={'date'}
           minimumDate={new Date()}
           onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || form.visitDate;
             setVisibleVisitDate(false);
-            dispatch({type: 'SET_LOADING', value: true});
-            getMidwife(currentDate);
-            setForm('visitDate', currentDate);
-          }}
-        />
-      )}
 
-      {visibleVisitTime && (
-        <DatePicker
-          testID="dateTimePicker"
-          value={form.visitTime}
-          mode={'time'}
-          is24Hour={true}
-          onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || form.visitTime;
-            setVisibleVisitTime(false);
-            setForm('visitTime', currentDate);
+            if (event.type == 'set') {
+              const currentDate = selectedDate || form.visitDate;
+              dispatch({type: 'SET_LOADING', value: true});
+              getMidwife(currentDate);
+              setForm('visitDate', currentDate);
+            }
           }}
         />
       )}

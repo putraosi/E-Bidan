@@ -15,7 +15,6 @@ const NotificationPatient = ({navigation}) => {
     try {
       const res = await Api.get({
         url: 'admin/notification/unread',
-        showLog: true,
       });
 
       setLoading(false)

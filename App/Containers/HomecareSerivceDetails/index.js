@@ -1,5 +1,5 @@
-import React, {useEffect, useState} from 'react';
-import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
   Button,
   ContactUs,
@@ -12,12 +12,12 @@ import {
   Modals,
   Separator,
   SpaceBeetwen,
-  Status,
+  Status
 } from '../../Components';
-import {rupiah, SampleAlert} from '../../Helpers';
-import {moments} from '../../Libs';
-import {Api, onCancelService} from '../../Services';
-import {colors, fonts} from '../../Themes';
+import { ageCalculation, rupiah, SampleAlert } from '../../Helpers';
+import { moments } from '../../Libs';
+import { Api, onCancelService } from '../../Services';
+import { colors, fonts } from '../../Themes';
 
 const HomecareSerivceDetails = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
@@ -87,7 +87,7 @@ const HomecareSerivceDetails = ({navigation, route}) => {
               <Input
                 style={styles.input}
                 label={'Usia Anak'}
-                value={data.bookingable.age_son.toString()}
+                value={ageCalculation(data.bookingable.birth_date)}
                 editable={false}
               />
 
@@ -103,7 +103,10 @@ const HomecareSerivceDetails = ({navigation, route}) => {
               <Input
                 style={styles.input}
                 label={'Bidan'}
-                value={data.bidan.name}
+                value={
+                  data.practice_schedule_time.practice_schedule_detail.bidan
+                    .name
+                }
                 editable={false}
               />
 
@@ -135,7 +138,12 @@ const HomecareSerivceDetails = ({navigation, route}) => {
                 editable={false}
               />
 
-              {status == 'accepted' && <ContactUs />}
+              {status == 'accepted' && (
+                <>
+                  <Gap height={16} />
+                  <ContactUs />
+                </>
+              )}
 
               {status == 'new' && (
                 <>

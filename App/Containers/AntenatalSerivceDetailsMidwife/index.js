@@ -140,13 +140,6 @@ const AntenatalSerivceDetailsMidwife = ({navigation, route}) => {
 
               <Input
                 style={styles.input}
-                label={'Bidan'}
-                value={data.bidan.name}
-                editable={false}
-              />
-
-              <Input
-                style={styles.input}
                 label={'Hari Pertaman Haid Terakhir (HPHT)'}
                 value={moments(data.bookingable.date_last_haid).format(
                   'DD MMMM YYYY',

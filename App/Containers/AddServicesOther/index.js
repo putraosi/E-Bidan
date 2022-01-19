@@ -15,6 +15,8 @@ import {
 } from '../../Components';
 import {
   ageCalculation,
+  formatMidwife,
+  formatMidwifeTime,
   formatSelect,
   formatSelectedId,
   getData,
@@ -28,7 +30,7 @@ import {moments} from '../../Libs';
 import {Api} from '../../Services';
 import styles from './styles';
 
-const defalutSelectMidwife = {
+const defaultEmpty = {
   id: 0,
   name: '',
 };
@@ -46,11 +48,14 @@ const AddServicesOther = ({navigation, route}) => {
   const [loadingTreatment, setLoadingTreatment] = useState(true);
   const [visibelBirthDate, setVisibelBirthDate] = useState(false);
   const [visibleDate, setVisibleDate] = useState(false);
+  const [visibleVisitTime, setVisibleVisitTime] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
   const [dataUser, setDataUser] = useState(null);
   const [dataMidwife, setDataMidwife] = useState([]);
-  const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
+  const [dataMidwifeTime, setDataMidwifeTime] = useState([]);
+  const [selectMidwife, setSelectMidwife] = useState(defaultEmpty);
+  const [selectMidwifeTime, setSelectMidwifeTime] = useState(defaultEmpty);
   const [visibleTimePicker, setVisibleTimePicker] = useState(false);
   const [selectTreatment, setSelectTreatment] = useState(null);
   const [price, setPrice] = useState(0);
@@ -68,24 +73,45 @@ const AddServicesOther = ({navigation, route}) => {
 
   const getMidwife = async date => {
     try {
-      const res = await Api.get({
-        url: 'admin/practice-schedulles',
-        params: {
-          now: moments(date).format('YYYY-MM-DD'),
+      const res = await Api.post({
+        url: 'self/show-schedules',
+        body: {
+          visit_date: moments(date).format('YYYY-MM-DD'),
         },
       });
 
+      const newData = formatMidwife(res);
+      setDataMidwife(newData);
+      setSelectMidwife(defaultEmpty);
+      setSelectMidwifeTime(defaultEmpty);
       dispatch({type: 'SET_LOADING', value: false});
       setLoading(false);
-      if (res && res.length) {
-        setDataMidwife(res[0].bidans);
-        setSelectMidwife(defalutSelectMidwife);
-      } else {
-        setDataMidwife([]);
-      }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      navigation.goBack();
+      setLoading(false);
+      setDataMidwife([]);
+      setSelectMidwife(defaultEmpty);
+      setSelectMidwifeTime(defaultEmpty);
+    }
+  };
+
+  const getMidwfieTime = async id => {
+    dispatch({type: 'SET_LOADING', value: true});
+
+    try {
+      const res = await Api.post({
+        url: 'self/show-schedule-times',
+        body: {
+          detail_id: id,
+        },
+      });
+
+      const newData = formatMidwifeTime(res);
+      setDataMidwifeTime(newData);
+      dispatch({type: 'SET_LOADING', value: false});
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      setDataMidwifeTime([]);
     }
   };
 
@@ -112,6 +138,8 @@ const AddServicesOther = ({navigation, route}) => {
     if (!form.name) return ToastAlert('Silahkan isi nama anda');
     if (!form.birthDate) return ToastAlert('Silahkan pilih tanggal lahir anda');
     if (!selectMidwife.name) return ToastAlert('Silahkan pilih bidan Anda');
+    if (!selectMidwifeTime.name)
+      return ToastAlert('Silahkan pilih waktu kunjungan Anda');
     if (Object.values(selectTreatment).every(item => item.select === false))
       return ToastAlert('Silahkan pilih treatment Anda');
 
@@ -121,9 +149,9 @@ const AddServicesOther = ({navigation, route}) => {
   const onSubmit = async () => {
     dispatch({type: 'SET_LOADING', value: true});
 
-    const visit_date = `${moments(form.date).format('YYYY-MM-DD')} ${moments(
-      form.visitTime,
-    ).format('HH:mm:ss')}`;
+    const visit_date = `${moments(form.visitDate).format('YYYY-MM-DD')} ${
+      selectMidwifeTime.name
+    }`;
     const other_category_service_ids = formatSelectedId(selectTreatment);
 
     try {
@@ -134,12 +162,11 @@ const AddServicesOther = ({navigation, route}) => {
           name: form.name,
           age: ageCalculation(form.birthDate),
           other_category_service_ids,
-          bidan_id: selectMidwife.id,
+          practice_schedule_time_id: selectMidwifeTime.id,
           pasien_id: dataUser.id,
           visit_date,
           cost: parseInt(price || 0),
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
@@ -216,9 +243,18 @@ const AddServicesOther = ({navigation, route}) => {
             <Input
               style={styles.input}
               label={'Waktu Kunjungan'}
-              value={moments(form.visitTime).format('HH:mm')}
+              value={selectMidwifeTime.name}
+              placeholder={'Pilih'}
               editable={false}
-              onPress={() => setVisibleTimePicker(true)}
+              onPress={() => {
+                if (dataMidwifeTime && dataMidwifeTime.length)
+                  setVisibleVisitTime(true);
+                else
+                  SampleAlert({
+                    title: 'Mohon Maaf',
+                    message: `Silahkan pilih bidan terlebih dahulu`,
+                  });
+              }}
             />
 
             <Text style={styles.label}>{'Treatment'}</Text>
@@ -265,11 +301,14 @@ const AddServicesOther = ({navigation, route}) => {
           mode={'date'}
           minimumDate={new Date()}
           onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || form.date;
             setVisibleDate(false);
-            dispatch({type: 'SET_LOADING', value: true});
-            getMidwife(currentDate);
-            setForm('date', currentDate);
+            
+            if (event.type == 'set') {
+              const currentDate = selectedDate || form.date;
+              dispatch({type: 'SET_LOADING', value: true});
+              getMidwife(currentDate);
+              setForm('date', currentDate);
+            }
           }}
         />
       )}
@@ -297,6 +336,19 @@ const AddServicesOther = ({navigation, route}) => {
         onSelect={value => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
+          getMidwfieTime(value.id);
+        }}
+      />
+
+      <Modals
+        type={'spinner'}
+        title={'Pilih Waktu Kunjungan'}
+        visible={visibleVisitTime}
+        data={dataMidwifeTime}
+        onDismiss={() => setVisibleVisitTime(false)}
+        onSelect={value => {
+          setVisibleVisitTime(false);
+          setSelectMidwifeTime(value);
         }}
       />
 

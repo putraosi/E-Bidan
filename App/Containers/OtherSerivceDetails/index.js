@@ -101,7 +101,14 @@ const OtherSerivceDetails = ({navigation, route}) => {
               />
 
               <Gap height={12} />
-              <Input label={'Bidan'} value={data.bidan.name} editable={false} />
+              <Input
+                label={'Bidan'}
+                value={
+                  data.practice_schedule_time.practice_schedule_detail.bidan
+                    .name
+                }
+                editable={false}
+              />
 
               <Gap height={12} />
               <Text style={styles.label}>{'Treatment'}</Text>
@@ -118,7 +125,12 @@ const OtherSerivceDetails = ({navigation, route}) => {
                 scrollEnabled={false}
               />
 
-              {status == 'accepted' && <ContactUs />}
+              {status == 'accepted' && (
+                <>
+                  <Gap height={16} />
+                  <ContactUs />
+                </>
+              )}
 
               {status == 'new' && (
                 <>

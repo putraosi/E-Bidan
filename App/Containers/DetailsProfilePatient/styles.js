@@ -1,5 +1,5 @@
-import { StyleSheet } from "react-native";
-import { colors, fonts } from "../../Themes";
+import {StyleSheet} from 'react-native';
+import {colors, fonts} from '../../Themes';
 
 export default StyleSheet.create({
   containerHeader: {
@@ -12,6 +12,8 @@ export default StyleSheet.create({
     width: 120,
     height: 120,
     borderRadius: 120 / 2,
+    borderWidth: 1,
+    borderColor: colors.white,
   },
 
   mode: {

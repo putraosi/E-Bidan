@@ -20,7 +20,7 @@ import {
   SpaceBeetwen,
   Status,
 } from '../../Components';
-import {SampleAlert, ToastAlert} from '../../Helpers';
+import {SampleAlert} from '../../Helpers';
 import {moments} from '../../Libs';
 import {Api, onCancelService} from '../../Services';
 import {colors, fonts} from '../../Themes';
@@ -102,7 +102,10 @@ const PregnancyExerciseSerivceDetails = ({navigation, route}) => {
               <Input
                 style={styles.input}
                 label={'Bidan'}
-                value={data.bidan.name}
+                value={
+                  data.practice_schedule_time.practice_schedule_detail.bidan
+                    .name
+                }
                 editable={false}
               />
 
@@ -140,7 +143,12 @@ const PregnancyExerciseSerivceDetails = ({navigation, route}) => {
                 />
               </TouchableOpacity>
 
-              {status == 'accepted' && <ContactUs />}
+              {status == 'accepted' && (
+                <>
+                  <Gap height={16} />
+                  <ContactUs />
+                </>
+              )}
 
               {status == 'new' && (
                 <>

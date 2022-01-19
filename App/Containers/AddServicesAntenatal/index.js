@@ -16,6 +16,8 @@ import {
 } from '../../Components';
 import {
   constants,
+  formatMidwife,
+  formatMidwifeTime,
   formatSelect,
   formatSelectedGrouped,
   formatSelectedId,
@@ -27,7 +29,7 @@ import {moments} from '../../Libs';
 import {Api} from '../../Services';
 import styles from './styles';
 
-const defalutSelectMidwife = {
+const defaultEmpty = {
   id: 0,
   name: '',
 };
@@ -37,7 +39,6 @@ const AddServicesAntenatal = ({navigation, route}) => {
     pregnancy: '',
     abortion: '',
     visitDate: new Date(),
-    visitTime: new Date(),
     hpht: new Date(),
     menstrualDisorders: '',
     remark: 'K1',
@@ -51,18 +52,20 @@ const AddServicesAntenatal = ({navigation, route}) => {
 
   const [loading, setLoading] = useState(true);
   const [loadingDiseaseHistory, setLoadingDiseaseHistory] = useState(true);
-  const [dataMidwife, setDataMidwife] = useState([]);
   const [visiblePregnancy, setVisiblePregnancy] = useState(false);
   const [visibleAbortion, setVisibleAbortion] = useState(false);
   const [visibleDatePicker, setVisibleDatePicker] = useState(false);
-  const [visibleTimePicker, setVisibleTimePicker] = useState(false);
+  const [visibleVisitTime, setVisibleVisitTime] = useState(false);
   const [visibleDatePickerHPHT, setVisibleDatePickerHPHT] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
+  const [dataMidwife, setDataMidwife] = useState([]);
+  const [dataMidwifeTime, setDataMidwifeTime] = useState([]);
   const [selectHistory, setSelectHistory] = useState(
     constants.SELECT_ANTENATAL_HISTORY,
   );
-  const [selectMidwife, setSelectMidwife] = useState(defalutSelectMidwife);
+  const [selectMidwife, setSelectMidwife] = useState(defaultEmpty);
+  const [selectMidwifeTime, setSelectMidwifeTime] = useState(defaultEmpty);
   const [selectDiseaseHistory, setSelectDiseaseHistory] = useState(
     constants.SELECT_DISEASE_HISTORY,
   );
@@ -78,22 +81,45 @@ const AddServicesAntenatal = ({navigation, route}) => {
 
   const getMidwife = async date => {
     try {
-      const res = await Api.get({
-        url: 'admin/practice-schedulles',
-        params: {
-          now: moments(date).format('YYYY-MM-DD'),
+      const res = await Api.post({
+        url: 'self/show-schedules',
+        body: {
+          visit_date: moments(date).format('YYYY-MM-DD'),
         },
       });
 
+      const newData = formatMidwife(res);
+      setDataMidwife(newData);
+      setSelectMidwife(defaultEmpty);
+      setSelectMidwifeTime(defaultEmpty);
       dispatch({type: 'SET_LOADING', value: false});
       setLoading(false);
-      if (res && res.length) {
-        setDataMidwife(res[0].bidans);
-        setSelectMidwife(defalutSelectMidwife);
-      }
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      navigation.goBack();
+      setLoading(false);
+      setDataMidwife([]);
+      setSelectMidwife(defaultEmpty);
+      setSelectMidwifeTime(defaultEmpty);
+    }
+  };
+
+  const getMidwfieTime = async id => {
+    dispatch({type: 'SET_LOADING', value: true});
+
+    try {
+      const res = await Api.post({
+        url: 'self/show-schedule-times',
+        body: {
+          detail_id: id,
+        },
+      });
+
+      const newData = formatMidwifeTime(res);
+      setDataMidwifeTime(newData);
+      dispatch({type: 'SET_LOADING', value: false});
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      setDataMidwifeTime([]);
     }
   };
 
@@ -136,6 +162,8 @@ const AddServicesAntenatal = ({navigation, route}) => {
     if (!form.abortion)
       return ToastAlert('Silahkan pilih keguguran ke berapa Anda');
     if (!selectMidwife.name) return ToastAlert('Silahkan pilih bidan Anda');
+    if (!selectMidwifeTime.name)
+      return ToastAlert('Silahkan pilih waktu kunjungan Anda');
     if (selectDiseaseHistory[position].select && !form.otherDiseaseHistory) {
       return ToastAlert('Silahkan isi riwayat penyakit Anda');
     }
@@ -160,9 +188,9 @@ const AddServicesAntenatal = ({navigation, route}) => {
     let abortus = form.abortion;
     let disease_history_name = form.otherDiseaseHistory;
     const labor_history = formatSelectedGrouped(selectHistory);
-    const visit_date = `${moments(form.visitDate).format(
-      'YYYY-MM-DD',
-    )} ${moments(form.visitTime).format('HH:mm:ss')}`;
+    const visit_date = `${moments(form.visitDate).format('YYYY-MM-DD')} ${
+      selectMidwifeTime.name
+    }`;
     const maternity_plan =
       form.historyPlaceBirth == 'Bidan Amel'
         ? form.historyPlaceBirth
@@ -182,7 +210,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
           gestational_age: gestationalAge,
           visit_date,
           pasien_id: route.params.userId,
-          bidan_id: selectMidwife.id,
+          practice_schedule_time_id: selectMidwifeTime.id,
           labor_history,
           date_last_haid: moments(form.hpht).format('YYYY-MM-DD'),
           date_estimate_birth: moments(form.hpht)
@@ -302,9 +330,18 @@ const AddServicesAntenatal = ({navigation, route}) => {
             <Gap height={12} />
             <Input
               label={'Waktu Kunjungan'}
-              value={moments(form.visitTime).format('HH:mm')}
+              value={selectMidwifeTime.name}
+              placeholder={'Pilih'}
               editable={false}
-              onPress={() => setVisibleTimePicker(true)}
+              onPress={() => {
+                if (dataMidwifeTime && dataMidwifeTime.length)
+                  setVisibleVisitTime(true);
+                else
+                  SampleAlert({
+                    title: 'Mohon Maaf',
+                    message: `Silahkan pilih bidan terlebih dahulu`,
+                  });
+              }}
             />
 
             <Gap height={12} />
@@ -472,26 +509,15 @@ const AddServicesAntenatal = ({navigation, route}) => {
           mode={'date'}
           minimumDate={new Date()}
           onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || form.visitDate;
             setVisibleDatePicker(false);
-            dispatch({type: 'SET_LOADING', value: true});
-            getMidwife(currentDate);
-            checkGestationalAge(currentDate, form.hpht);
-            setForm('visitDate', currentDate);
-          }}
-        />
-      )}
 
-      {visibleTimePicker && (
-        <DatePicker
-          testID="dateTimePicker"
-          value={form.visitTime}
-          mode={'time'}
-          is24Hour={true}
-          onChange={(event, selectedDate) => {
-            const currentDate = selectedDate || form.visitTime;
-            setVisibleTimePicker(false);
-            setForm('visitTime', currentDate);
+            if (event.type == 'set') {
+              const currentDate = selectedDate || form.visitDate;
+              dispatch({type: 'SET_LOADING', value: true});
+              getMidwife(currentDate);
+              checkGestationalAge(currentDate, form.hpht);
+              setForm('visitDate', currentDate);
+            }
           }}
         />
       )}
@@ -520,6 +546,19 @@ const AddServicesAntenatal = ({navigation, route}) => {
         onSelect={value => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
+          getMidwfieTime(value.id);
+        }}
+      />
+
+      <Modals
+        type={'spinner'}
+        title={'Pilih Waktu Kunjungan'}
+        visible={visibleVisitTime}
+        data={dataMidwifeTime}
+        onDismiss={() => setVisibleVisitTime(false)}
+        onSelect={value => {
+          setVisibleVisitTime(false);
+          setSelectMidwifeTime(value);
         }}
       />
 

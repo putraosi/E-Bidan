@@ -41,7 +41,6 @@ export const onFinishServices = async (id, price, note) => {
         practice_booking_id: id,
         cost: parseInt(price),
       },
-      showLog: true,
     });
 
     return true;

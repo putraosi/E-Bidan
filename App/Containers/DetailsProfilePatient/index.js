@@ -186,6 +186,7 @@ const DetailsProfilePatient = ({navigation, route}) => {
   const photo = form.photo ? {uri: form.photo} : ILNullPhoto;
   const editable = isChange ? true : false;
 
+
   if (isChange) {
     labelButtonFirst = 'Simpan';
     onPressFirst = () => validation();
