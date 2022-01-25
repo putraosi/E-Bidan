@@ -1,3 +1,4 @@
+import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
@@ -14,7 +15,7 @@ import {
   SpaceBeetwen,
   Status,
 } from '../../Components';
-import {SampleAlert} from '../../Helpers';
+import {ageCalculation, SampleAlert} from '../../Helpers';
 import {moments} from '../../Libs';
 import {Api, onCancelService} from '../../Services';
 import {colors, fonts} from '../../Themes';
@@ -24,10 +25,13 @@ const OtherSerivceDetails = ({navigation, route}) => {
   const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleCancelReason, setVisibleCancelReason] = useState(false);
   const [data, setData] = useState('');
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    getData();
-  }, []);
+    if (isFocused) {
+      getData();
+    }
+  }, [isFocused]);
 
   const getData = async () => {
     try {
@@ -51,6 +55,13 @@ const OtherSerivceDetails = ({navigation, route}) => {
       setLoading(false);
       SampleAlert({message: error.message});
     }
+  };
+
+  const onShowUpdate = () => {
+    navigation.navigate('AddServicesOther', {
+      id: data.bookingable.service_category_id,
+      data: data,
+    });
   };
 
   const status = data && data.request_status.name;
@@ -87,7 +98,7 @@ const OtherSerivceDetails = ({navigation, route}) => {
               <Gap height={12} />
               <Input
                 label={'Usia'}
-                value={data.bookingable.age.toString()}
+                value={ageCalculation(data.bookingable.birth_date)}
                 editable={false}
               />
 
@@ -136,12 +147,12 @@ const OtherSerivceDetails = ({navigation, route}) => {
                 <>
                   <Gap height={20} />
                   <SpaceBeetwen>
-                    {/* <Button
+                    <Button
                       style={styles.flex}
                       label={'Ubah'}
-                      onPress={() => ToastAlert()}
+                      onPress={onShowUpdate}
                     />
-                    <Gap width={20} /> */}
+                    <Gap width={20} />
                     <Button
                       style={styles.flex}
                       type={'cancel'}
@@ -204,6 +215,13 @@ const styles = StyleSheet.create({
   },
 
   content: {
+    padding: 16,
+  },
+
+  cancel: {
+    fontSize: 12,
+    color: colors.text.primary,
+    fontFamily: fonts.primary.regular,
     padding: 16,
   },
 

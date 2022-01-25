@@ -99,8 +99,6 @@ const HomePatient = ({navigation}) => {
         },
       });
 
-      console.log('cek res', res);
-
       setDataBooking(res);
       setLoadingBooking(false);
     } catch (error) {
