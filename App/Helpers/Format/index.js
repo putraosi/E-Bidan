@@ -16,17 +16,6 @@ export const formatMidwifeTime = data => {
   });
 };
 
-export const formatTreatment = data => {
-  return data.map(item => {
-    return {
-      id: item.id,
-      name: item.name,
-      select: false,
-      price: item.cost ? item.cost : 0,
-    };
-  });
-};
-
 export const formatSelect = (data, isAddOther, oldData) => {
   const newData = data.map(item => {
     let isSelect = false;

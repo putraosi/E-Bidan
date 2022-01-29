@@ -36,7 +36,6 @@ const defaultEmpty = {
 };
 
 const AddServicesImmunization = ({navigation, route}) => {
-
   const [form, setForm] = useForm({
     name: route.params.data ? route.params.data.bookingable.name : '',
     gender: route.params.data
@@ -247,41 +246,51 @@ const AddServicesImmunization = ({navigation, route}) => {
     if (!form.birthType)
       return ToastAlert('Silahkan pilih jenis persalinan Anda');
 
-    if (form.isUpdate) {
-      onUpdate();
-    } else onSubmit();
+    setBody();
   };
 
-  const onSubmit = async () => {
+  const setBody = () => {
     dispatch({type: 'SET_LOADING', value: true});
 
-    const immunizationId = formatSelectedId(selectTypeImmunization);
-    const _birthPlaceName =
-      form.birthPlace.name == 'Lainnya' ? form.birthPlaceName : '';
-    const visit_date = `${moments(form.visitDate).format('YYYY-MM-DD')} ${
-      selectMidwifeTime.name
-    }`;
+    try {
+      const immunizationId = formatSelectedId(selectTypeImmunization);
+      const _birthPlaceName =
+        form.birthPlace.name == 'Lainnya' ? form.birthPlaceName : '';
+      const visit_date = `${moments(form.visitDate).format('YYYY-MM-DD')} ${
+        selectMidwifeTime.name
+      }`;
 
+      const body = {
+        name: form.name,
+        gender: form.gender.toLowerCase(),
+        birth_date: moments(form.birthday).format('YYYY-MM-DD'),
+        birth_place_id: parseInt(form.birthPlace.id),
+        birth_weight: form.birthWeight,
+        visit_date,
+        pasien_id: route.params.userId,
+        practice_schedule_time_id: selectMidwifeTime.id,
+        service_category_id: route.params.id,
+        immunization_types: immunizationId,
+        birth_place_name: _birthPlaceName,
+        immunization_type_name: '',
+        maternity_type: form.birthType.toLowerCase(),
+        remarks: form.typeDescription.toString(),
+        is_new: false,
+      };
+
+      if (form.isUpdate) {
+        onUpdate(body);
+      } else onSubmit(body);
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+    }
+  };
+
+  const onSubmit = async body => {
     try {
       await Api.post({
         url: 'admin/immunizations',
-        body: {
-          name: form.name,
-          gender: form.gender.toLowerCase(),
-          birth_date: moments(form.birthday).format('YYYY-MM-DD'),
-          birth_place_id: parseInt(form.birthPlace.id),
-          birth_weight: form.birthWeight,
-          visit_date,
-          pasien_id: route.params.userId,
-          practice_schedule_time_id: selectMidwifeTime.id,
-          service_category_id: route.params.id,
-          immunization_types: immunizationId,
-          birth_place_name: _birthPlaceName,
-          immunization_type_name: '',
-          maternity_type: form.birthType.toLowerCase(),
-          remarks: form.typeDescription.toString(),
-          is_new: false,
-        },
+        body,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
@@ -292,35 +301,11 @@ const AddServicesImmunization = ({navigation, route}) => {
     }
   };
 
-  const onUpdate = async () => {
-    dispatch({type: 'SET_LOADING', value: true});
-
-    const immunizationId = formatSelectedId(selectTypeImmunization);
-    const _birthPlaceName =
-      form.birthPlace.name == 'Lainnya' ? form.birthPlaceName : '';
-    const visit_date = `${moments(form.visitDate).format('YYYY-MM-DD')} ${
-      selectMidwifeTime.name
-    }`;
-
+  const onUpdate = async body => {
     try {
       await Api.put({
         url: `admin/immunizations/${route.params.data.bookingable.id}`,
-        body: {
-          name: form.name,
-          gender: form.gender.toLowerCase(),
-          birth_date: moments(form.birthday).format('YYYY-MM-DD'),
-          birth_place_id: parseInt(form.birthPlace.id),
-          birth_weight: form.birthWeight,
-          visit_date,
-          pasien_id: route.params.userId,
-          practice_schedule_time_id: selectMidwifeTime.id,
-          service_category_id: route.params.id,
-          immunization_types: immunizationId,
-          birth_place_name: _birthPlaceName,
-          immunization_type_name: '',
-          maternity_type: form.birthType.toLowerCase(),
-          remarks: form.typeDescription.toString(),
-        },
+        body,
       });
 
       dispatch({type: 'SET_LOADING', value: false});

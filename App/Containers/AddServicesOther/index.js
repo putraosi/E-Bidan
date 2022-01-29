@@ -176,33 +176,43 @@ const AddServicesOther = ({navigation, route}) => {
     if (Object.values(selectTreatment).every(item => item.select === false))
       return ToastAlert('Silahkan pilih treatment Anda');
 
-    if (form.isUpdate) {
-      onUpdate();
-    } else onSubmit();
+    setBody();
   };
 
-  const onSubmit = async () => {
+  const setBody = () => {
     dispatch({type: 'SET_LOADING', value: true});
 
-    const visit_date = `${moments(form.date).format('YYYY-MM-DD')} ${
-      selectMidwifeTime.name
-    }`;
-    const other_category_service_ids = formatSelectedId(selectTreatment);
+    try {
+      const visit_date = `${moments(form.date).format('YYYY-MM-DD')} ${
+        selectMidwifeTime.name
+      }`;
+      const other_category_service_ids = formatSelectedId(selectTreatment);
 
+      const body = {
+        service_category_id: route.params.id,
+        name: form.name,
+        age: ageCalculation(form.birthDate),
+        other_category_service_ids,
+        practice_schedule_time_id: selectMidwifeTime.id,
+        pasien_id: dataUser.id,
+        visit_date,
+        cost: parseInt(price || 0),
+        birth_date: moments(form.birthDate).format('YYYY-MM-DD'),
+      };
+
+      if (form.isUpdate) {
+        onUpdate(body);
+      } else onSubmit(body);
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+    }
+  };
+
+  const onSubmit = async body => {
     try {
       await Api.post({
         url: 'admin/other-services',
-        body: {
-          service_category_id: route.params.id,
-          name: form.name,
-          age: ageCalculation(form.birthDate),
-          other_category_service_ids,
-          practice_schedule_time_id: selectMidwifeTime.id,
-          pasien_id: dataUser.id,
-          visit_date,
-          cost: parseInt(price || 0),
-          birth_date: moments(form.birthDate).format('YYYY-MM-DD'),
-        },
+        body,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
@@ -213,28 +223,11 @@ const AddServicesOther = ({navigation, route}) => {
     }
   };
 
-  const onUpdate = async () => {
-    dispatch({type: 'SET_LOADING', value: true});
-
-    const visit_date = `${moments(form.date).format('YYYY-MM-DD')} ${
-      selectMidwifeTime.name
-    }`;
-    const other_category_service_ids = formatSelectedId(selectTreatment);
-
+  const onUpdate = async body => {
     try {
       await Api.put({
         url: `admin/other-services/${route.params.data.bookingable.id}`,
-        body: {
-          service_category_id: route.params.id,
-          name: form.name,
-          age: ageCalculation(form.birthDate),
-          other_category_service_ids,
-          practice_schedule_time_id: selectMidwifeTime.id,
-          pasien_id: dataUser.id,
-          visit_date,
-          cost: parseInt(price || 0),
-          birth_date: moments(form.birthDate).format('YYYY-MM-DD'),
-        },
+        body,
       });
 
       dispatch({type: 'SET_LOADING', value: false});

@@ -151,7 +151,7 @@ const AntenatalSerivceDetailsMidwife = ({navigation, route}) => {
                 style={styles.input}
                 label={'Hari Perkiraan Lahir (HPL)'}
                 value={moments(data.bookingable.date_estimate_birth).format(
-                  'DD MMMMM YYYY',
+                  'DD MMMM YYYY',
                 )}
                 editable={false}
               />

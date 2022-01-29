@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
   Button,
   ContactUs,
@@ -12,22 +13,23 @@ import {
   Modals,
   Separator,
   SpaceBeetwen,
-  Status
+  Status,
 } from '../../Components';
-import { ageCalculation, rupiah, SampleAlert } from '../../Helpers';
-import { moments } from '../../Libs';
-import { Api, onCancelService } from '../../Services';
-import { colors, fonts } from '../../Themes';
+import {ageCalculation, rupiah, SampleAlert} from '../../Helpers';
+import {moments} from '../../Libs';
+import {Api, onCancelService} from '../../Services';
+import {colors, fonts} from '../../Themes';
 
 const HomecareSerivceDetails = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
   const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleCancelReason, setVisibleCancelReason] = useState(false);
   const [data, setData] = useState('');
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    getData();
-  }, []);
+    if (isFocused) getData();
+  }, [isFocused]);
 
   const getData = async () => {
     try {
@@ -51,6 +53,13 @@ const HomecareSerivceDetails = ({navigation, route}) => {
       setLoading(false);
       SampleAlert({message: error.message});
     }
+  };
+
+  const onShowUpdate = () => {
+    navigation.navigate('AddServicesHomecare', {
+      id: data.bookingable.service_category_id,
+      data: data,
+    });
   };
 
   const status = data && data.request_status.name;
@@ -95,7 +104,7 @@ const HomecareSerivceDetails = ({navigation, route}) => {
                 style={styles.input}
                 label={'Waktu Kunjungan'}
                 value={moments(data.bookingable.implementation_date).format(
-                  'DD MMMMM YYYY | HH:mm:ss',
+                  'DD MMMM YYYY | HH:mm:ss',
                 )}
                 editable={false}
               />
@@ -149,12 +158,12 @@ const HomecareSerivceDetails = ({navigation, route}) => {
                 <>
                   <Gap height={20} />
                   <SpaceBeetwen>
-                    {/* <Button
+                    <Button
                       style={styles.flex}
                       label={'Ubah'}
-                      onPress={() => ToastAlert()}
+                      onPress={() => onShowUpdate()}
                     />
-                    <Gap width={16} /> */}
+                    <Gap width={16} />
                     <Button
                       style={styles.flex}
                       type={'cancel'}

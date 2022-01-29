@@ -19,8 +19,8 @@ import {
   constants,
   formatMidwife,
   formatMidwifeTime,
+  formatSelect,
   formatSelectedId,
-  formatTreatment,
   getData,
   SampleAlert,
   ToastAlert,
@@ -36,14 +36,33 @@ const defaultEmpty = {
 };
 
 const AddServicesHomecare = ({navigation, route}) => {
+  console.log('cek route', route);
+
   const [form, setForm] = useForm({
-    childName: '',
-    childBirthDate: '',
-    executionTime: new Date(),
-    visitDate: new Date(),
-    placeExecution: 'Klinik Bidan Amel',
-    midwife: '',
-    price: '0',
+    childName: route.params.data ? route.params.data.bookingable.name_son : '',
+    childBirthDate: route.params.data
+      ? new Date(
+          moments(route.params.data.bookingable.birth_date).format(
+            'YYYY-MM-DD',
+          ),
+        )
+      : new Date(),
+    visitDate: route.params.data
+      ? new Date(
+          moments(route.params.data.bookingable.implementation_date).format(
+            'YYYY-MM-DD',
+          ),
+        )
+      : new Date(),
+    placeExecution: route.params.data
+      ? route.params.data.bookingable.implementation_place == 'bidan'
+        ? 'Klinik Bidan Amel'
+        : 'Rumah Pasien'
+      : 'Klinik Bidan Amel',
+    price: route.params.data
+      ? route.params.data.bookingable.cost.toString()
+      : '0',
+    isUpdate: route.params.data ? true : false,
   });
 
   const [loading, setLoading] = useState(true);
@@ -68,11 +87,31 @@ const AddServicesHomecare = ({navigation, route}) => {
       setDataUser(res);
     });
 
-    getMidwife(new Date());
+    if (route.params.data) {
+      const item = route.params.data;
+
+      const midwfie = {
+        id: item.practice_schedule_time.practice_schedule_detail.id,
+        name: item.practice_schedule_time.practice_schedule_detail.bidan.name,
+      };
+
+      const time = {
+        id: item.practice_schedule_time.id,
+        name: item.practice_schedule_time.practice_time,
+      };
+
+      getMidwife(item.bookingable.visit_date, true);
+      getMidwifeTime(item.practice_schedule_time.practice_schedule_detail.id);
+      setSelectMidwife(midwfie);
+      setSelectMidwifeTime(time);
+    } else {
+      getMidwife(new Date());
+    }
+
     getTreatments();
   }, []);
 
-  const getMidwife = async date => {
+  const getMidwife = async (date, isPrevious) => {
     try {
       const res = await Api.post({
         url: 'self/show-schedules',
@@ -83,20 +122,26 @@ const AddServicesHomecare = ({navigation, route}) => {
 
       const newData = formatMidwife(res);
       setDataMidwife(newData);
-      setSelectMidwife(defaultEmpty);
-      setSelectMidwifeTime(defaultEmpty);
+      if (!isPrevious) {
+        setSelectMidwife(defaultEmpty);
+        setSelectMidwifeTime(defaultEmpty);
+      }
+
       dispatch({type: 'SET_LOADING', value: false});
       setLoading(false);
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
       setLoading(false);
       setDataMidwife([]);
-      setSelectMidwife(defaultEmpty);
-      setSelectMidwifeTime(defaultEmpty);
+
+      if (!isPrevious) {
+        setSelectMidwife(defaultEmpty);
+        setSelectMidwifeTime(defaultEmpty);
+      }
     }
   };
 
-  const getMidwfieTime = async id => {
+  const getMidwifeTime = async id => {
     dispatch({type: 'SET_LOADING', value: true});
 
     try {
@@ -123,8 +168,13 @@ const AddServicesHomecare = ({navigation, route}) => {
       });
 
       if (res) {
-        const newData = formatTreatment(res);
-        setSelectTreatment(newData);
+        const oldData = route.params.data
+          ? route.params.data.bookingable.treatments
+          : null;
+
+        const formated = formatSelect(res, false, oldData);
+
+        setSelectTreatment(formated);
         setLoadingTreatment(false);
       } else {
         navigation.goBack();
@@ -139,7 +189,7 @@ const AddServicesHomecare = ({navigation, route}) => {
     setVisibleDatePicker(false);
     dispatch({type: 'SET_LOADING', value: true});
     getMidwife(currentDate);
-    setForm('executionDate', currentDate);
+    setForm('visitDate', currentDate);
   };
 
   const onChangeTreatmentFee = item => {
@@ -164,46 +214,71 @@ const AddServicesHomecare = ({navigation, route}) => {
     if (Object.values(selectTreatment).every(item => item.select === false))
       return ToastAlert('Silahkan pilih treatment Anda');
 
-    onSubmit();
+    setBody();
   };
 
-  const onSubmit = async () => {
+  const setBody = () => {
     dispatch({type: 'SET_LOADING', value: true});
-    const _selectTreatment = formatSelectedId(selectTreatment);
-    const implementation_place =
-      form.placeExecution == 'Klinik Bidan Amel' ? 'bidan' : 'rumah';
-    const implementation_date = `${moments(form.visitDate).format(
-      'YYYY-MM-DD',
-    )} ${selectMidwifeTime.name}`;
-
     try {
-      const res = await Api.post({
+      const _selectTreatment = formatSelectedId(selectTreatment);
+      const implementation_place =
+        form.placeExecution == 'Klinik Bidan Amel' ? 'bidan' : 'rumah';
+      const implementation_date = `${moments(form.visitDate).format(
+        'YYYY-MM-DD',
+      )} ${selectMidwifeTime.name}`;
+
+      const body = {
+        service_category_id: route.params.id,
+        name_son: form.childName,
+        birth_date: moments(form.childBirthDate).format('YYYY-MM-DD'),
+        implementation_date,
+        implementation_place,
+        cost: parseInt(form.price),
+        pasien_id: dataUser.id,
+        practice_schedule_time_id: selectMidwifeTime.id,
+        treatments: _selectTreatment,
+        is_new: false,
+      };
+
+      if (form.isUpdate) {
+        onUpdate(body);
+      } else onSubmit(body);
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+    }
+  };
+
+  const onSubmit = async body => {
+    try {
+      await Api.post({
         url: 'admin/home-cares',
-        body: {
-          service_category_id: route.params.id,
-          name_son: form.childName,
-          birth_date: moments(form.childBirthDate).format('YYYY-MM-DD'),
-          implementation_date,
-          implementation_place,
-          cost: parseInt(form.price),
-          pasien_id: dataUser.id,
-          practice_schedule_time_id: selectMidwifeTime.id,
-          treatments: _selectTreatment,
-          is_new: false,
-        },
+        body,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
-      if (res) {
-        setVisibleSuccess(true);
-      } else {
-        ToastAlert('Silahkan coba beberapa saat lagi');
-      }
+      setVisibleSuccess(true);
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
       SampleAlert({message: error.message});
     }
   };
+
+  const onUpdate = async body => {
+    try {
+      await Api.put({
+        url: `admin/home-cares/${route.params.data.bookingable.id}`,
+        body,
+      });
+
+      dispatch({type: 'SET_LOADING', value: false});
+      setVisibleSuccess(true);
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      SampleAlert({message: error.message});
+    }
+  };
+
+  console.log('cek after', form.visitDate);
 
   return (
     <Container>
@@ -351,7 +426,10 @@ const AddServicesHomecare = ({navigation, route}) => {
             )}
 
             <Gap height={20} />
-            <Button label={'Submit'} onPress={validation} />
+            <Button
+              label={form.isUpdate ? 'Simpan Perubahan' : 'Submit'}
+              onPress={validation}
+            />
           </View>
         </ScrollView>
       )}
@@ -389,7 +467,7 @@ const AddServicesHomecare = ({navigation, route}) => {
         onSelect={value => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
-          getMidwfieTime(value.id);
+          getMidwifeTime(value.id);
         }}
       />
 
@@ -407,7 +485,11 @@ const AddServicesHomecare = ({navigation, route}) => {
 
       <ModalAlert
         visible={visibleSuccess}
-        desc={'Selamat anda telah berhasil\nmendaftar di layanan kami'}
+        desc={
+          form.isUpdate
+            ? 'Selamat anda telah berhasil\nmemperbaharui layanan'
+            : 'Selamat anda telah berhasil\nmendaftar di layanan kami'
+        }
         onDismiss={() => navigation.goBack()}
         onPress={() => navigation.goBack()}
       />

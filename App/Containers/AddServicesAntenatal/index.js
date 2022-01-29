@@ -35,7 +35,6 @@ const defaultEmpty = {
 };
 
 const AddServicesAntenatal = ({navigation, route}) => {
-  console.log('cek route', route);
   const [form, setForm] = useForm({
     pregnancy: route.params.data
       ? route.params.data.bookingable.pregnancy.toString()
@@ -302,7 +301,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
       setVisibleSuccess(true);
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      ToastAlert('Silahkan coba beberapa saat lagi');
+      SampleAlert({message: error.message});
     }
   };
 
@@ -317,7 +316,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
       setVisibleSuccess(true);
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
-      ToastAlert('Silahkan coba beberapa saat lagi');
+      SampleAlert({message: error.message});
     }
   };
 

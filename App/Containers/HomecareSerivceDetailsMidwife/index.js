@@ -126,7 +126,7 @@ const HomecareSerivceDetails = ({navigation, route}) => {
                 style={styles.input}
                 label={'Waktu Kunjungan'}
                 value={moments(data.bookingable.implementation_date).format(
-                  'DD MMMMM YYYY | HH:mm:ss',
+                  'DD MMMM YYYY | HH:mm:ss',
                 )}
                 editable={false}
               />
