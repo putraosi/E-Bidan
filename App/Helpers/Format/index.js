@@ -102,3 +102,11 @@ export const formatSplit = data => {
 
   return newData;
 };
+
+export const capitalizeWord = async (text, separator = ' ') => {
+  return text
+    .toLowerCase()
+    .split(separator)
+    .map(s => s.charAt(0).toUpperCase() + s.substring(1))
+    .join(separator);
+};

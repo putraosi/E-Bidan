@@ -36,20 +36,42 @@ const defaultEmpty = {
 };
 
 const AddServicesImmunization = ({navigation, route}) => {
+
   const [form, setForm] = useForm({
-    name: '',
-    gender: 'Laki-Laki',
-    birthday: new Date(),
+    name: route.params.data ? route.params.data.bookingable.name : '',
+    gender: route.params.data
+      ? route.params.data.bookingable.gender
+      : 'Laki-Laki',
+    birthday: route.params.data
+      ? new Date(
+          moments(route.params.data.bookingable.birth_date).format(
+            'YYYY-MM-DD',
+          ),
+        )
+      : new Date(),
     birthPlace: {
       id: 0,
       name: '',
     },
     birthPlaceName: '',
-    birthWeight: '',
+    birthWeight: route.params.data
+      ? route.params.data.bookingable.birth_weight.toString()
+      : '',
     immunizationTypeName: '',
-    visitDate: new Date(),
-    typeDescription: '',
-    birthType: '',
+    visitDate: route.params.data
+      ? new Date(
+          moments(route.params.data.bookingable.visit_date).format(
+            'YYYY-MM-DD',
+          ),
+        )
+      : new Date(),
+    typeDescription: route.params.data
+      ? route.params.data.bookingable.remarks
+      : '',
+    birthType: route.params.data
+      ? route.params.data.bookingable.maternity_type
+      : '',
+    isUpdate: route.params.data ? true : false,
   });
 
   const [loading, setLoading] = useState(true);
@@ -76,7 +98,26 @@ const AddServicesImmunization = ({navigation, route}) => {
   useEffect(() => {
     getBirthPlace();
     getTypeImmunization();
-    getMidwife(new Date());
+    if (route.params.data) {
+      const item = route.params.data;
+
+      const midwfie = {
+        id: item.practice_schedule_time.practice_schedule_detail.id,
+        name: item.practice_schedule_time.practice_schedule_detail.bidan.name,
+      };
+
+      const time = {
+        id: item.practice_schedule_time.id,
+        name: item.practice_schedule_time.practice_time,
+      };
+
+      getMidwife(item.bookingable.visit_date, true);
+      getMidwifeTime(item.practice_schedule_time.practice_schedule_detail.id);
+      setSelectMidwife(midwfie);
+      setSelectMidwifeTime(time);
+    } else {
+      getMidwife(new Date());
+    }
   }, []);
 
   const getBirthPlace = async () => {
@@ -91,6 +132,14 @@ const AddServicesImmunization = ({navigation, route}) => {
           id: 999,
           name: 'Lainnya',
         });
+
+        if (route.params.data) {
+          const position = newData.findIndex(
+            obj => obj.id == route.params.data.bookingable.birth_place_id,
+          );
+
+          setForm('birthPlace', newData[position]);
+        }
 
         setSelectBirthPlace(newData);
         setLoading(false);
@@ -109,7 +158,14 @@ const AddServicesImmunization = ({navigation, route}) => {
       });
 
       if (res) {
-        const formated = formatSelect(res, false);
+        const oldData = route.params.data
+          ? route.params.data.bookingable.immunization_types
+          : null;
+
+        const formated = formatSelect(res, true, oldData);
+
+        const _price = onPrice(formated);
+        setPrice(_price);
 
         setSelectTypeImmunization(formated);
         setLoadingTypeImmunization(false);
@@ -121,7 +177,7 @@ const AddServicesImmunization = ({navigation, route}) => {
     }
   };
 
-  const getMidwife = async date => {
+  const getMidwife = async (date, isPrevious) => {
     try {
       const res = await Api.post({
         url: 'self/show-schedules',
@@ -132,20 +188,27 @@ const AddServicesImmunization = ({navigation, route}) => {
 
       const newData = formatMidwife(res);
       setDataMidwife(newData);
-      setSelectMidwife(defaultEmpty);
-      setSelectMidwifeTime(defaultEmpty);
+
+      if (!isPrevious) {
+        setSelectMidwife(defaultEmpty);
+        setSelectMidwifeTime(defaultEmpty);
+      }
+
       dispatch({type: 'SET_LOADING', value: false});
       setLoadingMidwife(false);
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
       setLoadingMidwife(false);
       setDataMidwife([]);
-      setSelectMidwife(defaultEmpty);
-      setSelectMidwifeTime(defaultEmpty);
+
+      if (!isPrevious) {
+        setSelectMidwife(defaultEmpty);
+        setSelectMidwifeTime(defaultEmpty);
+      }
     }
   };
 
-  const getMidwfieTime = async id => {
+  const getMidwifeTime = async id => {
     dispatch({type: 'SET_LOADING', value: true});
 
     try {
@@ -184,7 +247,9 @@ const AddServicesImmunization = ({navigation, route}) => {
     if (!form.birthType)
       return ToastAlert('Silahkan pilih jenis persalinan Anda');
 
-    onSubmit();
+    if (form.isUpdate) {
+      onUpdate();
+    } else onSubmit();
   };
 
   const onSubmit = async () => {
@@ -214,7 +279,47 @@ const AddServicesImmunization = ({navigation, route}) => {
           birth_place_name: _birthPlaceName,
           immunization_type_name: '',
           maternity_type: form.birthType.toLowerCase(),
+          remarks: form.typeDescription.toString(),
           is_new: false,
+        },
+      });
+
+      dispatch({type: 'SET_LOADING', value: false});
+      setVisibleSuccess(true);
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      SampleAlert({message: error.message});
+    }
+  };
+
+  const onUpdate = async () => {
+    dispatch({type: 'SET_LOADING', value: true});
+
+    const immunizationId = formatSelectedId(selectTypeImmunization);
+    const _birthPlaceName =
+      form.birthPlace.name == 'Lainnya' ? form.birthPlaceName : '';
+    const visit_date = `${moments(form.visitDate).format('YYYY-MM-DD')} ${
+      selectMidwifeTime.name
+    }`;
+
+    try {
+      await Api.put({
+        url: `admin/immunizations/${route.params.data.bookingable.id}`,
+        body: {
+          name: form.name,
+          gender: form.gender.toLowerCase(),
+          birth_date: moments(form.birthday).format('YYYY-MM-DD'),
+          birth_place_id: parseInt(form.birthPlace.id),
+          birth_weight: form.birthWeight,
+          visit_date,
+          pasien_id: route.params.userId,
+          practice_schedule_time_id: selectMidwifeTime.id,
+          service_category_id: route.params.id,
+          immunization_types: immunizationId,
+          birth_place_name: _birthPlaceName,
+          immunization_type_name: '',
+          maternity_type: form.birthType.toLowerCase(),
+          remarks: form.typeDescription.toString(),
         },
       });
 
@@ -251,7 +356,9 @@ const AddServicesImmunization = ({navigation, route}) => {
                   key={item.id}
                   style={styles.flex}
                   label={item.name}
-                  isActive={item.name == form.gender}
+                  isActive={
+                    item.name.toLowerCase() == form.gender.toLowerCase()
+                  }
                   onPress={() => setForm('gender', item.name)}
                 />
               ))}
@@ -390,16 +497,19 @@ const AddServicesImmunization = ({navigation, route}) => {
                   key={item.id}
                   style={styles.flex}
                   label={item.name}
-                  isActive={item.name == form.birthType}
+                  isActive={
+                    item.name.toLowerCase() == form.birthType.toLowerCase()
+                  }
                   onPress={() => setForm('birthType', item.name)}
                 />
               ))}
             </SpaceBeetwen>
 
-            <Text style={styles.desc}>{'*Coming Soon!'}</Text>
-
             <Gap height={20} />
-            <Button label={'Submit'} onPress={validation} />
+            <Button
+              label={form.isUpdate ? 'Simpan Perubahan' : 'Submit'}
+              onPress={validation}
+            />
           </View>
         </ScrollView>
       )}
@@ -446,7 +556,7 @@ const AddServicesImmunization = ({navigation, route}) => {
         onSelect={value => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
-          getMidwfieTime(value.id);
+          getMidwifeTime(value.id);
         }}
       />
 
@@ -464,7 +574,11 @@ const AddServicesImmunization = ({navigation, route}) => {
 
       <ModalAlert
         visible={visibleSuccess}
-        desc={'Selamat anda telah berhasil\nmendaftar di layanan kami'}
+        desc={
+          form.isUpdate
+            ? 'Selamat anda telah berhasil\nmemperbaharui layanan'
+            : 'Selamat anda telah berhasil\nmendaftar di layanan kami'
+        }
         onDismiss={() => navigation.goBack()}
         onPress={() => navigation.goBack()}
       />

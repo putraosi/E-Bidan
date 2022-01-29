@@ -53,6 +53,13 @@ const ImmunizationSerivceDetails = ({navigation, route}) => {
     }
   };
 
+  const onShowUpdate = () => {
+    navigation.navigate('AddServicesImmunization', {
+      id: data.bookingable.service_category_id,
+      data: data,
+    });
+  };
+
   const status = data && data.request_status.name;
 
   return (
@@ -169,12 +176,12 @@ const ImmunizationSerivceDetails = ({navigation, route}) => {
                 <>
                   <Gap height={20} />
                   <SpaceBeetwen>
-                    {/* <Button
+                    <Button
                       style={styles.flex}
                       label={'Ubah'}
-                      onPress={() => ToastAlert()}
+                      onPress={onShowUpdate}
                     />
-                    <Gap width={20} /> */}
+                    <Gap width={16} />
                     <Button
                       style={styles.flex}
                       type={'cancel'}

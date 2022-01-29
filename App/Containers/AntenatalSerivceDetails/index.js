@@ -61,6 +61,13 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
 
   const status = data && data.request_status.name;
 
+  const onShowUpdate = () => {
+    navigation.navigate('AddServicesAntenatal', {
+      id: data.bookingable.service_category_id,
+      data: data,
+    });
+  };
+
   return (
     <Container>
       <Header
@@ -227,12 +234,12 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
                 <>
                   <Gap height={20} />
                   <SpaceBeetwen>
-                    {/* <Button
+                    <Button
                       style={styles.flex}
                       label={'Ubah'}
-                      onPress={() => ToastAlert()}
+                      onPress={() => onShowUpdate()}
                     />
-                    <Gap width={20} /> */}
+                    <Gap width={16} />
                     <Button
                       style={styles.flex}
                       type={'cancel'}

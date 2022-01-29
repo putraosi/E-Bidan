@@ -149,7 +149,7 @@ const UltrasonografiSerivceDetails = ({navigation, route}) => {
                       label={'Ubah'}
                       onPress={() => ToastAlert()}
                     />
-                    <Gap width={20} /> */}
+                    <Gap width={16} /> */}
                     <Button
                       style={styles.flex}
                       type={'cancel'}

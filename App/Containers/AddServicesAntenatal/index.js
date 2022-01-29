@@ -35,19 +35,49 @@ const defaultEmpty = {
 };
 
 const AddServicesAntenatal = ({navigation, route}) => {
+  console.log('cek route', route);
   const [form, setForm] = useForm({
-    pregnancy: '',
-    abortion: '',
-    visitDate: new Date(),
-    hpht: new Date(),
-    menstrualDisorders: '',
+    pregnancy: route.params.data
+      ? route.params.data.bookingable.pregnancy.toString()
+      : '',
+    abortion: route.params.data
+      ? route.params.data.bookingable.abortus == 0
+        ? 'Tidak Pernah'
+        : route.params.data.bookingable.abortus.toString()
+      : '',
+    visitDate: route.params.data
+      ? new Date(
+          moments(route.params.data.bookingable.visit_date).format(
+            'YYYY-MM-DD',
+          ),
+        )
+      : new Date(),
+    hpht: route.params.data
+      ? new Date(
+          moments(route.params.data.bookingable.date_last_haid).format(
+            'YYYY-MM-DD',
+          ),
+        )
+      : new Date(),
+    menstrualDisorders: route.params.data
+      ? route.params.data.bookingable.menstrual_disorders
+      : '',
     remark: 'K1',
     otherDiseaseHistory: '',
-    historyPlaceBirth: '',
+    historyPlaceBirth: route.params.data
+      ? route.params.data.bookingable.maternity_plan
+      : '',
     otherHistoryPlaceBirth: '',
-    bloodGroup: '',
-    husbandsTotalMarriage: '',
-    wifesTotalMarriage: '',
+    bloodGroup: route.params.data
+      ? route.params.data.bookingable.blood_group
+      : '',
+    husbandsTotalMarriage: route.params.data
+      ? route.params.data.bookingable.marital_status_husband.toString()
+      : '',
+    wifesTotalMarriage: route.params.data
+      ? route.params.data.bookingable.marital_status_wife.toString()
+      : '',
+    isUpdate: route.params.data ? true : false,
   });
 
   const [loading, setLoading] = useState(true);
@@ -74,12 +104,33 @@ const AddServicesAntenatal = ({navigation, route}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getMidwife(new Date());
     getDiseasehistory();
-    checkGestationalAge(form.visitDate, form.hpht);
+
+    if (route.params.data) {
+      const item = route.params.data;
+
+      const midwfie = {
+        id: item.practice_schedule_time.practice_schedule_detail.id,
+        name: item.practice_schedule_time.practice_schedule_detail.bidan.name,
+      };
+
+      const time = {
+        id: item.practice_schedule_time.id,
+        name: item.practice_schedule_time.practice_time,
+      };
+
+      getMidwife(item.bookingable.visit_date, true);
+      getMidwifeTime(item.practice_schedule_time.practice_schedule_detail.id);
+      checkGestationalAge(item.bookingable.visit_date, form.hpht);
+      setSelectMidwife(midwfie);
+      setSelectMidwifeTime(time);
+    } else {
+      getMidwife(new Date());
+      checkGestationalAge(form.visitDate, form.hpht);
+    }
   }, []);
 
-  const getMidwife = async date => {
+  const getMidwife = async (date, isPrevious) => {
     try {
       const res = await Api.post({
         url: 'self/show-schedules',
@@ -90,20 +141,27 @@ const AddServicesAntenatal = ({navigation, route}) => {
 
       const newData = formatMidwife(res);
       setDataMidwife(newData);
-      setSelectMidwife(defaultEmpty);
-      setSelectMidwifeTime(defaultEmpty);
+
+      if (!isPrevious) {
+        setSelectMidwife(defaultEmpty);
+        setSelectMidwifeTime(defaultEmpty);
+      }
+
       dispatch({type: 'SET_LOADING', value: false});
       setLoading(false);
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
       setLoading(false);
       setDataMidwife([]);
-      setSelectMidwife(defaultEmpty);
-      setSelectMidwifeTime(defaultEmpty);
+
+      if (!isPrevious) {
+        setSelectMidwife(defaultEmpty);
+        setSelectMidwifeTime(defaultEmpty);
+      }
     }
   };
 
-  const getMidwfieTime = async id => {
+  const getMidwifeTime = async id => {
     dispatch({type: 'SET_LOADING', value: true});
 
     try {
@@ -180,60 +238,83 @@ const AddServicesAntenatal = ({navigation, route}) => {
     if (!form.wifesTotalMarriage)
       return ToastAlert('Silahkan isi total nikah istri');
 
-    onSubmit();
+    setBody();
   };
 
-  const onSubmit = async () => {
+  const setBody = () => {
     dispatch({type: 'SET_LOADING', value: true});
-    let abortus = form.abortion;
-    let disease_history_name = form.otherDiseaseHistory;
-    const labor_history = formatSelectedGrouped(selectHistory);
-    const visit_date = `${moments(form.visitDate).format('YYYY-MM-DD')} ${
-      selectMidwifeTime.name
-    }`;
-    const maternity_plan =
-      form.historyPlaceBirth == 'Bidan Amel'
-        ? form.historyPlaceBirth
-        : form.otherHistoryPlaceBirth;
-    const disease_history_id = formatSelectedId(selectDiseaseHistory);
-
-    if (abortus == 'Tidak Pernah') abortus = 0;
-    if (disease_history_id.length == 0) disease_history_name = '';
-
     try {
-      const res = await Api.post({
+      let abortus = form.abortion;
+      let disease_history_name = form.otherDiseaseHistory;
+      const labor_history = formatSelectedGrouped(selectHistory);
+      const visit_date = `${moments(form.visitDate).format('YYYY-MM-DD')} ${
+        selectMidwifeTime.name
+      }`;
+      const maternity_plan =
+        form.historyPlaceBirth == 'Bidan Amel'
+          ? form.historyPlaceBirth
+          : form.otherHistoryPlaceBirth;
+      const disease_history_id = formatSelectedId(selectDiseaseHistory);
+
+      if (abortus == 'Tidak Pernah') abortus = 0;
+      if (disease_history_id.length == 0) disease_history_name = '';
+
+      const body = {
+        service_category_id: route.params.id,
+        pregnancy: parseInt(form.pregnancy),
+        abortus: parseInt(abortus),
+        gestational_age: gestationalAge,
+        visit_date,
+        pasien_id: route.params.userId,
+        practice_schedule_time_id: selectMidwifeTime.id,
+        labor_history,
+        date_last_haid: moments(form.hpht).format('YYYY-MM-DD'),
+        date_estimate_birth: moments(form.hpht)
+          .add(40, 'weeks')
+          .format('YYYY-MM-DD'),
+        is_new: false,
+        menstrual_disorders: form.menstrualDisorders,
+        maternity_plan,
+        blood_group: form.bloodGroup,
+        marital_status_wife: parseInt(form.wifesTotalMarriage),
+        marital_status_husband: parseInt(form.husbandsTotalMarriage),
+        disease_history_id,
+        disease_history_name,
+        remark: '',
+      };
+
+      if (form.isUpdate) {
+        onUpdate(body);
+      } else onSubmit(body);
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+    }
+  };
+
+  const onSubmit = async body => {
+    try {
+      await Api.post({
         url: 'admin/antenatals',
-        body: {
-          service_category_id: route.params.id,
-          pregnancy: parseInt(form.pregnancy),
-          abortus: parseInt(abortus),
-          gestational_age: gestationalAge,
-          visit_date,
-          pasien_id: route.params.userId,
-          practice_schedule_time_id: selectMidwifeTime.id,
-          labor_history,
-          date_last_haid: moments(form.hpht).format('YYYY-MM-DD'),
-          date_estimate_birth: moments(form.hpht)
-            .add(40, 'weeks')
-            .format('YYYY-MM-DD'),
-          is_new: false,
-          menstrual_disorders: form.menstrualDisorders,
-          maternity_plan,
-          blood_group: form.bloodGroup,
-          marital_status_wife: parseInt(form.wifesTotalMarriage),
-          marital_status_husband: parseInt(form.husbandsTotalMarriage),
-          disease_history_id,
-          disease_history_name,
-          remark: '',
-        },
+        body,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
-      if (res) {
-        setVisibleSuccess(true);
-      } else {
-        ToastAlert('Silahkan coba beberapa saat lagi');
-      }
+      setVisibleSuccess(true);
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      ToastAlert('Silahkan coba beberapa saat lagi');
+    }
+  };
+
+  const onUpdate = async body => {
+    try {
+      await Api.put({
+        url: `admin/antenatals/${route.params.data.bookingable.id}`,
+        body,
+      });
+
+      dispatch({type: 'SET_LOADING', value: false});
+      setVisibleSuccess(true);
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
       ToastAlert('Silahkan coba beberapa saat lagi');
@@ -248,13 +329,12 @@ const AddServicesAntenatal = ({navigation, route}) => {
 
     const nowValue = selectHistory[position].name;
     if (nowValue == 'Belum Pernah') {
-      newSelect = selectHistory.map(item => {
-        const newItem = {
-          id: item.id,
-          name: item.name,
-          select: item.name == 'Belum Pernah' ? newSelected : false,
+      newSelect = selectHistory.map(_item => {
+        return {
+          id: _item.id,
+          name: _item.name,
+          select: _item.name == 'Belum Pernah' ? newSelected : false,
         };
-        return newItem;
       });
     } else {
       const positionFalse = selectHistory.findIndex(
@@ -470,10 +550,11 @@ const AddServicesAntenatal = ({navigation, route}) => {
               />
             </SpaceBeetwen>
 
-            <Text style={styles.desc}>{'*Coming Soon!'}</Text>
-
             <Gap height={20} />
-            <Button label={'Submit'} onPress={validation} />
+            <Button
+              label={form.isUpdate ? 'Simpan Perubahan' : 'Submit'}
+              onPress={validation}
+            />
           </View>
         </ScrollView>
       )}
@@ -546,7 +627,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
         onSelect={value => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
-          getMidwfieTime(value.id);
+          getMidwifeTime(value.id);
         }}
       />
 
@@ -564,7 +645,11 @@ const AddServicesAntenatal = ({navigation, route}) => {
 
       <ModalAlert
         visible={visibleSuccess}
-        desc={'Selamat anda telah berhasil\nmendaftar di layanan kami'}
+        desc={
+          form.isUpdate
+            ? 'Selamat anda telah berhasil\nmemperbaharui layanan'
+            : 'Selamat anda telah berhasil\nmendaftar di layanan kami'
+        }
         onDismiss={() => navigation.goBack()}
         onPress={() => navigation.goBack()}
       />

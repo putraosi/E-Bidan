@@ -203,7 +203,6 @@ const AddServicesOther = ({navigation, route}) => {
           cost: parseInt(price || 0),
           birth_date: moments(form.birthDate).format('YYYY-MM-DD'),
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
@@ -236,7 +235,6 @@ const AddServicesOther = ({navigation, route}) => {
           cost: parseInt(price || 0),
           birth_date: moments(form.birthDate).format('YYYY-MM-DD'),
         },
-        showLog: true,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
