@@ -36,7 +36,6 @@ const defaultEmpty = {
 };
 
 const AddServicesHomecare = ({navigation, route}) => {
-  console.log('cek route', route);
 
   const [form, setForm] = useForm({
     childName: route.params.data ? route.params.data.bookingable.name_son : '',
@@ -277,8 +276,6 @@ const AddServicesHomecare = ({navigation, route}) => {
       SampleAlert({message: error.message});
     }
   };
-
-  console.log('cek after', form.visitDate);
 
   return (
     <Container>

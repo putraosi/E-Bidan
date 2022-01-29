@@ -47,6 +47,13 @@ export default StyleSheet.create({
     justifyContent: 'center',
   },
 
+  change: {
+    fontSize: 16,
+    color: colors.primary,
+    fontFamily: fonts.primary.regular,
+    marginLeft: 8
+  },
+
   camera: {
     width: 24,
     height: 24,

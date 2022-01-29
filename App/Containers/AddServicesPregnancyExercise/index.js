@@ -12,12 +12,12 @@ import {
   ModalAlert,
   Modals,
   ModalSelect,
+  Row,
 } from '../../Components';
 import {
   constants,
   formatMidwife,
   formatMidwifeTime,
-  getData,
   SampleAlert,
   ToastAlert,
   useForm,
@@ -40,10 +40,25 @@ const defaultEmpty = {
 
 const AddServicesPregnancyExercise = ({navigation, route}) => {
   const [form, setForm] = useForm({
-    pregnancy: '',
-    visitDate: new Date(),
-    hpht: new Date(),
-    photo: '',
+    pregnancy: route.params.data
+      ? route.params.data.bookingable.pregnancy.toString()
+      : '',
+    visitDate: route.params.data
+      ? new Date(
+          moments(route.params.data.bookingable.visit_date).format(
+            'YYYY-MM-DD',
+          ),
+        )
+      : new Date(),
+    hpht: route.params.data
+      ? new Date(
+          moments(route.params.data.bookingable.date_last_haid).format(
+            'YYYY-MM-DD',
+          ),
+        )
+      : new Date(),
+    photo: route.params.data ? route.params.data.bookingable.file_upload : '',
+    isUpdate: route.params.data ? true : false,
   });
 
   const [loading, setLoading] = useState(true);
@@ -63,11 +78,38 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getMidwife(new Date());
-    checkGestationalAge(form.visitDate, form.hpht);
+    if (route.params.data) {
+      const item = route.params.data;
+      const split = item.bookingable.file_upload.split(';');
+
+      const image = {
+        type: split[0].replace('data:', ''),
+        base64: split[1].replace('base64, ', ''),
+      };
+
+      const midwfie = {
+        id: item.practice_schedule_time.practice_schedule_detail.id,
+        name: item.practice_schedule_time.practice_schedule_detail.bidan.name,
+      };
+
+      const time = {
+        id: item.practice_schedule_time.id,
+        name: item.practice_schedule_time.practice_time,
+      };
+
+      getMidwife(item.bookingable.visit_date, true);
+      getMidwifeTime(item.practice_schedule_time.practice_schedule_detail.id);
+      checkGestationalAge(item.bookingable.visit_date, form.hpht);
+      setSelectPhoto(image);
+      setSelectMidwife(midwfie);
+      setSelectMidwifeTime(time);
+    } else {
+      getMidwife(new Date());
+      checkGestationalAge(form.visitDate, form.hpht);
+    }
   }, []);
 
-  const getMidwife = async date => {
+  const getMidwife = async (date, isPrevious) => {
     try {
       const res = await Api.post({
         url: 'self/show-schedules',
@@ -78,20 +120,25 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
 
       const newData = formatMidwife(res);
       setDataMidwife(newData);
-      setSelectMidwife(defaultEmpty);
-      setSelectMidwifeTime(defaultEmpty);
+      if (!isPrevious) {
+        setSelectMidwife(defaultEmpty);
+        setSelectMidwifeTime(defaultEmpty);
+      }
+
       dispatch({type: 'SET_LOADING', value: false});
       setLoading(false);
     } catch (error) {
       dispatch({type: 'SET_LOADING', value: false});
       setLoading(false);
       setDataMidwife([]);
-      setSelectMidwife(defaultEmpty);
-      setSelectMidwifeTime(defaultEmpty);
+      if (!isPrevious) {
+        setSelectMidwife(defaultEmpty);
+        setSelectMidwifeTime(defaultEmpty);
+      }
     }
   };
 
-  const getMidwfieTime = async id => {
+  const getMidwifeTime = async id => {
     dispatch({type: 'SET_LOADING', value: true});
 
     try {
@@ -131,33 +178,60 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
       return ToastAlert('Silahkan pilih waktu kunjungan Anda');
     if (!form.photo) return ToastAlert('Silahkan upload bukti transfer');
 
-    onSubmit();
+    setBody();
   };
 
-  const onSubmit = async () => {
+  const setBody = () => {
     dispatch({type: 'SET_LOADING', value: true});
 
-    const visit_date = `${moments(form.visitDate).format('YYYY-MM-DD')} ${
-      selectMidwifeTime.name
-    }`;
-    const photo = `data:${selectPhoto.type};base64, ${selectPhoto.base64}`;
+    try {
+      const visit_date = `${moments(form.visitDate).format('YYYY-MM-DD')} ${
+        selectMidwifeTime.name
+      }`;
+      const photo = `data:${selectPhoto.type};base64, ${selectPhoto.base64}`;
 
+      const body = {
+        file_upload: photo,
+        gestational_age: gestationalAge,
+        date_estimate_birth: moments(form.hpht)
+          .add(40, 'weeks')
+          .format('YYYY-MM-DD'),
+        pregnancy: form.pregnancy,
+        visit_date,
+        practice_schedule_time_id: selectMidwifeTime.id,
+        pasien_id: route.params.userId,
+        service_category_id: route.params.id,
+        date_last_haid: moments(form.hpht).format('YYYY-MM-DD'),
+      };
+
+      if (form.isUpdate) {
+        onUpdate(body);
+      } else onSubmit(body);
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+    }
+  };
+
+  const onSubmit = async body => {
     try {
       await Api.post({
         url: 'admin/pregnancy-exercises',
-        body: {
-          file_upload: photo,
-          gestational_age: gestationalAge,
-          date_estimate_birth: moments(form.hpht)
-            .add(40, 'weeks')
-            .format('YYYY-MM-DD'),
-          pregnancy: form.pregnancy,
-          visit_date,
-          practice_schedule_time_id: selectMidwifeTime.id,
-          pasien_id: route.params.userId,
-          service_category_id: route.params.id,
-          date_last_haid: moments(form.hpht).format('YYYY-MM-DD'),
-        },
+        body,
+      });
+
+      dispatch({type: 'SET_LOADING', value: false});
+      setVisibleSuccess(true);
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      SampleAlert({message: error.message});
+    }
+  };
+
+  const onUpdate = async body => {
+    try {
+      await Api.put({
+        url: `admin/pregnancy-exercises/${route.params.data.bookingable.id}`,
+        body,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
@@ -254,7 +328,21 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
 
             <Text style={styles.label}>{'Bukti Transfer'}</Text>
             {form.photo ? (
-              <Image style={styles.photo} source={{uri: form.photo}} />
+              <Row>
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('PreviewPhoto', {
+                      image: {uri: form.photo},
+                    })
+                  }>
+                  <Image style={styles.photo} source={{uri: form.photo}} />
+                </TouchableOpacity>
+                <Text
+                  style={styles.change}
+                  onPress={() => setVisibleSelectPhoto(true)}>
+                  {'Ubah'}
+                </Text>
+              </Row>
             ) : (
               <TouchableOpacity
                 style={styles.containerPhoto}
@@ -270,7 +358,10 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
             </Text>
 
             <Gap height={20} />
-            <Button label={'Submit'} onPress={validation} />
+            <Button
+              label={form.isUpdate ? 'Simpan Perubahan' : 'Submit'}
+              onPress={validation}
+            />
           </View>
         </ScrollView>
       )}
@@ -331,7 +422,7 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
         onSelect={value => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
-          getMidwfieTime(value.id);
+          getMidwifeTime(value.id);
         }}
       />
 
@@ -349,7 +440,11 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
 
       <ModalAlert
         visible={visibleSuccess}
-        desc={'Selamat anda telah berhasil\nmendaftar di layanan kami'}
+        desc={
+          form.isUpdate
+            ? 'Selamat anda telah berhasil\nmemperbaharui layanan'
+            : 'Selamat anda telah berhasil\nmendaftar di layanan kami'
+        }
         onDismiss={() => navigation.goBack()}
         onPress={() => navigation.goBack()}
       />
@@ -379,7 +474,6 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
           }
         }}
       />
-
     </Container>
   );
 };
