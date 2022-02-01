@@ -12,6 +12,7 @@ import { moments } from '../../../Libs';
 import { colors, fonts } from '../../../Themes';
 
 const ItemOrderSchedule = ({navigation, data}) => {
+  console.log('cek data', data);
   const type = getBookingType(data.bookingable_type);
 
   const onShowDetails = () => {
@@ -24,7 +25,7 @@ const ItemOrderSchedule = ({navigation, data}) => {
     });
   };
 
-  const isMidwife = data.practice_schedule_time.practice_schedule_detail.bidan ? true : false;
+  const isMidwife = data.practice_schedule_time ? true : false;
 
   const photo =
     isMidwife && data.practice_schedule_time.practice_schedule_detail.bidan.photo ? {uri: data.practice_schedule_time.practice_schedule_detail.bidan.photo} : ILNullPhoto;

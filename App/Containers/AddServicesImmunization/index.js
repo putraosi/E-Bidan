@@ -1,7 +1,7 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, {useEffect, useState} from 'react';
-import {FlatList, ScrollView, Text, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { FlatList, ScrollView, Text, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   Container,
@@ -12,7 +12,7 @@ import {
   ModalAlert,
   Modals,
   RadioButton,
-  SpaceBeetwen,
+  SpaceBeetwen
 } from '../../Components';
 import {
   constants,
@@ -24,10 +24,10 @@ import {
   rupiah,
   SampleAlert,
   ToastAlert,
-  useForm,
+  useForm
 } from '../../Helpers';
-import {moments} from '../../Libs';
-import {Api} from '../../Services';
+import { moments } from '../../Libs';
+import { Api } from '../../Services';
 import styles from './styles';
 
 const defaultEmpty = {
@@ -274,7 +274,7 @@ const AddServicesImmunization = ({navigation, route}) => {
         birth_place_name: _birthPlaceName,
         immunization_type_name: '',
         maternity_type: form.birthType.toLowerCase(),
-        remarks: form.typeDescription.toString(),
+        remarks: form.typeDescription,
         is_new: false,
       };
 

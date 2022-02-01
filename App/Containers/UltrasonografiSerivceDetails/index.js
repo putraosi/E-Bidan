@@ -1,3 +1,4 @@
+import {useIsFocused} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
@@ -22,10 +23,11 @@ const UltrasonografiSerivceDetails = ({navigation, route}) => {
   const [visibleCancel, setVisibleCancel] = useState(false);
   const [visibleCancelReason, setVisibleCancelReason] = useState(false);
   const [data, setData] = useState('');
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     getData();
-  }, []);
+  }, [isFocused]);
 
   const getData = async () => {
     try {
@@ -49,6 +51,13 @@ const UltrasonografiSerivceDetails = ({navigation, route}) => {
       setLoading(false);
       SampleAlert({message: error.message});
     }
+  };
+
+  const onShowUpdate = () => {
+    navigation.navigate('AddServicesUltrasonografi', {
+      id: data.bookingable.service_category_id,
+      data: data,
+    });
   };
 
   const status = data && data.request_status.name;
@@ -144,12 +153,12 @@ const UltrasonografiSerivceDetails = ({navigation, route}) => {
                 <>
                   <Gap height={20} />
                   <SpaceBeetwen>
-                    {/* <Button
+                    <Button
                       style={styles.flex}
                       label={'Ubah'}
-                      onPress={() => ToastAlert()}
+                      onPress={() => onShowUpdate()}
                     />
-                    <Gap width={16} /> */}
+                    <Gap width={16} />
                     <Button
                       style={styles.flex}
                       type={'cancel'}

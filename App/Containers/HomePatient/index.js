@@ -21,7 +21,7 @@ import {
   SpaceBeetwen,
 } from '../../Components';
 import {getData, storeData, ToastAlert} from '../../Helpers';
-import {ILNullPhoto} from '../../Images';
+import {IcNotification, ILNullPhoto} from '../../Images';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
@@ -170,10 +170,10 @@ const HomePatient = ({navigation}) => {
               </View>
             </Row>
 
-            {/* <TouchableOpacity
+            <TouchableOpacity
               onPress={() => navigation.navigate('NotificationPatient')}>
               <Image style={styles.imageNotification} source={IcNotification} />
-            </TouchableOpacity> */}
+            </TouchableOpacity>
           </TouchableOpacity>
         )}
 

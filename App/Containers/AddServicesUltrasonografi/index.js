@@ -25,13 +25,29 @@ import {moments} from '../../Libs';
 import {Api} from '../../Services';
 import styles from './styles';
 const AddServicesUltrasonografi = ({navigation, route}) => {
+  console.log('cek route', route);
+
+  const oldData = route.params.data;
   const [form, setForm] = useForm({
-    child: '',
-    abortion: '',
-    hpht: '',
-    visitDate: new Date(),
-    visitTime: new Date(),
-    type: '',
+    child: oldData ? oldData.bookingable.child.toString() : '',
+    abortion: oldData
+      ? oldData.bookingable.abortus == 0
+        ? 'Tidak Pernah'
+        : oldData.bookingable.abortus
+      : '',
+    hpht: oldData
+      ? new Date(
+          moments(oldData.bookingable.date_last_haid).format('YYYY-MM-DD'),
+        )
+      : '',
+    visitDate: oldData
+      ? new Date(moments(oldData.bookingable.visit_date).format('YYYY-MM-DD'))
+      : '',
+    visitTime: oldData
+      ? new Date(moments(oldData.bookingable.visit_date).format('YYYY-MM-DD HH:mm:ss'))
+      : '',
+    type: oldData ? oldData.bookingable.ultrasonografi_types[0] : '',
+    isUpdate: route.params.data ? true : false,
   });
 
   const [loading, setLoading] = useState(true);
@@ -50,6 +66,15 @@ const AddServicesUltrasonografi = ({navigation, route}) => {
   useEffect(() => {
     getType();
     setLoading(false);
+
+    if (oldData) {
+      const calculation = hplCalculation(
+        oldData.bookingable.visit_date,
+        oldData.bookingable.date_last_haid,
+      );
+      setGestationalAge(calculation);
+      setPrice(oldData.bookingable.cost.toString())
+    }
   }, []);
 
   const getType = async () => {
@@ -70,11 +95,12 @@ const AddServicesUltrasonografi = ({navigation, route}) => {
     if (!form.abortion) return ToastAlert('Silahkan pilih keguguran');
     if (!form.type) return ToastAlert('Silahkan pilih jenis USG Anda');
 
-    onSubmit();
+    setBody();
   };
 
-  const onSubmit = async () => {
+  const setBody = () => {
     dispatch({type: 'SET_LOADING', value: true});
+
     try {
       let abortus = form.abortion;
       const ultrasonografi_types = [form.type.id];
@@ -93,21 +119,48 @@ const AddServicesUltrasonografi = ({navigation, route}) => {
 
       if (abortus == 'Tidak Pernah') abortus = '0';
 
+      const body = {
+        service_category_id: route.params.id,
+        ultrasonografi_types,
+        date_last_haid,
+        child: form.child,
+        abortus,
+        cost: parseInt(price),
+        pasien_id: route.params.userId,
+        visit_date,
+        gestational_age: gestationalAge,
+        date_estimate_birth,
+        remarks: '',
+      };
+
+      if (form.isUpdate) {
+        onUpdate(body);
+      } else onSubmit(body);
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+    }
+  };
+
+  const onSubmit = async body => {
+    try {
       await Api.post({
         url: 'admin/ultrasonografis',
-        body: {
-          service_category_id: route.params.id,
-          ultrasonografi_types,
-          date_last_haid,
-          child: form.child,
-          abortus,
-          cost: parseInt(price),
-          pasien_id: route.params.userId,
-          visit_date,
-          gestational_age: gestationalAge,
-          date_estimate_birth,
-          remarks: '',
-        },
+        body,
+      });
+
+      dispatch({type: 'SET_LOADING', value: false});
+      setVisibleSuccess(true);
+    } catch (error) {
+      dispatch({type: 'SET_LOADING', value: false});
+      SampleAlert({message: error.message});
+    }
+  };
+
+  const onUpdate = async body => {
+    try {
+      await Api.put({
+        url: `admin/ultrasonografis/${route.params.data.bookingable.id}`,
+        body,
       });
 
       dispatch({type: 'SET_LOADING', value: false});
@@ -216,7 +269,10 @@ const AddServicesUltrasonografi = ({navigation, route}) => {
             <Input label={'Biaya'} value={`Rp${rupiah(price)}`} disable />
 
             <Gap height={20} />
-            <Button label={'Submit'} onPress={validation} />
+            <Button
+              label={form.isUpdate ? 'Simpan Perubahan' : 'Submit'}
+              onPress={validation}
+            />
           </View>
         </ScrollView>
       )}
@@ -247,7 +303,11 @@ const AddServicesUltrasonografi = ({navigation, route}) => {
 
       <ModalAlert
         visible={visibleSuccess}
-        desc={'Selamat anda telah berhasil\nmendaftar di layanan kami'}
+        desc={
+          form.isUpdate
+            ? 'Selamat anda telah berhasil\nmemperbaharui layanan'
+            : 'Selamat anda telah berhasil\nmendaftar di layanan kami'
+        }
         onDismiss={() => navigation.goBack()}
         onPress={() => navigation.goBack()}
       />

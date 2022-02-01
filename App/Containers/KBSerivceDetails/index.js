@@ -57,13 +57,10 @@ const KBSerivceDetails = ({navigation, route}) => {
     }
   };
 
-  const onEdit = () => {
-    return ToastAlert();
+  const onShowUpdate = () => {
     navigation.navigate('AddServicesKB', {
-      data: data,
       id: data.bookingable.service_category_id,
-      userId: data.pasien_id,
-      isEdit: true,
+      data: data,
     });
   };
 
@@ -189,12 +186,12 @@ const KBSerivceDetails = ({navigation, route}) => {
                 <>
                   <Gap height={20} />
                   <SpaceBeetwen>
-                    {/* <Button
+                    <Button
                       style={styles.flex}
                       label={'Ubah'}
-                      onPress={() => ToastAlert()}
+                      onPress={() => onShowUpdate()}
                     />
-                    <Gap width={16} /> */}
+                    <Gap width={16} />
                     <Button
                       style={styles.flex}
                       type={'cancel'}

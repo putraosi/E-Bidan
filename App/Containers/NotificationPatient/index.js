@@ -17,8 +17,7 @@ const NotificationPatient = ({navigation}) => {
         url: 'admin/notification/unread',
       });
 
-      setLoading(false)
-
+      setLoading(false);
     } catch (error) {
       navigation.goBack();
     }
