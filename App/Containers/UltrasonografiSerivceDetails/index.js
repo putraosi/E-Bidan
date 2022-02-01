@@ -57,6 +57,7 @@ const UltrasonografiSerivceDetails = ({navigation, route}) => {
     navigation.navigate('AddServicesUltrasonografi', {
       id: data.bookingable.service_category_id,
       data: data,
+      userId: route.params.userId,
     });
   };
 

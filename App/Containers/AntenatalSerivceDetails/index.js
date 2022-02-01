@@ -1,6 +1,6 @@
-import {useIsFocused} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
-import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
+import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
 import {
   Button,
   ContactUs,
@@ -13,12 +13,12 @@ import {
   Modals,
   Separator,
   SpaceBeetwen,
-  Status,
+  Status
 } from '../../Components';
-import {formatSplit, SampleAlert} from '../../Helpers';
-import {moments} from '../../Libs';
-import {Api, onCancelService} from '../../Services';
-import {colors, fonts} from '../../Themes';
+import { formatSplit, SampleAlert } from '../../Helpers';
+import { moments } from '../../Libs';
+import { Api, onCancelService } from '../../Services';
+import { colors, fonts } from '../../Themes';
 
 const AntenatalSerivceDetails = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
@@ -65,6 +65,7 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
     navigation.navigate('AddServicesAntenatal', {
       id: data.bookingable.service_category_id,
       data: data,
+      userId: route.params.userId,
     });
   };
 

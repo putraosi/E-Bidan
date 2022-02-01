@@ -11,7 +11,7 @@ import {moments} from '../../../Libs';
 import {colors, fonts} from '../../../Themes';
 import {Gap, Notice, Row, SpaceBeetwen} from '../../Atoms';
 
-const ItemOrderHistory = ({navigation, data}) => {
+const ItemOrderHistory = ({navigation, data, user}) => {
   const type = getBookingType(data.bookingable_type);
 
   const onShowDetails = () => {
@@ -21,6 +21,7 @@ const ItemOrderHistory = ({navigation, data}) => {
 
     navigation.navigate(screen, {
       data: data,
+      userId: user.id,
     });
   };
 

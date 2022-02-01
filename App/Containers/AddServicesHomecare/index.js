@@ -21,7 +21,6 @@ import {
   formatMidwifeTime,
   formatSelect,
   formatSelectedId,
-  getData,
   SampleAlert,
   ToastAlert,
   useForm,
@@ -36,7 +35,6 @@ const defaultEmpty = {
 };
 
 const AddServicesHomecare = ({navigation, route}) => {
-
   const [form, setForm] = useForm({
     childName: route.params.data ? route.params.data.bookingable.name_son : '',
     childBirthDate: route.params.data
@@ -71,7 +69,6 @@ const AddServicesHomecare = ({navigation, route}) => {
   const [visibleVisitTime, setVisibleVisitTime] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
-  const [dataUser, setDataUser] = useState(null);
   const [dataMidwife, setDataMidwife] = useState([]);
   const [dataMidwifeTime, setDataMidwifeTime] = useState([]);
   const [selectMidwife, setSelectMidwife] = useState(defaultEmpty);
@@ -82,10 +79,6 @@ const AddServicesHomecare = ({navigation, route}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getData('user').then(res => {
-      setDataUser(res);
-    });
-
     if (route.params.data) {
       const item = route.params.data;
 
@@ -141,8 +134,6 @@ const AddServicesHomecare = ({navigation, route}) => {
   };
 
   const getMidwifeTime = async id => {
-    dispatch({type: 'SET_LOADING', value: true});
-
     try {
       const res = await Api.post({
         url: 'self/show-schedule-times',
@@ -233,7 +224,7 @@ const AddServicesHomecare = ({navigation, route}) => {
         implementation_date,
         implementation_place,
         cost: parseInt(form.price),
-        pasien_id: dataUser.id,
+        pasien_id: route.params.userId,
         practice_schedule_time_id: selectMidwifeTime.id,
         treatments: _selectTreatment,
         is_new: false,
@@ -464,6 +455,7 @@ const AddServicesHomecare = ({navigation, route}) => {
         onSelect={value => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
+          dispatch({type: 'SET_LOADING', value: true});
           getMidwifeTime(value.id);
         }}
       />

@@ -61,6 +61,7 @@ const KBSerivceDetails = ({navigation, route}) => {
     navigation.navigate('AddServicesKB', {
       id: data.bookingable.service_category_id,
       data: data,
+      userId: route.params.userId,
     });
   };
 

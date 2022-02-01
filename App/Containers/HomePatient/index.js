@@ -21,7 +21,7 @@ import {
   SpaceBeetwen,
 } from '../../Components';
 import {getData, storeData, ToastAlert} from '../../Helpers';
-import {IcNotification, ILNullPhoto} from '../../Images';
+import {ILNullPhoto} from '../../Images';
 import {Api} from '../../Services';
 import {colors, fonts} from '../../Themes';
 
@@ -170,10 +170,10 @@ const HomePatient = ({navigation}) => {
               </View>
             </Row>
 
-            <TouchableOpacity
+            {/* <TouchableOpacity
               onPress={() => navigation.navigate('NotificationPatient')}>
               <Image style={styles.imageNotification} source={IcNotification} />
-            </TouchableOpacity>
+            </TouchableOpacity> */}
           </TouchableOpacity>
         )}
 
@@ -182,7 +182,9 @@ const HomePatient = ({navigation}) => {
             <Text style={styles.title}>{'Jadwal Pesanan'}</Text>
             {!loadingBooking && dataBooking.length > 0 && (
               <TouchableOpacity
-                onPress={() => navigation.navigate('OrderSchedule')}>
+                onPress={() =>
+                  navigation.navigate('OrderSchedule', {user: dataUser})
+                }>
                 <Text style={styles.showAll}>{'Lihat Semua'}</Text>
               </TouchableOpacity>
             )}
@@ -197,6 +199,7 @@ const HomePatient = ({navigation}) => {
                 key={parseInt(index + 1)}
                 navigation={navigation}
                 data={item}
+                user={dataUser}
               />
             ))
           ) : (
@@ -223,6 +226,7 @@ const HomePatient = ({navigation}) => {
                 key={parseInt(index + 1)}
                 navigation={navigation}
                 data={item}
+                user={dataUser}
               />
             ))
           ) : (

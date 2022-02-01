@@ -1,18 +1,17 @@
 import React from 'react';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { Gap, Notice, Row, SpaceBeetwen } from '../../../Components';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import {Gap, Notice, Row, SpaceBeetwen} from '../../../Components';
 import {
   getBookingType,
   selectPageByService,
-  ToastAlert
+  ToastAlert,
 } from '../../../Helpers';
-import { ILNullPhoto } from '../../../Images';
-import { IcRightArrow } from '../../../Images/icon';
-import { moments } from '../../../Libs';
-import { colors, fonts } from '../../../Themes';
+import {ILNullPhoto} from '../../../Images';
+import {IcRightArrow} from '../../../Images/icon';
+import {moments} from '../../../Libs';
+import {colors, fonts} from '../../../Themes';
 
-const ItemOrderSchedule = ({navigation, data}) => {
-  console.log('cek data', data);
+const ItemOrderSchedule = ({navigation, data, user}) => {
   const type = getBookingType(data.bookingable_type);
 
   const onShowDetails = () => {
@@ -22,20 +21,28 @@ const ItemOrderSchedule = ({navigation, data}) => {
 
     navigation.navigate(screen, {
       data: data,
+      userId: user.id,
     });
   };
 
   const isMidwife = data.practice_schedule_time ? true : false;
 
   const photo =
-    isMidwife && data.practice_schedule_time.practice_schedule_detail.bidan.photo ? {uri: data.practice_schedule_time.practice_schedule_detail.bidan.photo} : ILNullPhoto;
+    isMidwife &&
+    data.practice_schedule_time.practice_schedule_detail.bidan.photo
+      ? {uri: data.practice_schedule_time.practice_schedule_detail.bidan.photo}
+      : ILNullPhoto;
 
   return (
     <TouchableOpacity style={styles.container} onPress={onShowDetails}>
       <SpaceBeetwen>
         {isMidwife && <Image style={styles.image} source={photo} />}
         <View style={styles.containerAccount}>
-          {isMidwife && <Text style={styles.name}>{data.practice_schedule_time.practice_schedule_detail.bidan.name}</Text>}
+          {isMidwife && (
+            <Text style={styles.name}>
+              {data.practice_schedule_time.practice_schedule_detail.bidan.name}
+            </Text>
+          )}
           <Text style={styles.type}>{type}</Text>
           <Gap height={2} />
           <Notice category={data.request_status.name} />

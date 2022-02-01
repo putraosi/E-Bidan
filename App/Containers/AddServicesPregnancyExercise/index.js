@@ -139,8 +139,6 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
   };
 
   const getMidwifeTime = async id => {
-    dispatch({type: 'SET_LOADING', value: true});
-
     try {
       const res = await Api.post({
         url: 'self/show-schedule-times',
@@ -422,6 +420,7 @@ const AddServicesPregnancyExercise = ({navigation, route}) => {
         onSelect={value => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
+          dispatch({type: 'SET_LOADING', value: true});
           getMidwifeTime(value.id);
         }}
       />

@@ -59,6 +59,7 @@ const ImmunizationSerivceDetails = ({navigation, route}) => {
     navigation.navigate('AddServicesImmunization', {
       id: data.bookingable.service_category_id,
       data: data,
+      userId: route.params.userId,
     });
   };
 

@@ -1,12 +1,12 @@
-import {useIsFocused} from '@react-navigation/native';
-import React, {useEffect, useState} from 'react';
+import { useIsFocused } from '@react-navigation/native';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import {
   Button,
@@ -19,12 +19,12 @@ import {
   Modals,
   Separator,
   SpaceBeetwen,
-  Status,
+  Status
 } from '../../Components';
-import {SampleAlert} from '../../Helpers';
-import {moments} from '../../Libs';
-import {Api, onCancelService} from '../../Services';
-import {colors, fonts} from '../../Themes';
+import { SampleAlert } from '../../Helpers';
+import { moments } from '../../Libs';
+import { Api, onCancelService } from '../../Services';
+import { colors, fonts } from '../../Themes';
 
 const PregnancyExerciseSerivceDetails = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
@@ -65,6 +65,7 @@ const PregnancyExerciseSerivceDetails = ({navigation, route}) => {
     navigation.navigate('AddServicesPregnancyExercise', {
       id: data.bookingable.service_category_id,
       data: data,
+      userId: route.params.userId,
     });
   };
 

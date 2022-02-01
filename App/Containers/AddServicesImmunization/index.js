@@ -1,7 +1,7 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, { useEffect, useState } from 'react';
-import { FlatList, ScrollView, Text, View } from 'react-native';
-import { useDispatch } from 'react-redux';
+import React, {useEffect, useState} from 'react';
+import {FlatList, ScrollView, Text, View} from 'react-native';
+import {useDispatch} from 'react-redux';
 import {
   Button,
   Container,
@@ -12,7 +12,7 @@ import {
   ModalAlert,
   Modals,
   RadioButton,
-  SpaceBeetwen
+  SpaceBeetwen,
 } from '../../Components';
 import {
   constants,
@@ -24,10 +24,10 @@ import {
   rupiah,
   SampleAlert,
   ToastAlert,
-  useForm
+  useForm,
 } from '../../Helpers';
-import { moments } from '../../Libs';
-import { Api } from '../../Services';
+import {moments} from '../../Libs';
+import {Api} from '../../Services';
 import styles from './styles';
 
 const defaultEmpty = {
@@ -208,8 +208,6 @@ const AddServicesImmunization = ({navigation, route}) => {
   };
 
   const getMidwifeTime = async id => {
-    dispatch({type: 'SET_LOADING', value: true});
-
     try {
       const res = await Api.post({
         url: 'self/show-schedule-times',
@@ -541,6 +539,7 @@ const AddServicesImmunization = ({navigation, route}) => {
         onSelect={value => {
           setVisibleMidwife(false);
           setSelectMidwife(value);
+          dispatch({type: 'SET_LOADING', value: true});
           getMidwifeTime(value.id);
         }}
       />

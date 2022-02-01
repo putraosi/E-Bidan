@@ -10,7 +10,7 @@ import {
 } from '../../Components';
 import {Api} from '../../Services';
 
-const OrderSchedule = ({navigation}) => {
+const OrderSchedule = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
   const [data, setData] = useState(null);
   const isFocused = useIsFocused();
@@ -47,7 +47,11 @@ const OrderSchedule = ({navigation}) => {
             keyExtractor={item => item.id}
             data={data}
             renderItem={({item}) => (
-              <ItemOrderSchedule navigation={navigation} data={item} />
+              <ItemOrderSchedule
+                navigation={navigation}
+                data={item}
+                user={route.params.user}
+              />
             )}
             ListEmptyComponent={() => (
               <EmptyList desc="Belum terdapat jadwal booking." />
@@ -63,6 +67,8 @@ export default OrderSchedule;
 
 const styles = StyleSheet.create({
   content: {
-    padding: 16,
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
 });

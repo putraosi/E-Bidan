@@ -19,7 +19,6 @@ import {
   formatMidwifeTime,
   formatSelect,
   formatSelectedId,
-  getData,
   onPrice,
   rupiah,
   SampleAlert,
@@ -58,7 +57,6 @@ const AddServicesOther = ({navigation, route}) => {
   const [visibleVisitTime, setVisibleVisitTime] = useState(false);
   const [visibleMidwife, setVisibleMidwife] = useState(false);
   const [visibleSuccess, setVisibleSuccess] = useState(false);
-  const [dataUser, setDataUser] = useState(null);
   const [dataMidwife, setDataMidwife] = useState([]);
   const [dataMidwifeTime, setDataMidwifeTime] = useState([]);
   const [selectMidwife, setSelectMidwife] = useState(defaultEmpty);
@@ -69,9 +67,6 @@ const AddServicesOther = ({navigation, route}) => {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    getData('user').then(res => {
-      setDataUser(res);
-    });
     getTreatments();
 
     if (route.params.data) {
@@ -194,7 +189,7 @@ const AddServicesOther = ({navigation, route}) => {
         age: ageCalculation(form.birthDate),
         other_category_service_ids,
         practice_schedule_time_id: selectMidwifeTime.id,
-        pasien_id: dataUser.id,
+        pasien_id: route.params.userId,
         visit_date,
         cost: parseInt(price || 0),
         birth_date: moments(form.birthDate).format('YYYY-MM-DD'),

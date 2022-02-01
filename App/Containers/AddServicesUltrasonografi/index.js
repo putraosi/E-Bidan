@@ -25,7 +25,6 @@ import {moments} from '../../Libs';
 import {Api} from '../../Services';
 import styles from './styles';
 const AddServicesUltrasonografi = ({navigation, route}) => {
-  console.log('cek route', route);
 
   const oldData = route.params.data;
   const [form, setForm] = useForm({
