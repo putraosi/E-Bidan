@@ -10,6 +10,7 @@
     "link": "npx react-native link",
     "lint": "eslint .",
     "assembleRelease": "cd android; ./gradlew clean; ./gradlew assembleRelease",
+    "bundleRelease": "cd android; ./gradlew bundleRelease",
     "bundle": "react-native bundle --verbose --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res/",
     "apk-debug": "yarn bundle; cd android; ./gradlew clean; ./gradlew assembleDebug",
     "apk-release": "yarn; node android-react-gradle-fix.js; yarn assembleRelease",
