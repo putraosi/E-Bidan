@@ -3,7 +3,7 @@ import querystring from 'qs';
 import config from '../../../env';
 import {getData} from '../../Helpers';
 
-const cluster = 'staging';
+const cluster = 'production';
 const {staging, production} = config;
 const api = axios.create({
   baseURL: cluster == 'production' ? production : staging,

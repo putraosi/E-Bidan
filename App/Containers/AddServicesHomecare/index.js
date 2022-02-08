@@ -1,7 +1,7 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, {useEffect, useState} from 'react';
-import {FlatList, ScrollView, Text, View} from 'react-native';
-import {useDispatch} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { FlatList, ScrollView, Text, View } from 'react-native';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   Container,
@@ -11,8 +11,7 @@ import {
   Loading,
   ModalAlert,
   Modals,
-  RadioButton,
-  SpaceBeetwen,
+  RadioButton
 } from '../../Components';
 import {
   ageCalculation,
@@ -21,12 +20,13 @@ import {
   formatMidwifeTime,
   formatSelect,
   formatSelectedId,
+  rupiah,
   SampleAlert,
   ToastAlert,
-  useForm,
+  useForm
 } from '../../Helpers';
-import {moments} from '../../Libs';
-import {Api} from '../../Services';
+import { moments } from '../../Libs';
+import { Api } from '../../Services';
 import styles from './styles';
 
 const defaultEmpty = {
@@ -43,7 +43,7 @@ const AddServicesHomecare = ({navigation, route}) => {
             'YYYY-MM-DD',
           ),
         )
-      : new Date(),
+      : '',
     visitDate: route.params.data
       ? new Date(
           moments(route.params.data.bookingable.implementation_date).format(
@@ -53,9 +53,9 @@ const AddServicesHomecare = ({navigation, route}) => {
       : new Date(),
     placeExecution: route.params.data
       ? route.params.data.bookingable.implementation_place == 'bidan'
-        ? 'Klinik Bidan Amel'
+        ? 'Klinik Cikal Mulia/Bidan Amel'
         : 'Rumah Pasien'
-      : 'Klinik Bidan Amel',
+      : '',
     price: route.params.data
       ? route.params.data.bookingable.cost.toString()
       : '0',
@@ -186,7 +186,7 @@ const AddServicesHomecare = ({navigation, route}) => {
     let price = 0;
     item.map(check => {
       if (check.select) {
-        price += check.price;
+        price += parseInt(check.price);
       }
     });
 
@@ -201,6 +201,8 @@ const AddServicesHomecare = ({navigation, route}) => {
       return ToastAlert('Silahkan pilih bidan anda');
     if (!selectMidwifeTime.name)
       return ToastAlert('Silahkan pilih waktu kunjungan Anda');
+    if (!form.placeExecution)
+      return ToastAlert('Silahkan pilih tempat pelaksanaan Anda');
     if (Object.values(selectTreatment).every(item => item.select === false))
       return ToastAlert('Silahkan pilih treatment Anda');
 
@@ -212,7 +214,9 @@ const AddServicesHomecare = ({navigation, route}) => {
     try {
       const _selectTreatment = formatSelectedId(selectTreatment);
       const implementation_place =
-        form.placeExecution == 'Klinik Bidan Amel' ? 'bidan' : 'rumah';
+        form.placeExecution == 'Klinik Cikal Mulia/Bidan Amel'
+          ? 'bidan'
+          : 'rumah';
       const implementation_date = `${moments(form.visitDate).format(
         'YYYY-MM-DD',
       )} ${selectMidwifeTime.name}`;
@@ -353,24 +357,22 @@ const AddServicesHomecare = ({navigation, route}) => {
 
             <Gap height={12} />
             <Text style={styles.label}>{'Tempat Pelaksanaan'}</Text>
-            <SpaceBeetwen>
-              {constants.SELECT_PLACE_EXECUTION.map(item => (
-                <RadioButton
-                  key={item.id}
-                  style={styles.flex}
-                  label={item.name}
-                  isActive={item.name == form.placeExecution}
-                  onPress={() => {
-                    setForm('placeExecution', item.name);
+            {constants.SELECT_PLACE_EXECUTION.map(item => (
+              <RadioButton
+                style={styles.radioButton}
+                key={item.id}
+                label={item.name}
+                isActive={item.name == form.placeExecution}
+                onPress={() => {
+                  setForm('placeExecution', item.name);
 
-                    if (item.name == 'Rumah Pasien') setShowDesc(true);
-                    else setShowDesc(false);
-                  }}
-                />
-              ))}
-            </SpaceBeetwen>
+                  if (item.name == 'Rumah Pasien') setShowDesc(true);
+                  else setShowDesc(false);
+                }}
+              />
+            ))}
 
-            <Gap height={12} />
+            <Gap height={8} />
             <Text style={styles.label}>{'Treatment'}</Text>
             <FlatList
               data={selectTreatment}
@@ -400,7 +402,7 @@ const AddServicesHomecare = ({navigation, route}) => {
             <Gap height={12} />
             <Input
               label={'Biaya Treatment'}
-              value={form.price}
+              value={`Rp${rupiah(form.price)}`}
               disable
               onChangeText={value => setForm('price', value)}
             />

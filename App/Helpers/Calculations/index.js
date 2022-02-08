@@ -36,8 +36,8 @@ export const ageCalculationYear = date => {
 export const onPrice = item => {
   let price = 0;
   item.map(check => {
-    if (check.select) {
-      price += check.price;
+    if (check.select && check.price) {
+      price += parseInt(check.price);
     }
   });
 

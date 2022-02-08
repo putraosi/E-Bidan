@@ -32,4 +32,8 @@ export default StyleSheet.create({
     fontFamily: fonts.primary.regular,
     marginTop: 12,
   },
+
+  radioButton:{
+    marginBottom: 4
+  }
 });

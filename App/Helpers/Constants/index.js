@@ -14,7 +14,7 @@ export const constants = {
   ],
 
   SELECT_PLACE_EXECUTION: [
-    {id: 1, name: 'Klinik Bidan Amel'},
+    {id: 1, name: 'Klinik Cikal Mulia/Bidan Amel'},
     {id: 2, name: 'Rumah Pasien'},
   ],
 
@@ -53,14 +53,6 @@ export const constants = {
     {id: 13, name: '13'},
     {id: 14, name: '14'},
     {id: 15, name: '15'},
-  ],
-
-  SELECT_BIRTHPLACE: [
-    {id: 1, name: 'RS'},
-    {id: 2, name: 'Puskesmas'},
-    {id: 3, name: 'Bidan'},
-    {id: 4, name: 'Bidan Amel'},
-    {id: 5, name: 'Lainnya'},
   ],
 
   SELECT_TYPE_DESCRIPTION: [
@@ -131,7 +123,7 @@ export const constants = {
   ],
 
   SELECT_HISTORY_PLACE_BIRTH: [
-    {id: 1, name: 'Bidan Amel'},
+    {id: 1, name: 'Klinik Cikal Mulia/Bidan Amel'},
     {id: 2, name: 'Faskes Lain'},
   ],
 

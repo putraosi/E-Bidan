@@ -248,7 +248,7 @@ const AddServicesAntenatal = ({navigation, route}) => {
         selectMidwifeTime.name
       }`;
       const maternity_plan =
-        form.historyPlaceBirth == 'Bidan Amel'
+        form.historyPlaceBirth == 'Klinik Cikal Mulia/Bidan Amel'
           ? form.historyPlaceBirth
           : form.otherHistoryPlaceBirth;
       const disease_history_id = formatSelectedId(selectDiseaseHistory);
@@ -466,7 +466,6 @@ const AddServicesAntenatal = ({navigation, route}) => {
                 />
               )}
               numColumns={2}
-              scrollEnabled={false}
             />
 
             <Gap height={8} />
@@ -478,36 +477,34 @@ const AddServicesAntenatal = ({navigation, route}) => {
 
             <Gap height={12} />
             <Text style={styles.label}>{'Riwayat Persalinan'}</Text>
-            <SpaceBeetwen>
-              {selectHistory.map(item => (
+            <FlatList
+              data={selectHistory}
+              renderItem={({item, index}) => (
                 <RadioButton
-                  key={item.id}
-                  style={styles.flex}
+                  key={index}
+                  style={styles.radioButton}
                   type={'rounded'}
                   label={item.name}
                   isActive={item.select}
                   onPress={() => onChangeSelectHistory(item)}
                 />
-              ))}
-            </SpaceBeetwen>
+              )}
+              numColumns={2}
+            />
 
-            <Gap height={12} />
+            <Gap height={8} />
             <Text style={styles.label}>{'Tempat Bersalin'}</Text>
-            <SpaceBeetwen>
-              {constants.SELECT_HISTORY_PLACE_BIRTH.map(item => (
-                <RadioButton
-                  style={styles.radioButton}
-                  key={item.id}
-                  label={item.name}
-                  isActive={item.name == form.historyPlaceBirth}
-                  other={form.otherHistoryPlaceBirth}
-                  onChangeText={value =>
-                    setForm('otherHistoryPlaceBirth', value)
-                  }
-                  onPress={() => setForm('historyPlaceBirth', item.name)}
-                />
-              ))}
-            </SpaceBeetwen>
+            {constants.SELECT_HISTORY_PLACE_BIRTH.map(item => (
+              <RadioButton
+                style={styles.radioButton}
+                key={item.id}
+                label={item.name}
+                isActive={item.name == form.historyPlaceBirth}
+                other={form.otherHistoryPlaceBirth}
+                onChangeText={value => setForm('otherHistoryPlaceBirth', value)}
+                onPress={() => setForm('historyPlaceBirth', item.name)}
+              />
+            ))}
 
             <Gap height={8} />
             <Text style={styles.label}>{'Golongan Darah'}</Text>
@@ -522,8 +519,8 @@ const AddServicesAntenatal = ({navigation, route}) => {
                   onPress={() => setForm('bloodGroup', item.name)}
                 />
               )}
-              scrollEnabled={false}
               numColumns={2}
+              scrollEnabled={false}
             />
 
             <Gap height={8} />

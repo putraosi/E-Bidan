@@ -1,6 +1,6 @@
-import { useIsFocused } from '@react-navigation/native';
-import React, { useEffect, useState } from 'react';
-import { FlatList, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {useIsFocused} from '@react-navigation/native';
+import React, {useEffect, useState} from 'react';
+import {FlatList, ScrollView, StyleSheet, Text, View} from 'react-native';
 import {
   Button,
   ContactUs,
@@ -13,12 +13,12 @@ import {
   Modals,
   Separator,
   SpaceBeetwen,
-  Status
+  Status,
 } from '../../Components';
-import { formatSplit, SampleAlert } from '../../Helpers';
-import { moments } from '../../Libs';
-import { Api, onCancelService } from '../../Services';
-import { colors, fonts } from '../../Themes';
+import {formatSplit, SampleAlert} from '../../Helpers';
+import {moments} from '../../Libs';
+import {Api, onCancelService} from '../../Services';
+import {colors, fonts} from '../../Themes';
 
 const AntenatalSerivceDetails = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
@@ -95,7 +95,7 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
             <View style={styles.content}>
               <Input
                 label={'Kehamilan Ke'}
-                value={data.bookingable.pregnancy.toString()}
+                value={data.bookingable.pregnancy}
                 editable={false}
               />
 
@@ -103,8 +103,8 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
                 style={styles.input}
                 label={'Keguguran'}
                 value={
-                  data.bookingable.abortus
-                    ? data.bookingable.abortus.toString
+                  data.bookingable.abortus && data.bookingable.abortus != '0'
+                    ? data.bookingable.abortus
                     : 'Tidak Pernah'
                 }
                 editable={false}
@@ -213,14 +213,14 @@ const AntenatalSerivceDetails = ({navigation, route}) => {
               <Input
                 style={styles.input}
                 label={'Total Nikah Istri'}
-                value={data.bookingable.marital_status_wife.toString()}
+                value={data.bookingable.marital_status_wife}
                 editable={false}
               />
 
               <Input
                 style={styles.input}
                 label={'Total Nikah Suami'}
-                value={data.bookingable.marital_status_husband.toString()}
+                value={data.bookingable.marital_status_husband}
                 editable={false}
               />
 

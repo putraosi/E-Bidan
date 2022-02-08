@@ -41,10 +41,10 @@ const AddServicesUltrasonografi = ({navigation, route}) => {
       : '',
     visitDate: oldData
       ? new Date(moments(oldData.bookingable.visit_date).format('YYYY-MM-DD'))
-      : '',
+      : new Date(),
     visitTime: oldData
       ? new Date(moments(oldData.bookingable.visit_date).format('YYYY-MM-DD HH:mm:ss'))
-      : '',
+      : new Date(),
     type: oldData ? oldData.bookingable.ultrasonografi_types[0] : '',
     isUpdate: route.params.data ? true : false,
   });

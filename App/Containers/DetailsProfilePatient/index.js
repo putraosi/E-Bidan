@@ -186,7 +186,6 @@ const DetailsProfilePatient = ({navigation, route}) => {
   const photo = form.photo ? {uri: form.photo} : ILNullPhoto;
   const editable = isChange ? true : false;
 
-
   if (isChange) {
     labelButtonFirst = 'Simpan';
     onPressFirst = () => validation();
@@ -203,7 +202,12 @@ const DetailsProfilePatient = ({navigation, route}) => {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.containerHeader}>
-          <TouchableOpacity onPress={() => ToastAlert()}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('PreviewPhoto', {
+                image: photo,
+              })
+            }>
             <Image style={styles.image} source={photo} />
             {isChange && (
               <TouchableOpacity

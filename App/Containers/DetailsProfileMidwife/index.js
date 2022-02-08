@@ -1,15 +1,15 @@
 import DatePicker from '@react-native-community/datetimepicker';
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Image,
   ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
-  View,
+  View
 } from 'react-native';
 import DeviceInfo from 'react-native-device-info';
-import {useDispatch} from 'react-redux';
+import { useDispatch } from 'react-redux';
 import {
   Button,
   Container,
@@ -19,7 +19,7 @@ import {
   ModalAlert,
   Modals,
   ModalSelect,
-  SpaceBeetwen,
+  SpaceBeetwen
 } from '../../Components';
 import {
   constants,
@@ -27,18 +27,18 @@ import {
   SampleAlert,
   storeData,
   ToastAlert,
-  useForm,
+  useForm
 } from '../../Helpers';
-import {IcEditCircle, IcMenu, ILNullPhoto} from '../../Images';
+import { IcEditCircle, IcMenu, ILNullPhoto } from '../../Images';
 import {
   checkPermissionCamera,
   checkPermissionGallery,
   moments,
   openCamera,
-  openGallery,
+  openGallery
 } from '../../Libs';
-import {Api} from '../../Services';
-import {colors, fonts} from '../../Themes';
+import { Api } from '../../Services';
+import { colors, fonts } from '../../Themes';
 
 const DetailsProfileMidwife = ({navigation, route}) => {
   const data = route.params.data;
@@ -169,7 +169,12 @@ const DetailsProfileMidwife = ({navigation, route}) => {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.containerHeader}>
-          <TouchableOpacity onPress={() => ToastAlert()}>
+          <TouchableOpacity
+            onPress={() =>
+              navigation.navigate('PreviewPhoto', {
+                image: photo,
+              })
+            }>
             <Image style={styles.image} source={photo} />
             {isChange && (
               <TouchableOpacity
@@ -386,7 +391,7 @@ const styles = StyleSheet.create({
     height: 120,
     borderRadius: 120 / 2,
     borderWidth: 1,
-    borderColor: colors.white
+    borderColor: colors.white,
   },
 
   mode: {

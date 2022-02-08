@@ -130,8 +130,8 @@ android {
         applicationId "com.cikal_mulia"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 100000000
-        versionName "1.0.0"
+        versionCode 100001000
+        versionName "1.1.0"
     }
     splits {
         abi {
