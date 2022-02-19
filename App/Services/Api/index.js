@@ -1,12 +1,11 @@
 import axios from 'axios';
 import querystring from 'qs';
 import config from '../../../env';
-import {getData} from '../../Helpers';
+import {constants, getData} from '../../Helpers';
 
-const cluster = 'production';
 const {staging, production} = config;
 const api = axios.create({
-  baseURL: cluster == 'production' ? production : staging,
+  baseURL: constants.CLUSTER == 'production' ? production : staging,
   timeout: 20000,
   headers: {
     Accept: 'application/json',

@@ -1,5 +1,7 @@
 export const constants = {
 
+  CLUSTER : 'production',
+
   MIDWIFE: 'bidan',
   PATIENT: 'pasien',
 

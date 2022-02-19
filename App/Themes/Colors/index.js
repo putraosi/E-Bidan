@@ -39,6 +39,8 @@ export const colors = {
   placeholder: mainColors.gray2,
   dash: mainColors.green1,
   disable: mainColors.whiteTranparent1,
+  danger: mainColors.red1,
+
   text: {
     primary: mainColors.black2,
     secondary: mainColors.gray3,
@@ -84,14 +86,14 @@ export const colors = {
   input: {
     backgroundColor: {
       primary: mainColors.grayTransparent2,
-      secondary: mainColors.whiteTranparent2
+      secondary: mainColors.whiteTranparent2,
     },
   },
   separator: {
     primary: mainColors.white1,
   },
 
-  borderColor:{
-    primary: mainColors.gray4
-  }
+  borderColor: {
+    primary: mainColors.gray4,
+  },
 };
